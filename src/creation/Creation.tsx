@@ -27,6 +27,8 @@ class Creation extends React.Component<any,any> {
           <button type='button' onClick={this.startLine}> Line </button>
           <button type='button' onClick={this.startShape}> Shape </button>
           <button type='button' onClick={this.startEntrypoint}> Text </button>
+          <br />
+          <button type='button' onClick={this.startEntrypoint}> Reset </button>
       </div>
     );
   }

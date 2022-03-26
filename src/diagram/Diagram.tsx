@@ -42,11 +42,10 @@ class Diagram extends React.Component<any,any> {
 
     updateMousePosition(e:MouseEvent) {
         const cords = this.getCords(e);
-        // logic here?
-
+        const sizes = this.getSizes(e, cords);
         // TODO resolve this limitiation, where you can only drag from left to bottom right, if I dragged the other way the cords and sizes values just need to be flipped.
         if(this.state.leftClickHeld) {
-            this.props.currentEl?.setSecondary({sizeX:(cords.x-this.state.heldCords.x ),sizeY:(cords.y-this.state.heldCords.y)}, cords);
+            this.props.currentEl?.handleMove(sizes, cords);
         }
 
         this.setState({
@@ -54,6 +53,7 @@ class Diagram extends React.Component<any,any> {
         })
         this.draw();
     }
+    
 
     mouseClick(e:MouseEvent) {
         console.log(this.state.mouseX + " - " + this.state.mouseY)
@@ -72,6 +72,9 @@ class Diagram extends React.Component<any,any> {
 
     mouseClickRelease(e:MouseEvent) {
         if(e.button == 0) {
+            const cords = this.getCords(e);
+            const sizes = this.getSizes(e, cords);
+            this.props.currentEl?.handleLeftRelease(sizes, cords)
             this.setState({leftClickHeld:false})
         }
         this.draw();
@@ -96,6 +99,9 @@ class Diagram extends React.Component<any,any> {
         const x =  Math.floor(e.pageX)-v.left;
         const y =  Math.floor(e.pageY)-v.top;
         return {x,y}
+    }
+    getSizes(e: MouseEvent, cords:any) {
+        return {sizeX:(cords.x-this.state.heldCords.x ),sizeY:(cords.y-this.state.heldCords.y)}
     }
 
     // Draw everything, NO STATE CHANGES!

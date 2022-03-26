@@ -7,11 +7,18 @@ export class DiagramElement {
     color: string = '#FF0000';
     cords:{x:number,y:number} = {x:0,y:0};
 
+    // Handle the first click
     setCords(cords:{x:number,y:number} ){
         this.cords = cords;
     }
 
-    setSecondary(size:{sizeX:number, sizeY:number}, secondaryCords:{x:number,y:number}){
+    // Handle the mouse move
+    handleMove(size:{sizeX:number, sizeY:number}, secondaryCords:{x:number,y:number}){
+        // childImplToDecide
+    }
+
+    // Handle the mouse release
+    handleLeftRelease(size:{sizeX:number, sizeY:number}, secondaryCords:{x:number,y:number}){
         // childImplToDecide
     }
 
@@ -20,7 +27,7 @@ export class DiagramElement {
     }  
 }
 
-enum Shapes {
+export enum Shapes {
     RECT="RECT",
     CIRCLE="CIRCLE"
 }
@@ -34,7 +41,7 @@ export class Shape extends DiagramElement {
         this.size = {sizeX:0,sizeY:0};
     }
     
-    setSecondary(size:{sizeX:number, sizeY:number}, secondaryCords:{x:number,y:number}){
+    handleMove(size:{sizeX:number, sizeY:number}, secondaryCords:{x:number,y:number}){
         this.size = size;
     }
 
@@ -90,25 +97,74 @@ export class EntryPoint extends Shape {
 }
 
 export class Line extends DiagramElement {
-    secondaryCords:{x:number,y:number} = {x:0,y:0};
+    secondaryCords:{x:number,y:number}[] = [];
+    
+    // Transiant variables
+    tempStartCord:{x:number,y:number}=null;
+    tempCord:{x:number,y:number} = null;
+    cordsSet=false;
+    held=false;
 
     setCords(cords:{x:number,y:number} ){
-        this.cords = cords;
-        this.secondaryCords =cords;
+        if(!this.cordsSet){
+            this.tempStartCord = cords;
+        }
+        this.held = true;
     }
 
-    setSecondary(size:{sizeX:number, sizeY:number}, secondaryCords:{x:number,y:number}){
-        this.secondaryCords = secondaryCords;
+    handleMove(size:{sizeX:number, sizeY:number}, secondaryCords:{x:number,y:number}){
+        this.tempCord = secondaryCords;
+    }
+
+    // Handle the mouse release
+    handleLeftRelease(size:{sizeX:number, sizeY:number}, secondaryCords:{x:number,y:number}){
+        if(this.cordsSet) {
+            this.secondaryCords.push(secondaryCords);
+        } else {
+            this.cords = this.tempStartCord;
+            this.secondaryCords.push(secondaryCords);
+
+            this.cordsSet = true;
+            this.tempCord = null;
+            this.tempStartCord = null;
+        }
+        this.held = false;
     }
 
     draw(ctx:CanvasRenderingContext2D){
-        drawLine(
-            this.cords.x,
-            this.cords.y,
-            this.secondaryCords.x,
-            this.secondaryCords.y,
-            this.color,
-            ctx
-        )
+        if(!this.cordsSet && this.tempStartCord && this.tempCord){
+            drawLine(
+                this.tempStartCord.x,
+                this.tempStartCord.y,
+                this.tempCord.x,
+                this.tempCord.y,
+                this.color,
+                ctx
+            )
+        } else {
+            let first = this.cords;
+            for(let i = 0; i < this.secondaryCords.length; i++){
+                let sec = this.secondaryCords[i];
+                drawLine(
+                    first.x,
+                    first.y,
+                    sec.x,
+                    sec.y,
+                    this.color,
+                    ctx
+                )
+                first = sec;
+            }
+            if(this.held && this.tempCord){
+                drawLine(
+                    first.x,
+                    first.y,
+                    this.tempCord.x,
+                    this.tempCord.y,
+                    this.color,
+                    ctx
+                )
+            }
+        }
     }
 }
