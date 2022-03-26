@@ -36,3 +36,13 @@
     transform: rotate(360deg);
   }
 }
+
+#left {
+  width: 400px;
+}
+
+#diagram {
+  position: absolute;
+  top: 0px;
+  left: 400px;
+}
