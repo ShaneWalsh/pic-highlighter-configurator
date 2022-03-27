@@ -25,3 +25,10 @@
 button:disabled {
   background: #ccc;
 }
+
+div.option-div {
+  padding-left: 5px;
+}
+div.option-div label {
+  text-align: left;
+}

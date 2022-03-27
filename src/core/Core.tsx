@@ -47,6 +47,7 @@ class Core extends React.Component<any,any> {
         this.performExport = this.performExport.bind(this);
         this.performReset = this.performReset.bind(this);
         this.toggleDisplay = this.toggleDisplay.bind(this);
+        this.elementOptionUpdated = this.elementOptionUpdated.bind(this);
     }
     
     // User wants to create a new entrypoint
@@ -87,6 +88,9 @@ class Core extends React.Component<any,any> {
         });
     }
 
+    elementOptionUpdated(){ // hack to trigger a state change for any field change
+        this.setState({currentEl:this.state.currentEl});
+    }
     performExport(){
         console.log(JSON.stringify(this.state))
     }
@@ -121,8 +125,10 @@ class Core extends React.Component<any,any> {
                         performReset={this.performReset}
                     />
                     <Options 
+                        currentEl={this.state.currentEl}
                         entryPoints={this.state.entryPoints}
                         toggleDisplay={this.toggleDisplay}
+                        elementOptionUpdated={this.elementOptionUpdated}
                     />
                     <Diagram 
                         currentEl={this.state.currentEl}
