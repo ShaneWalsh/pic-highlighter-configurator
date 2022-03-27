@@ -7,6 +7,11 @@ export class DiagramElement {
     color: string = '#FF0000';
     cords:{x:number,y:number} = {x:0,y:0};
 
+    constructor(elements:number,code:string){
+        this.id = code+Date.now();
+        this.name = code+elements; 
+    }
+
     // Handle the first click
     setCords(cords:{x:number,y:number} ){
         this.cords = cords;
@@ -35,6 +40,10 @@ export enum Shapes {
 export class Shape extends DiagramElement {
     size:{sizeX:number, sizeY:number} = {sizeX:0,sizeY:0};
     shape:Shapes = Shapes.CIRCLE;
+
+    constructor(num:number,code="SH"){
+        super(num,code);
+    }
 
     setCords(cords:{x:number,y:number} ){
         this.cords = cords;
@@ -70,12 +79,18 @@ export class Shape extends DiagramElement {
 }
 
 export class EntryPoint extends Shape {
+    constructor(num:number,code="EP"){
+        super(num,code);
+    }
     // All of the elements related to this entrypoint
     elements:DiagramElement[]=[]
 
     isHoverable =true;
     isSelectable =true;
     
+    _display=true;
+    toggleDisplay(){this._display = !this._display}
+
     // OOS
     isFilled =false;
     fillColor:string = '';
@@ -97,6 +112,9 @@ export class EntryPoint extends Shape {
 }
 
 export class Line extends DiagramElement {
+    constructor(num:number,code="LN"){
+        super(num,code);
+    }
     secondaryCords:{x:number,y:number}[] = [];
     
     // Transiant variables

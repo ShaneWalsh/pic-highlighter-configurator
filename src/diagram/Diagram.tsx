@@ -110,7 +110,7 @@ class Diagram extends React.Component<any,any> {
         ctx.clearRect(0,0,920,512);
 
         // TODO replace with an Image
-        ctx.fillStyle = 'grey';
+        ctx.fillStyle = '#F8F8F8';
         ctx.fillRect(0,0,920,512);
         
         // Anything selected, being hovered etc from viewer
@@ -121,7 +121,9 @@ class Diagram extends React.Component<any,any> {
         }
         if(this.props.entryPoints) {
             this.props.entryPoints.forEach((el: any) => {
-                el.draw(this.state.ctx);
+                if(el._display) {
+                    el.draw(this.state.ctx);
+                }
             });
         }
     }
