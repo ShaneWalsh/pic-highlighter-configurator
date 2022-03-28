@@ -1,4 +1,4 @@
-import { drawBorder, drawCircle, drawLine } from "./Drawing";
+import { drawBorder, drawCircle, drawLine, drawLineDashed, writeInPixels } from "./Drawing";
 
 
 export class DiagramElement {
@@ -34,12 +34,13 @@ export class DiagramElement {
 
 export enum Shapes {
     RECT="RECT",
-    CIRCLE="CIRCLE"
+    CIRCLE="CIRCLE",
+    DIAMOND="DIAMOND"
 }
 
 export class Shape extends DiagramElement {
     size:{sizeX:number, sizeY:number} = {sizeX:0,sizeY:0};
-    shape:Shapes = Shapes.CIRCLE;
+    shape:Shapes = Shapes.RECT;
 
     constructor(num:number,code="SH"){
         super(num,code);
@@ -64,6 +65,16 @@ export class Shape extends DiagramElement {
                 this.color,
                 ctx,
             )
+        } else if(this.shape === Shapes.DIAMOND){
+            const left = {x:this.cords.x, y :this.cords.y+ (this.size.sizeY/2) };
+            const top = {x:this.cords.x + (this.size.sizeX/2), y :this.cords.y };
+            const right = {x:this.cords.x + this.size.sizeX, y :this.cords.y+ (this.size.sizeY/2) };
+            const bottom = {x:this.cords.x+ (this.size.sizeX/2), y :this.cords.y+ this.size.sizeY };
+
+            drawLine(left.x,left.y,top.x,top.y, this.color, ctx)
+            drawLine(top.x,top.y,right.x,right.y, this.color, ctx)
+            drawLine(right.x,right.y,bottom.x,bottom.y, this.color, ctx)
+            drawLine(bottom.x,bottom.y,left.x,left.y, this.color, ctx)
         } else if(this.shape === Shapes.CIRCLE){
             drawCircle(
                 this.cords.x + (this.size.sizeX/2),
@@ -107,14 +118,21 @@ export class EntryPoint extends Shape {
             this.size.sizeY,
             this.color,
             ctx
-        )
+        );
+        writeInPixels(this.cords.x+this.size.sizeX/2, this.cords.y+this.size.sizeY/2,15,this.name,this.color,ctx);
     }
+}
+
+export enum LineStyle {
+    FULL="FULL",
+    DOTTED="DOTTED"
 }
 
 export class Line extends DiagramElement {
     constructor(num:number,code="LN"){
         super(num,code);
     }
+    lineStyle:LineStyle = LineStyle.FULL;
     secondaryCords:{x:number,y:number}[] = [];
     
     // Transiant variables
@@ -150,8 +168,12 @@ export class Line extends DiagramElement {
     }
 
     draw(ctx:CanvasRenderingContext2D){
+        let drawer = drawLine;
+        if(this.lineStyle === LineStyle.DOTTED){
+            drawer = drawLineDashed;
+        }
         if(!this.cordsSet && this.tempStartCord && this.tempCord){
-            drawLine(
+            drawer(
                 this.tempStartCord.x,
                 this.tempStartCord.y,
                 this.tempCord.x,
@@ -163,7 +185,7 @@ export class Line extends DiagramElement {
             let first = this.cords;
             for(let i = 0; i < this.secondaryCords.length; i++){
                 let sec = this.secondaryCords[i];
-                drawLine(
+                drawer(
                     first.x,
                     first.y,
                     sec.x,
@@ -174,7 +196,7 @@ export class Line extends DiagramElement {
                 first = sec;
             }
             if(this.held && this.tempCord){
-                drawLine(
+                drawer(
                     first.x,
                     first.y,
                     this.tempCord.x,

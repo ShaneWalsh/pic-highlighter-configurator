@@ -15,23 +15,29 @@ import { EntryPoint, Line, Shape } from './DiagramElement';
 
 /*
     TODO MVP
+    Background pic from base64
+    Import + Export full support via fields
+    ~color inherit
     Options, dynamic, bound to the elements
+
     Text... With and without boxes. 
         On hover display full text option?
-    Background pic from base64
 
     OOS
     Line ArrowHead shape, fill
-    Selection. Hitboxes for checking.
+    Selection, edit existing elements. Hitboxes for checking.
     Adding Background Toggle to Creation, so you can add elements freely that will always be displayed. Not highlight elements bound to entrypoints
-    Selecting BG pic from pc, loaded through nodejs server, then base64 encoded on UI added to export.
-    Save Config to file, load config from file.
+    Node Server
+        Selecting BG pic from pc, loaded through nodejs server, then base64 encoded on UI added to export.
+        Save Config to file, load config from file.
 */
 
 /**
  * Main Component, will hold the state of the current diagram
  */
 class Core extends React.Component<any,any> {
+    width = 1024;
+    height = 800;
     constructor(props:any) {
         super(props);
         this.state = {
@@ -39,12 +45,14 @@ class Core extends React.Component<any,any> {
             currentEntryPoint: null,
             entryPoints:[],
             currentEl: null,
-            _elementsNum:0
+            _elementsNum:0,
+            export:""
         };
         this.startEntrypoint = this.startEntrypoint.bind(this);
         this.startLine = this.startLine.bind(this);
         this.startShape = this.startShape.bind(this);
         this.performExport = this.performExport.bind(this);
+        this.performImport = this.performImport.bind(this);
         this.performReset = this.performReset.bind(this);
         this.toggleDisplay = this.toggleDisplay.bind(this);
         this.elementOptionUpdated = this.elementOptionUpdated.bind(this);
@@ -68,8 +76,9 @@ class Core extends React.Component<any,any> {
 
     startLine(){
         let line = new Line(this.state._elementsNum);
+        line.color = this.state.currentEntryPoint.color;
+        this.state.currentEntryPoint.elements.push(line);
         this.setState(function(state:any, props:any) {
-            state.currentEntryPoint.elements.push(line);
             return {
                 currentEl:line,
                 _elementsNum:state._elementsNum+1
@@ -79,8 +88,9 @@ class Core extends React.Component<any,any> {
 
     startShape(){
         let shape = new Shape(this.state._elementsNum);
+        shape.color = this.state.currentEntryPoint.color;
+        this.state.currentEntryPoint.elements.push(shape);
         this.setState(function(state:any, props:any) {
-            state.currentEntryPoint.elements.push(shape);
             return {
                 currentEl:shape,
                 _elementsNum:state._elementsNum+1
@@ -92,7 +102,18 @@ class Core extends React.Component<any,any> {
         this.setState({currentEl:this.state.currentEl});
     }
     performExport(){
-        console.log(JSON.stringify(this.state))
+        console.log(JSON.stringify(this.state));
+        let exportValue = {...this.state};
+        delete exportValue.export;
+        delete exportValue.currentEntryPoint;
+        delete exportValue.currentEl;
+        delete exportValue._elementsNum;
+        this.setState({
+            export:JSON.stringify(exportValue)
+        });
+    }
+    performImport(importValue:any){
+        console.log(JSON.parse(importValue));
     }
     performReset(){
         this.setState({
@@ -122,6 +143,8 @@ class Core extends React.Component<any,any> {
                         startLine={this.startLine}
                         startShape={this.startShape}
                         performExport={this.performExport}
+                        export={this.state.export}
+                        performImport={this.performImport}
                         performReset={this.performReset}
                     />
                     <Options 
@@ -131,12 +154,14 @@ class Core extends React.Component<any,any> {
                         elementOptionUpdated={this.elementOptionUpdated}
                     />
                     <Diagram 
+                        width={this.width}
+                        height={this.height}
                         currentEl={this.state.currentEl}
                         entryPoints={this.state.entryPoints}
                     />
                 </div>
                 <div id="diagram">
-                    <canvas id="canvas-highlighter" width="920" height="512" ></canvas>
+                    <canvas id="canvas-highlighter" width={this.width} height={this.height} ></canvas>
                 </div>
             </div>
         )

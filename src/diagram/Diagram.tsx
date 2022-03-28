@@ -1,22 +1,41 @@
 import * as React from 'react'
+import { drawBorder } from '../core/Drawing';
 
 class Diagram extends React.Component<any,any> {
     constructor(props:any) {
       super(props);
+
+      // BG image, should be coming from props. Base64 encoded
+      const image = new Image();
+      //image.onload = this.loadImage.bind(this); 
+      image.src = 'https://i.ibb.co/ThXk4sV/class.jpg';
+
       this.state = {
         canvas: null,
         ctx:null,
         mouseX:0,
         mouseY:0,
         leftClickHeld:false,
-        heldCords:{x:0,y:0}
+        heldCords:{x:0,y:0},
+        background:image
       };
       this.updateMousePosition = this.updateMousePosition.bind(this);
       this.mouseClick = this.mouseClick.bind(this);
       this.mouseClickRelease = this.mouseClickRelease.bind(this);
       this.rightClickContext = this.rightClickContext.bind(this);
       this.doubleClick = this.doubleClick.bind(this);
+
+      // Load the image whatever it is
+      
     }
+    
+    loadImage(){
+        this.draw();
+        this.setState({
+            background:this.state.background
+        })
+    }
+
     
     // After Render of the screen.
     componentDidMount() {
@@ -27,8 +46,8 @@ class Diagram extends React.Component<any,any> {
         canvasRef.addEventListener("mousedown", this.mouseClick, false);
         canvasRef.addEventListener("mouseup", this.mouseClickRelease, false);
         canvasRef.addEventListener("contextmenu", this.rightClickContext, false);
-        canvasCtx.fillStyle = 'green';
-        canvasCtx.fillRect(10, 10, 150, 100);
+
+        this.drawBase(canvasCtx);
         
         this.setState({
             canvas:canvasRef,
@@ -107,15 +126,11 @@ class Diagram extends React.Component<any,any> {
     // Draw everything, NO STATE CHANGES!
     draw() {
         const ctx = this.state.ctx;
-        ctx.clearRect(0,0,920,512);
-
-        // TODO replace with an Image
-        ctx.fillStyle = '#F8F8F8';
-        ctx.fillRect(0,0,920,512);
-        
+        ctx.clearRect(0,0,this.props.width,this.props.height);
+        this.drawBase(ctx);
         // Anything selected, being hovered etc from viewer
 
-        // Render the current state of the entrypoints etc
+        // Render the current element
         if(this.props.currentEl){
             this.props.currentEl.draw(this.state.ctx);
         }
@@ -127,6 +142,16 @@ class Diagram extends React.Component<any,any> {
             });
         }
     }
+
+    drawBase(canvasCtx:any) {
+        canvasCtx.fillStyle = '#F8F8F8';
+        canvasCtx.fillRect(0,0,this.props.width,this.props.height);
+        // draw the background image whatever it is
+        canvasCtx.drawImage(this.state.background, 0, 0, this.props.width, this.props.height);
+        // border on the canvas
+        drawBorder(0,0,this.props.width,this.props.height,'#000000',canvasCtx)
+    }
+    
 
     render() {
         return (

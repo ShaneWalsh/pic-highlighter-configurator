@@ -13,6 +13,16 @@ export const drawLine = (x:number,y:number,xx:number,yy:number,color:string,ctx:
     ctx.stroke();
 }
 
+export const drawLineDashed = (x:number,y:number,xx:number,yy:number,color:string,ctx:CanvasRenderingContext2D) => {
+    ctx.beginPath();
+    ctx.setLineDash([5, 5]);
+    ctx.moveTo(x, y);
+    ctx.lineTo(xx, yy);
+    ctx.strokeStyle = color;
+    ctx.stroke();
+    ctx.setLineDash([]); // reset
+}
+
 export const  drawCircle = (x:number, y:number, radius:number, fill:any, stroke:any, strokeWidth:number, ctx:CanvasRenderingContext2D) => {
     ctx.beginPath()
     ctx.arc(x, y, radius, 0, 2 * Math.PI, false)
@@ -25,4 +35,10 @@ export const  drawCircle = (x:number, y:number, radius:number, fill:any, stroke:
       ctx.strokeStyle = stroke
       ctx.stroke()
     }
-  }
+}
+
+export const writeInPixels = (x:number, y:number, size:number, text:string, color:string, ctx:any) => {
+	ctx.font = size + "px 'Century Gothic'";
+	ctx.fillStyle = color;
+	ctx.fillText(text, x, y);
+}
