@@ -2,6 +2,7 @@ import * as React from 'react'
 import Creation from '../creation/Creation';
 import Diagram from '../diagram/Diagram';
 import Options from '../options/Options';
+import Util from '../util/Util';
 import { EntryPoint, Line, Shape } from './DiagramElement';
 
 // TODO interfaces for types!
@@ -142,16 +143,18 @@ class Core extends React.Component<any,any> {
                         startEntrypoint={this.startEntrypoint}
                         startLine={this.startLine}
                         startShape={this.startShape}
-                        performExport={this.performExport}
-                        export={this.state.export}
-                        performImport={this.performImport}
-                        performReset={this.performReset}
                     />
                     <Options 
                         currentEl={this.state.currentEl}
                         entryPoints={this.state.entryPoints}
                         toggleDisplay={this.toggleDisplay}
                         elementOptionUpdated={this.elementOptionUpdated}
+                    />
+                    <Util                         
+                        performExport={this.performExport}
+                        export={this.state.export}
+                        performImport={this.performImport}
+                        performReset={this.performReset}
                     />
                     <Diagram 
                         width={this.width}

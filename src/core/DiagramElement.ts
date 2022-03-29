@@ -1,4 +1,4 @@
-import { drawBorder, drawCircle, drawLine, drawLineDashed, writeInPixels } from "./Drawing";
+import { drawBorder, drawCircle, drawLine, drawLineDashed, textToChunks, writeInPixels } from "./Drawing";
 
 
 export class DiagramElement {
@@ -41,6 +41,10 @@ export enum Shapes {
 export class Shape extends DiagramElement {
     size:{sizeX:number, sizeY:number} = {sizeX:0,sizeY:0};
     shape:Shapes = Shapes.RECT;
+    text:string="";
+    textSize:number = 15;
+
+    _chunks:{x:number,y:number,text:string}[] = [];
 
     constructor(num:number,code="SH"){
         super(num,code);
@@ -49,10 +53,17 @@ export class Shape extends DiagramElement {
     setCords(cords:{x:number,y:number} ){
         this.cords = cords;
         this.size = {sizeX:0,sizeY:0};
+        this.updateText(this.text);
     }
     
     handleMove(size:{sizeX:number, sizeY:number}, secondaryCords:{x:number,y:number}){
         this.size = size;
+        this.updateText(this.text);
+    }
+
+    updateText(text:string){
+        this.text = text;
+        this._chunks = textToChunks(this.cords.x,this.cords.y,this.size.sizeX, this.size.sizeY,this.textSize,this.text,"","");
     }
 
     draw(ctx:CanvasRenderingContext2D) {
@@ -119,7 +130,10 @@ export class EntryPoint extends Shape {
             this.color,
             ctx
         );
-        writeInPixels(this.cords.x+this.size.sizeX/2, this.cords.y+this.size.sizeY/2,15,this.name,this.color,ctx);
+        this._chunks.forEach(_chunks => {
+            // writeInPixels(this.cords.x+this.size.sizeX/2, this.cords.y+this.size.sizeY/2,15,this.text,this.color,ctx);
+            writeInPixels(_chunks.x, _chunks.y, this.textSize, _chunks.text,this.color,ctx);
+        })
     }
 }
 

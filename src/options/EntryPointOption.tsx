@@ -22,7 +22,17 @@ const EntryPointOption = (props:any) => {
             </div>
             <div className="row">
                 <div className="six columns">
-                    <label>Hoverable</label>
+                    <label>Text</label>
+                    <input type="text" value={props.currentEl.text} onChange={(e) =>  {
+                        props.currentEl.updateText(e.target.value)
+                        props.elementOptionUpdated();
+                        }}
+                     className="u-full-width"/>
+                </div>
+            </div>
+            <div className="row">
+                <div className="six columns">
+                    <span>Hoverable</span>
                     <input type="checkbox" className="u-full-width"
                         checked={props.currentEl.isHoverable}
                         onChange={(e) =>  {
@@ -32,7 +42,7 @@ const EntryPointOption = (props:any) => {
                     />
                 </div>
                 <div className="six columns">
-                    <label>Selectable</label>
+                    <span>Selectable</span>
                     <input type="checkbox" className="u-full-width"
                         checked={props.currentEl.isSelectable}
                         onChange={(e) =>  {

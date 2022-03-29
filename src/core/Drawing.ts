@@ -42,3 +42,24 @@ export const writeInPixels = (x:number, y:number, size:number, text:string, colo
 	ctx.fillStyle = color;
 	ctx.fillText(text, x, y);
 }
+
+/**
+ * Calculate the shape position of the text and break it up into chunks.
+ * returns chunks:[{x,y,text}]
+ */
+export const textToChunks = (x:number, y:number, sizeX:number, sizeY:number, textSize:number, text:string, align:string, shape:any) => {
+	if(sizeX > 10 && sizeY > 10) {
+    const len = text.length;
+    // so, lets make a formula for how much 
+    let maxLen = Math.floor(sizeX / (textSize/2)) + Math.floor(sizeX/100);
+    let curLen = 0;
+    let chunks = [];
+    for(let i =0; curLen < len; i++) {
+      // todo, improve by splitting on a word
+      let max = (curLen+maxLen >= len)?len-1:curLen+maxLen;
+      chunks.push({x:x + textSize,y:y+textSize+(i*textSize),text:text.substring(curLen,max) });
+      curLen = curLen+max;
+    }
+    return chunks;
+  }
+}

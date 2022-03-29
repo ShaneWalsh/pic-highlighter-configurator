@@ -3,17 +3,9 @@ import * as React from 'react'
 class Creation extends React.Component<any,any> {
   constructor(props:any) {
     super(props);
-    this.state = {
-      import:""
-    }
     this.startEntrypoint = this.startEntrypoint.bind(this);
     this.startLine = this.startLine.bind(this);
     this.startShape = this.startShape.bind(this);
-
-    this.performExport = this.performExport.bind(this);
-    this.handleImport = this.handleImport.bind(this);
-    this.performImport = this.performImport.bind(this);
-    this.performReset = this.performReset.bind(this);
   }
 
   startEntrypoint(event:any){
@@ -28,23 +20,6 @@ class Creation extends React.Component<any,any> {
     this.props.startShape();
   }
 
-  performExport(event:any){
-    this.props.performExport();
-  }
-
-  performImport(event:any){
-    this.props.performImport(this.state.import);
-  }
-  handleImport(event:any) {
-    this.setState({
-      import: event.target.value
-    });
-  }
-
-  performReset(event:any){
-    this.props.performReset();
-  }
-
   render() {
     return (
       <div className='container'>
@@ -56,15 +31,6 @@ class Creation extends React.Component<any,any> {
             <button type='button' className='four columns' onClick={this.startLine} disabled={this.props.currentEntryPoint === null}> Line </button>
             <button type='button' className='four columns' onClick={this.startShape} disabled={this.props.currentEntryPoint === null}> Shape </button>
             <button type='button' className='four columns' onClick={this.startEntrypoint} disabled={this.props.currentEntryPoint === null}> Text </button>
-          </div>
-          <br />
-          <h5>Util</h5>
-          <div className='row'>
-            <button type='button' onClick={this.performReset} className="danger-zone"> Reset </button>
-            <button type='button' onClick={this.performExport}> Export </button>
-            <input type="text" value={this.props.export} className="u-full-width"/>
-            <button type='button' onClick={this.performImport}> Import </button>
-            <input type="text" value={this.state.import} onChange={this.handleImport} className="u-full-width"/>
           </div>
       </div>
     );
