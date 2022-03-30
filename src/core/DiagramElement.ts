@@ -4,8 +4,9 @@ import { drawBorder, drawCircle, drawLine, drawLineDashed, textToChunks, writeIn
 export class DiagramElement {
     id:string = 'ep'+Date.now();
     name: string = 'GenericRandomlyGenerated'; 
-    color: string = '#FF0000';
+    color: string = '#bbb';
     cords:{x:number,y:number} = {x:0,y:0};
+    width:number=.4;
 
     constructor(elements:number,code:string){
         this.id = code+Date.now();
@@ -41,8 +42,10 @@ export enum Shapes {
 export class Shape extends DiagramElement {
     size:{sizeX:number, sizeY:number} = {sizeX:0,sizeY:0};
     shape:Shapes = Shapes.RECT;
+
     text:string="";
     textSize:number = 15;
+    textColor:any = '#333'
 
     _chunks:{x:number,y:number,text:string}[] = [];
 
@@ -73,6 +76,7 @@ export class Shape extends DiagramElement {
                 this.cords.y,
                 this.size.sizeX,
                 this.size.sizeY,
+                this.width,
                 this.color,
                 ctx,
             )
@@ -82,10 +86,10 @@ export class Shape extends DiagramElement {
             const right = {x:this.cords.x + this.size.sizeX, y :this.cords.y+ (this.size.sizeY/2) };
             const bottom = {x:this.cords.x+ (this.size.sizeX/2), y :this.cords.y+ this.size.sizeY };
 
-            drawLine(left.x,left.y,top.x,top.y, this.color, ctx)
-            drawLine(top.x,top.y,right.x,right.y, this.color, ctx)
-            drawLine(right.x,right.y,bottom.x,bottom.y, this.color, ctx)
-            drawLine(bottom.x,bottom.y,left.x,left.y, this.color, ctx)
+            drawLine(left.x,left.y,top.x,top.y, this.width, this.color, ctx)
+            drawLine(top.x,top.y,right.x,right.y, this.width, this.color, ctx)
+            drawLine(right.x,right.y,bottom.x,bottom.y, this.width, this.color, ctx)
+            drawLine(bottom.x,bottom.y,left.x,left.y, this.width, this.color, ctx)
         } else if(this.shape === Shapes.CIRCLE){
             drawCircle(
                 this.cords.x + (this.size.sizeX/2),
@@ -93,7 +97,7 @@ export class Shape extends DiagramElement {
                 this.size.sizeX/2,
                 null,
                 this.color,
-                1,
+                this.width,
                 ctx
             )
         }
@@ -127,12 +131,13 @@ export class EntryPoint extends Shape {
             this.cords.y,
             this.size.sizeX,
             this.size.sizeY,
+            this.width,
             this.color,
             ctx
         );
         this._chunks.forEach(_chunks => {
             // writeInPixels(this.cords.x+this.size.sizeX/2, this.cords.y+this.size.sizeY/2,15,this.text,this.color,ctx);
-            writeInPixels(_chunks.x, _chunks.y, this.textSize, _chunks.text,this.color,ctx);
+            writeInPixels(_chunks.x, _chunks.y, this.textSize, _chunks.text,this.textColor,ctx);
         })
     }
 }
@@ -192,6 +197,7 @@ export class Line extends DiagramElement {
                 this.tempStartCord.y,
                 this.tempCord.x,
                 this.tempCord.y,
+                this.width,
                 this.color,
                 ctx
             )
@@ -204,6 +210,7 @@ export class Line extends DiagramElement {
                     first.y,
                     sec.x,
                     sec.y,
+                    this.width,
                     this.color,
                     ctx
                 )
@@ -215,6 +222,7 @@ export class Line extends DiagramElement {
                     first.y,
                     this.tempCord.x,
                     this.tempCord.y,
+                    this.width,
                     this.color,
                     ctx
                 )

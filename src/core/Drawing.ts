@@ -1,26 +1,35 @@
 
-export const drawBorder = (x:number,y:number,sizeX:number,sizeY:number,color:any,ctx:any) => {
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = color;
-    ctx.strokeRect(x,y,sizeX,sizeY);
+/** Sensible defaults for when a prop is not set */
+const reset = (ctx:CanvasRenderingContext2D) => {
+  ctx.lineWidth = 1;
+  ctx.setLineDash([]);
 }
 
-export const drawLine = (x:number,y:number,xx:number,yy:number,color:string,ctx:CanvasRenderingContext2D) => {
+export const drawBorder = (x:number,y:number,sizeX:number,sizeY:number, width:number,color:any,ctx:CanvasRenderingContext2D) => {
+    ctx.lineWidth = width;
+    ctx.strokeStyle = color;
+    ctx.strokeRect(x,y,sizeX,sizeY);
+    reset(ctx);
+}
+
+export const drawLine = (x:number,y:number,xx:number,yy:number, width:number, color:string,ctx:CanvasRenderingContext2D) => {
     ctx.beginPath();
+    ctx.lineWidth = width;
     ctx.moveTo(x, y);
     ctx.lineTo(xx, yy);
     ctx.strokeStyle = color;
     ctx.stroke();
 }
 
-export const drawLineDashed = (x:number,y:number,xx:number,yy:number,color:string,ctx:CanvasRenderingContext2D) => {
+export const drawLineDashed = (x:number,y:number,xx:number,yy:number, width:number,color:string,ctx:CanvasRenderingContext2D) => {
     ctx.beginPath();
+    ctx.lineWidth = width;
     ctx.setLineDash([5, 5]);
     ctx.moveTo(x, y);
     ctx.lineTo(xx, yy);
     ctx.strokeStyle = color;
     ctx.stroke();
-    ctx.setLineDash([]); // reset
+    reset(ctx);
 }
 
 export const  drawCircle = (x:number, y:number, radius:number, fill:any, stroke:any, strokeWidth:number, ctx:CanvasRenderingContext2D) => {
@@ -38,7 +47,8 @@ export const  drawCircle = (x:number, y:number, radius:number, fill:any, stroke:
 }
 
 export const writeInPixels = (x:number, y:number, size:number, text:string, color:string, ctx:any) => {
-	ctx.font = size + "px 'Century Gothic'";
+	//ctx.font = size + "px 'Century Gothic'";
+	ctx.font = size + "px 'sans-serif'";
 	ctx.fillStyle = color;
 	ctx.fillText(text, x, y);
 }
@@ -49,17 +59,22 @@ export const writeInPixels = (x:number, y:number, size:number, text:string, colo
  */
 export const textToChunks = (x:number, y:number, sizeX:number, sizeY:number, textSize:number, text:string, align:string, shape:any) => {
 	if(sizeX > 10 && sizeY > 10) {
+    text = text.trim();
     const len = text.length;
     // so, lets make a formula for how much 
     let maxLen = Math.floor(sizeX / (textSize/2)) + Math.floor(sizeX/100);
     let curLen = 0;
     let chunks = [];
     for(let i =0; curLen < len; i++) {
-      // todo, improve by splitting on a word
-      let max = (curLen+maxLen >= len)?len-1:curLen+maxLen;
-      chunks.push({x:x + textSize,y:y+textSize+(i*textSize),text:text.substring(curLen,max) });
-      curLen = curLen+max;
+      // TODO newline support, so it can be formatted nicer.
+      let max = (curLen+maxLen >= len)?len:curLen+maxLen;
+      while(text.charAt(max)!== ' ' && max < len && max > 2){max--;}
+      chunks.push({x:x + textSize,y:y+textSize+(i*textSize),text:text.substring(curLen,max).trim() });
+      curLen = max;
+      if(i > 1000) return []; // sanity fallback
     }
     return chunks;
+  } else {
+    return [];
   }
 }

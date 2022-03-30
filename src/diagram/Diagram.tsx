@@ -149,7 +149,7 @@ class Diagram extends React.Component<any,any> {
         // draw the background image whatever it is
         canvasCtx.drawImage(this.state.background, 0, 0, this.props.width, this.props.height);
         // border on the canvas
-        drawBorder(0,0,this.props.width,this.props.height,'#000000',canvasCtx)
+        drawBorder(0,0,this.props.width,this.props.height,.1,'#000000',canvasCtx)
     }
     
 

@@ -32,3 +32,8 @@ div.option-div {
 div.option-div label {
   text-align: left;
 }
+
+.label-checkbox {
+  padding-right: 5px;
+  display: inline;
+}

@@ -109,6 +109,7 @@ class Core extends React.Component<any,any> {
         delete exportValue.currentEntryPoint;
         delete exportValue.currentEl;
         delete exportValue._elementsNum;
+        // TODO add base64 copy of the background image if there is one.
         this.setState({
             export:JSON.stringify(exportValue)
         });

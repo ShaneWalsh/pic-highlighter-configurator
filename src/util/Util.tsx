@@ -32,6 +32,8 @@ class Util extends React.Component<any,any> {
   render() {
     return (
       <div className='container'>
+          <h5>Defaults</h5>
+          {/* Width, color etc Any new EP then will inherit these.*/}
           <h5>Util</h5>
           <div className='row'>
             <button type='button' onClick={this.performReset} className="danger-zone"> Reset </button>
