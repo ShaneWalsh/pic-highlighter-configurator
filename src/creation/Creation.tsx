@@ -6,6 +6,7 @@ class Creation extends React.Component<any,any> {
     this.startEntrypoint = this.startEntrypoint.bind(this);
     this.startLine = this.startLine.bind(this);
     this.startShape = this.startShape.bind(this);
+    this.startText = this.startText.bind(this);
   }
 
   startEntrypoint(event:any){
@@ -20,17 +21,22 @@ class Creation extends React.Component<any,any> {
     this.props.startShape();
   }
 
+  startText(event:any){
+    this.props.startText();
+  }
+
   render() {
     return (
       <div className='container'>
           <h5>Creation</h5>
           <div className='row'>
-            <button type='button' className='five columns' onClick={this.startEntrypoint}> Entrypoint</button>
+            <button type='button' className='six columns' onClick={this.startEntrypoint}> Entrypoint</button>
+            <button type='button' className='six columns' onClick={this.startEntrypoint} disabled> Sub Entrypoint</button>
           </div>
           <div className='row'>
             <button type='button' className='four columns' onClick={this.startLine} disabled={this.props.currentEntryPoint === null}> Line </button>
             <button type='button' className='four columns' onClick={this.startShape} disabled={this.props.currentEntryPoint === null}> Shape </button>
-            <button type='button' className='four columns' onClick={this.startEntrypoint} disabled={this.props.currentEntryPoint === null}> Text </button>
+            <button type='button' className='four columns' onClick={this.startText} disabled={this.props.currentEntryPoint === null}> Text </button>
           </div>
       </div>
     );

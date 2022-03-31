@@ -18,11 +18,11 @@ class Options extends React.Component<any,any> {
   render() {
     const entryPoints = this.props.entryPoints?.map((ep:any) => 
       <span key={ep.id}>
+          <span className="label-checkbox">{ep.name}</span>
           <input type="checkbox"
               checked={ep._display}
               onChange={() => this.toggleDisplay(ep)}
           />
-          <span className="label-body">{ep.name}</span>
       </span>
     )
     let opt = null;

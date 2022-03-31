@@ -30,7 +30,7 @@ class Diagram extends React.Component<any,any> {
     }
     
     loadImage(){
-        this.draw();
+        this.draw(this.state.ctx);
         this.setState({
             background:this.state.background
         })
@@ -53,6 +53,7 @@ class Diagram extends React.Component<any,any> {
             canvas:canvasRef,
             ctx:canvasCtx
         })
+        this.draw(canvasCtx);
     }
 
     componentWillUnmount() {
@@ -70,7 +71,7 @@ class Diagram extends React.Component<any,any> {
         this.setState({
             mouseX:cords.x,mouseY:cords.y
         })
-        this.draw();
+        this.draw(this.state.ctx);
     }
     
 
@@ -86,7 +87,7 @@ class Diagram extends React.Component<any,any> {
         else if(e.button == 2) {
             console.log("Button 2")
         }
-        this.draw();
+        this.draw(this.state.ctx);
     }
 
     mouseClickRelease(e:MouseEvent) {
@@ -96,16 +97,16 @@ class Diagram extends React.Component<any,any> {
             this.props.currentEl?.handleLeftRelease(sizes, cords)
             this.setState({leftClickHeld:false})
         }
-        this.draw();
+        this.draw(this.state.ctx);
     }
 
     // this is just a catch for the context menu, to prevent it from appearing.
     rightClickContext(e:MouseEvent){ 
         e.preventDefault(); 
         // TODO cancel whatever state we are in, back to inital clean state.
-        this.draw();
+        this.draw(this.state.ctx);
     }
-    doubleClick(e:MouseEvent){ this.draw(); }
+    doubleClick(e:MouseEvent){ this.draw(this.state.ctx); }
     getOffset(el:HTMLCanvasElement) {
         const rect = el.getBoundingClientRect();
         return {
@@ -124,8 +125,7 @@ class Diagram extends React.Component<any,any> {
     }
 
     // Draw everything, NO STATE CHANGES!
-    draw() {
-        const ctx = this.state.ctx;
+    draw(ctx:CanvasRenderingContext2D) {
         ctx.clearRect(0,0,this.props.width,this.props.height);
         this.drawBase(ctx);
         // Anything selected, being hovered etc from viewer
@@ -155,8 +155,8 @@ class Diagram extends React.Component<any,any> {
 
     render() {
         return (
-            <div>
-                {this.props.currentEl?.name}
+            <div id="diagram">
+                <canvas id="canvas-highlighter" width={this.props.width} height={this.props.height} ></canvas>
             </div>
         );
     }
