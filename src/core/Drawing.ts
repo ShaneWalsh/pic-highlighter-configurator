@@ -5,10 +5,17 @@ const reset = (ctx:CanvasRenderingContext2D) => {
   ctx.setLineDash([]);
 }
 
-export const drawBorder = (x:number,y:number,sizeX:number,sizeY:number, width:number,color:any,ctx:CanvasRenderingContext2D) => {
+export const drawBorder = (x:number,y:number,sizeX:number,sizeY:number, width:number,color:any, fill:any, ctx:CanvasRenderingContext2D) => {
+    ctx.beginPath()
+    if (fill) {
+      ctx.fillStyle = fill
+      ctx.fillRect(x,y,sizeX,sizeY);
+    }
     ctx.lineWidth = width;
     ctx.strokeStyle = color;
     ctx.strokeRect(x,y,sizeX,sizeY);
+    
+    ctx.closePath()
     reset(ctx);
 }
 
@@ -19,6 +26,7 @@ export const drawLine = (x:number,y:number,xx:number,yy:number, width:number, co
     ctx.lineTo(xx, yy);
     ctx.strokeStyle = color;
     ctx.stroke();
+    ctx.closePath()
 }
 
 export const drawLineDashed = (x:number,y:number,xx:number,yy:number, width:number,color:string,ctx:CanvasRenderingContext2D) => {
@@ -29,6 +37,7 @@ export const drawLineDashed = (x:number,y:number,xx:number,yy:number, width:numb
     ctx.lineTo(xx, yy);
     ctx.strokeStyle = color;
     ctx.stroke();
+    ctx.closePath()
     reset(ctx);
 }
 
@@ -44,6 +53,25 @@ export const  drawCircle = (x:number, y:number, radius:number, fill:any, stroke:
       ctx.strokeStyle = stroke
       ctx.stroke()
     }
+    ctx.closePath()
+}
+
+export const drawShape = (cords:{x:number,y:number}[], width:number, color:string, fill:any, ctx:CanvasRenderingContext2D) => {
+  ctx.beginPath();
+  ctx.lineWidth = width;
+  let cord1=cords[0];
+  ctx.moveTo(cord1.x, cord1.y);
+  for(let i =1; i < cords.length;i++){
+    cord1 = cords[i];
+    ctx.lineTo(cord1.x, cord1.y);
+  }
+  ctx.closePath()
+  if(fill){
+    ctx.fillStyle = fill;
+    ctx.fill();
+  }
+  ctx.strokeStyle = color;
+  ctx.stroke();
 }
 
 export const writeInPixels = (x:number, y:number, size:number, text:string, color:string, ctx:any) => {

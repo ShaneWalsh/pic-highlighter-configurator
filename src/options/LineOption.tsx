@@ -21,7 +21,15 @@ const LineOption = (props:any) => {
                         props.elementOptionUpdated();
                         }}  className="u-full-width"/>
                 </div>
-                
+            </div>
+            <div className="row">
+                <div className="six columns">
+                    <label>Line Width</label>
+                    <input type="text" value={props.currentEl.strokeWidth} onChange={(e) => {
+                        props.currentEl.strokeWidth = e.target.value;
+                        props.elementOptionUpdated();
+                    }}  className="u-full-width"/>
+                </div>
             </div>
         </div>
     )

@@ -18,23 +18,42 @@ import { EntryPoint, Line, Shape, Shapes } from './DiagramElement';
 /*
     TODO MVP
     ¬Background pic from base64 or URL
-    Import + Export full support via fields
+    ~Import + Export full support via fields
         - export pic along with the config
         - be able to import the same details?
             - update the pic highligher tool to work the same.
     ~color inherit
-    Options, dynamic, bound to the elements
+    ~Options, dynamic, bound to the elements
 
     ~Text... With and without boxes. 
-        On hover display full text option?
-    fill
+    
+    ~fill
+        - need to rewrite the drawing functions.
+
+    white out?
+        - default value + option to change.
+        ~ I mean its just a white rect with the same fill, true, maybe just a button then like text?
+
+    Selection, edit existing elements. Hitboxes for checking and editing.
+        - tabbed header around creation, so its creation and editing modes.
+            - edit V0.1 could just be selecting an elements so it can be resized and edited
+                - longer term, specific point manipulation
 
     OOS
     Line ArrowHead shape,
         End [] , Shape DDSelect
         Start [] , Shape DDSelect
 
-    Selection, edit existing elements. Hitboxes for checking and editing.
+    copy pasta link? 
+        Add a button in one of the corners, looks like a copy symbol and copy data to the users board.
+        - add link option to shapes.
+
+    Right click to start a new element of the same type? For improved usability.
+
+    Text
+        Better positioning and formula
+        alignment support
+            various fonts?
 
     ¬ Adding Background Toggle to Creation, so you can add elements freely that will always be displayed. Not highlight elements bound to entrypoints
         // Can just use default selected EP with no option to hover or select, then its a background and not an EP.
@@ -48,16 +67,19 @@ import { EntryPoint, Line, Shape, Shapes } from './DiagramElement';
  * Main Component, will hold the state of the current diagram
  */
 class Core extends React.Component<any,any> {
-    
-
-
     constructor(props:any) {
         super(props);
+
+        let src = null;//'https://i.ibb.co/ThXk4sV/class.jpg';
+        let background = this.loadImage(src);
+        
+
         this.state = {
-            
             currentEntryPoint: null,
             entryPoints:[],
+            src:src,
             currentEl: null,
+            _background:background, // image
             _elementsNum:0,
             _defaultValues:{
                 width : 1024,
@@ -69,7 +91,10 @@ class Core extends React.Component<any,any> {
                 textColor : "#000",
                 textSize: 15,
 
-                fillColor : "#eee"
+                fillColor : "#fff",
+                hoverBorderColor :"#77DD66",
+                selectedFillColor :"#fff",
+                selectedBorderColor :"#265828"
             },
             export:""
         };
@@ -156,14 +181,58 @@ class Core extends React.Component<any,any> {
         delete exportValue.currentEntryPoint;
         delete exportValue.currentEl;
         delete exportValue._elementsNum;
+        delete exportValue._background;
+
+        //delete exportValue._defaultValues;
         // TODO add base64 copy of the background image if there is one.
-        this.setState({
-            export:JSON.stringify(exportValue)
-        });
+        let image = new Image();
+        image.crossOrigin = "Anonymous";
+        image.src = exportValue.src;
+        image.onload = () =>{
+            exportValue.src = this.imgToBase64(image);
+            this.setState({
+                export:JSON.stringify(exportValue)
+            });
+        }
     }
+
+    imgToBase64(img:any) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+        return canvas.toDataURL();
+    }
+
+    // import logic to map json to system entities
     performImport(importValue:any){
-        console.log(JSON.parse(importValue));
+        const jsonObj = JSON.parse(importValue);
+        console.log(jsonObj);
+        let newState = [];
+        for(let element of jsonObj.entryPoints){
+            let ep = new EntryPoint(0);
+            ep.mapJson(element)
+            newState.push(ep)
+        }
+        this.setState({
+            currentEntryPoint: null,
+            currentEl: null,
+            src:jsonObj.src,
+            _background : this.loadImage(jsonObj.src),
+            entryPoints:newState,
+            _defaultValues:jsonObj._defaultValues
+        })
     }
+    loadImage(src:any) {
+        if(src !== null){
+            let background = new Image();
+            background.src = src;
+            return background;
+        }
+        return null;
+    }
+
     performReset(){
         this.setState({
             currentEntryPoint: null,
@@ -209,7 +278,8 @@ class Core extends React.Component<any,any> {
                         performImport={this.performImport}
                         performReset={this.performReset}
                     />
-                    <Diagram 
+                    <Diagram
+                        background={this.state._background}
                         width={this.state._defaultValues.width}
                         height={this.state._defaultValues.height}
                         currentEl={this.state.currentEl}

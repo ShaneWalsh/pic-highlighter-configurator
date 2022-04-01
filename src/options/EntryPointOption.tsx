@@ -48,6 +48,32 @@ const EntryPointOption = (props:any) => {
             </div>
             
             <ShapeOption currentEl={props.currentEl} elementOptionUpdated={props.elementOptionUpdated}/>
+
+            <div className="row">
+                <div className="six columns">
+                    <label>Hover Border Color</label>
+                    <input type="text" value={props.currentEl.hoverBorderColor} onChange={(e) => {
+                        props.currentEl.hoverBorderColor = e.target.value;
+                        props.elementOptionUpdated();
+                    }}  className="u-full-width"/>
+                </div>
+                <div className="six columns">
+                    <label>Selected Fill</label>
+                    <input type="text" value={props.currentEl.selectedFillColor} onChange={(e) => {
+                        props.currentEl.selectedFillColor = e.target.value;
+                        props.elementOptionUpdated();
+                    }}  className="u-full-width"/>
+                </div>
+            </div>
+            <div className="row">
+                <div className="six columns">
+                    <label>Selected Border</label>
+                    <input type="text" value={props.currentEl.selectedBorderColor} onChange={(e) => {
+                        props.currentEl.selectedBorderColor = e.target.value;
+                        props.elementOptionUpdated();
+                    }}  className="u-full-width"/>
+                </div>
+            </div>
             {/* <div className="row">
                 <div className="six columns">
                     <label>Color</label>

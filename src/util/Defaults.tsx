@@ -64,8 +64,31 @@ const Defaults = (props:any) => {
                 props.defaultsUpdated(defaults);
               }}  className="u-full-width"/>
             </div>
+            <div className="six columns">
+              <label>Hover Fill Color</label>
+              <input type="text" value={props.defaults.hoverBorderColor} onChange={(e) => {
+                const defaults = {...props.defaults, hoverBorderColor:e.target.value}
+                props.defaultsUpdated(defaults);
+              }}  className="u-full-width"/>
+            </div>
           </div>
 
+          <div className='row'>
+            <div className="six columns">
+              <label>Selected Fill Color</label>
+              <input type="text" value={props.defaults.selectedFillColor} onChange={(e) => {
+                const defaults = {...props.defaults, selectedFillColor:e.target.value}
+                props.defaultsUpdated(defaults);
+              }}  className="u-full-width"/>
+            </div>
+            <div className="six columns">
+              <label>Selected Border</label>
+              <input type="text" value={props.defaults.selectedBorderColor} onChange={(e) => {
+                const defaults = {...props.defaults, selectedBorderColor:e.target.value}
+                props.defaultsUpdated(defaults);
+              }}  className="u-full-width"/>
+            </div>
+          </div>
       </div>
     );
   

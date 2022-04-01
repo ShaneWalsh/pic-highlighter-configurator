@@ -5,11 +5,6 @@ class Diagram extends React.Component<any,any> {
     constructor(props:any) {
       super(props);
 
-      // BG image, should be coming from props. Base64 encoded
-      const image = new Image();
-      //image.onload = this.loadImage.bind(this); 
-      image.src = 'https://i.ibb.co/ThXk4sV/class.jpg';
-
       this.state = {
         canvas: null,
         ctx:null,
@@ -17,7 +12,6 @@ class Diagram extends React.Component<any,any> {
         mouseY:0,
         leftClickHeld:false,
         heldCords:{x:0,y:0},
-        background:image
       };
       this.updateMousePosition = this.updateMousePosition.bind(this);
       this.mouseClick = this.mouseClick.bind(this);
@@ -28,15 +22,7 @@ class Diagram extends React.Component<any,any> {
       // Load the image whatever it is
       
     }
-    
-    loadImage(){
-        this.draw(this.state.ctx);
-        this.setState({
-            background:this.state.background
-        })
-    }
 
-    
     // After Render of the screen.
     componentDidMount() {
         const canvasRef:any = document.getElementById('canvas-highlighter');
@@ -147,9 +133,11 @@ class Diagram extends React.Component<any,any> {
         canvasCtx.fillStyle = '#F8F8F8';
         canvasCtx.fillRect(0,0,this.props.width,this.props.height);
         // draw the background image whatever it is
-        canvasCtx.drawImage(this.state.background, 0, 0, this.props.width, this.props.height);
+        if(this.props.background){
+            canvasCtx.drawImage(this.props.background, 0, 0, this.props.width, this.props.height);
+        }
         // border on the canvas
-        drawBorder(0,0,this.props.width,this.props.height,.1,'#000000',canvasCtx)
+        drawBorder(0,0,this.props.width,this.props.height,.1,'#000000',null, canvasCtx)
     }
     
 
