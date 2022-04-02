@@ -9,6 +9,8 @@
 
 #left {
   width: 400px;
+  overflow-y: scroll;
+  height: 900px;
 }
 
 #diagram {

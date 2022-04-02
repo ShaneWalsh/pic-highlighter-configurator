@@ -55,8 +55,10 @@ class Diagram extends React.Component<any,any> {
             }
         } else { // then highlight it, and on click, emit it.
             for(let ep of this.props.entryPoints) {
-                hovered = this.tryFindHover(cords, ep);
-                if(hovered !== null) break;
+                if(ep._display){
+                    hovered = this.tryFindHover(cords, ep);
+                    if(hovered !== null) break;
+                }
             }
         }
         this.setState({
@@ -95,7 +97,7 @@ class Diagram extends React.Component<any,any> {
             if(!this.props.selecting){
                 this.props.currentEl?.setCords(cords);
             } else {
-                // if in editing mode maybe we want to emit the position we clicked on?
+                // TODO add dragging of the element to change its position?
             }
         }
         else if(e.button == 2) {

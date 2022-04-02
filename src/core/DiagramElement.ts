@@ -1,5 +1,4 @@
-import { hasPointerEvents } from "@testing-library/user-event/dist/utils";
-import { drawBorder, drawCircle, drawLine, drawLineDashed, drawShape, textToChunks, writeInPixels } from "./Drawing";
+import { drawArrowHead, drawArrowHeads, drawBorder, drawCircle, drawLine, drawLineDashed, drawShape, textToChunks, writeInPixels } from "./Drawing";
 
 
 export class DiagramElement {
@@ -13,7 +12,7 @@ export class DiagramElement {
 
     constructor(elements:number,code:string) {
         this.id = code+Date.now();
-        this.name = code+elements; 
+        this.name = elementNames[Math.floor(Math.random()*elementNames.length)]+'-'+elements
     }
 
     setDefaults(_defaultValues: any) {
@@ -66,6 +65,7 @@ export class Shape extends DiagramElement {
     size:{sizeX:number, sizeY:number} = {sizeX:0,sizeY:0};
     shape:Shapes = Shapes.RECT;
 
+    link:string="";
     text:string="";
     textSize:number = 15;
     textColor:any = '#333'
@@ -81,6 +81,7 @@ export class Shape extends DiagramElement {
 
     setDefaults(_defaultValues: any) {
         super.setDefaults(_defaultValues);
+        this.link = _defaultValues.link || "";
         this.text = _defaultValues.text || "";
         this.textSize = _defaultValues.textSize;
         this.textColor = _defaultValues.textColor;
@@ -147,7 +148,7 @@ export class Shape extends DiagramElement {
     }
 
     drawHover(ctx:CanvasRenderingContext2D){
-        drawBorder(this.cords.x,this.cords.y,this.size.sizeX,this.size.sizeY,this.strokeWidth,"#77DD66",null,ctx,)
+        drawBorder(this.cords.x,this.cords.y,this.size.sizeX,this.size.sizeY,this.strokeWidth,highlightColor,null,ctx,)
     }
 
     hitboxes(){return [{...this.cords,...this.size}]}
@@ -156,6 +157,7 @@ export class Shape extends DiagramElement {
         super.mapJson(jsonObj);
         this.size = jsonObj["size"];
         this.shape = jsonObj["shape"];
+        this.link = jsonObj["link"];
         this.textSize = jsonObj["textSize"];
         this.textColor = jsonObj["textColor"];
         this.fillColor = jsonObj["fillColor"];
@@ -172,6 +174,9 @@ export class EntryPoint extends Shape {
 
     setDefaults(_defaultValues: any) {
         super.setDefaults(_defaultValues);
+        this.hoverBorderColor = _defaultValues.hoverBorderColor;
+        this.selectedFillColor = _defaultValues.selectedFillColor;
+        this.selectedBorderColor = _defaultValues.selectedBorderColor;
     }
     // All of the elements related to this entrypoint
     elements:DiagramElement[]=[]
@@ -208,6 +213,12 @@ export class EntryPoint extends Shape {
             writeInPixels(_chunks.x, _chunks.y, this.textSize, _chunks.text,this.textColor,ctx);
         })
     }
+
+    drawHover(ctx:CanvasRenderingContext2D){
+        super.drawHover(ctx);
+        writeInPixels(this.cords.x, this.cords.y-10, 20, this.name, highlightColor, ctx);
+    }
+
     mapJson(jsonObj:any) {
         super.mapJson(jsonObj);
         
@@ -237,10 +248,19 @@ export enum LineStyle {
     DOTTED="DOTTED"
 }
 
+export enum ArrowHeadStyle {
+    FILLED="FILLED",
+    UNFILLED="UNFILLED",
+    ARROW="ARROW",
+    NONE="NONE"
+}
+
 export class Line extends DiagramElement {
     constructor(num:number,code="LN"){
         super(num,code);
     }
+    startArrowStyle:ArrowHeadStyle = ArrowHeadStyle.NONE;
+    endArrowStyle:ArrowHeadStyle = ArrowHeadStyle.NONE;
     lineStyle:LineStyle = LineStyle.FULL;
     secondaryCords:{x:number,y:number}[] = [];
     
@@ -306,6 +326,9 @@ export class Line extends DiagramElement {
                 )
                 first = sec;
             }
+            // draw the arrow heads for the two ends
+            drawArrowHeads(this.cords.x,this.cords.y,first.x,first.y,this.strokeWidth,this.color,ctx,
+                (this.startArrowStyle !== ArrowHeadStyle.NONE),(this.endArrowStyle !== ArrowHeadStyle.NONE), this.startArrowStyle, this.endArrowStyle);
             if(this.held && this.tempCord){
                 drawer(
                     first.x,
@@ -342,8 +365,20 @@ export class Line extends DiagramElement {
 
     mapJson(jsonObj:any) {
         super.mapJson(jsonObj);
+        this.startArrowStyle = jsonObj["startArrowStyle"];
+        this.endArrowStyle = jsonObj["endArrowStyle"];
         this.lineStyle = jsonObj["lineStyle"];
         this.secondaryCords = jsonObj["secondaryCords"];
         // Dont forget to set backwards compatibility if new variables are added.
     }
 }
+
+const highlightColor = "#77DD66";
+
+const elementNames = ['Werewolf','Dragon','Chimera','Loch Ness Monster','Mermaid','Yeti','Basilisk','Sphinx','Medusa','Griffin','Centaur','Hippogriff','Fairy','Kappa','Pegasus',
+'Ghoul','Pixie','Cyclops','Redcap','Manticore','Typhon','Sea Serpent','Leprechaun','Fenrir','Hippocampus','Cipactli','Imp','Minotaur','Hydra','Fomorians',
+'Charybdis','Behemoth','Cerberus','Echidna','Adlet','Cacus','Hecatoncheires','Geryon','Scorpion Man','Fachan','Ogre','Humbaba','Scylla','Hadhayosh',
+'Kee-wakw','Abaia','Calygreyhound','Phoenix','Tarasque','Cockatrice','Harpy','Makara','Ammit','Garuda','Winged Lion','Leviathan','Wyvern','Namazu',
+'Centicore','Elf','Mares of Diomedes','Serpopard','Antero','Indus','Ahuizotl','Psoglav','Aspidochelone','Sirin','Cynocephaly','Myrmecoleon','Argus Panoptes',
+'Ekek','Oozlum Bird','Hellhound','Monocerus','Leper','Ophiotaurus','Unktehila','Capacun','Mapinguari','Yali','Fish-Man','Asakku','Sleipnir',
+'Ushi-oni','Longma','Nguruvilu','Lou Carcolh','Yacuruna','Bashee','Teju Jagua','Indrik','Onocentaur','Simargl','Erchitu','Huay Chay','Laestrygonians','Mboi Tui'];

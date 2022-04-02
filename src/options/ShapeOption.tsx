@@ -79,6 +79,15 @@ const ShapeOption = (props:any) => {
                     />
                 </div>
             </div>
+            <div className="row">
+                <div className="six columns">
+                    <label>Link</label>
+                    <input type="text" value={props.currentEl.link} onChange={(e) => {
+                        props.currentEl.link = e.target.value;
+                        props.elementOptionUpdated();
+                    }}  className="u-full-width"/>
+                </div>
+            </div>
 
         </div>
     )

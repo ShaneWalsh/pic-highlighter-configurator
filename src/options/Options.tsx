@@ -40,8 +40,11 @@ class Options extends React.Component<any,any> {
           <button type='button' onClick={this.props.startSelection}>Select Element</button>
           {entryPoints}
           <div>
-            <h5>Options</h5>
+            <h5>Element Options</h5>
             {opt}
+            <div className='row'>
+              <button type='button' onClick={this.props.performDeleteElement} className="danger-zone"> Delete Element</button>
+            </div>
           </div>
       </div>
     )

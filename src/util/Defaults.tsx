@@ -3,25 +3,24 @@ import * as React from 'react'
 const Defaults = (props:any) => {
     return (
       <div className='container'>
-          <h5>Defaults</h5>
+          <h5>Default Settings</h5>
 
           <div className='row'>
             <div className="six columns">
-              <label>Width</label>
+              <label>Canvas Width</label>
               <input type="text" value={props.defaults.width} onChange={(e) => {
                 const defaults = {...props.defaults, width:e.target.value}
                 props.defaultsUpdated(defaults);
               }}  className="u-full-width"/>
             </div>
             <div className="six columns">
-              <label>Height</label>
+              <label>Canvas Height</label>
               <input type="text" value={props.defaults.height} onChange={(e) => {
                 const defaults = {...props.defaults, height:e.target.value}
                 props.defaultsUpdated(defaults);
               }}  className="u-full-width"/>
             </div>
           </div>
-
           <div className='row'>
             <div className="six columns">
               <label>Color</label>

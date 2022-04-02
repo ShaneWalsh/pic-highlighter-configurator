@@ -31,6 +31,32 @@ const LineOption = (props:any) => {
                     }}  className="u-full-width"/>
                 </div>
             </div>
+            <div className="row">
+                <div className="six columns">
+                    <label>Start Arrow</label>
+                    <select value={props.currentEl.startArrowStyle} onChange={(e) => {
+                        props.currentEl.startArrowStyle = e.target.value
+                        props.elementOptionUpdated();
+                    }} className="u-full-width">
+                        <option value="FILLED">FILLED</option>
+                        <option value="UNFILLED">UNFILLED</option>
+                        <option value="ARROW">ARROW</option>
+                        <option value="NONE">NONE</option>
+                    </select>
+                </div>
+                <div className="six columns">
+                    <label>End Arrow</label>
+                    <select value={props.currentEl.endArrowStyle} onChange={(e) => {
+                        props.currentEl.endArrowStyle = e.target.value
+                        props.elementOptionUpdated();
+                    }} className="u-full-width">
+                        <option value="FILLED">FILLED</option>
+                        <option value="UNFILLED">UNFILLED</option>
+                        <option value="ARROW">ARROW</option>
+                        <option value="NONE">NONE</option>
+                    </select>
+                </div>
+            </div>
         </div>
     )
 }

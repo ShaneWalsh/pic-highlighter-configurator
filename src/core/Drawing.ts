@@ -41,6 +41,44 @@ export const drawLineDashed = (x:number,y:number,xx:number,yy:number, width:numb
     reset(ctx);
 }
 
+export const drawArrowHeads = (x:number,y:number,xx:number,yy:number, width:number,color:string,ctx:CanvasRenderingContext2D, start:boolean, end:boolean, startStyle:any,endStyle:any) => {
+    // draw the starting arrowhead
+    if(start){
+      var startRadians=Math.atan((yy-y)/(xx-x));
+      startRadians+=((xx>x)?-90:90)*Math.PI/180;
+      drawArrowHead(x,y,startRadians,width,color,ctx,startStyle);
+    }
+    // draw the ending arrowhead
+    if(end){
+      var endRadians=Math.atan((yy-y)/(xx-x));
+      endRadians+=((xx>x)?90:-90)*Math.PI/180;
+      drawArrowHead(xx,yy,endRadians,width,color,ctx,endStyle);
+    }
+}
+
+export const drawArrowHead = (x:number,y:number,radians:any, width:number,color:string,ctx:CanvasRenderingContext2D, style:any) => {
+  ctx.save();
+  ctx.beginPath();
+  ctx.lineWidth = width;
+  ctx.strokeStyle = color;
+  ctx.fillStyle = color;
+  ctx.translate(x,y);
+  ctx.rotate(radians);
+  ctx.moveTo(0,0);
+  if(style == "ARROW"){
+    ctx.lineTo(10,20);
+    ctx.lineTo(0,0);
+    ctx.lineTo(-10,20);
+  } else { // Full or Empty so draw the entire arrow
+    ctx.lineTo(10,20);
+    ctx.lineTo(-10,20);
+  }
+  ctx.closePath();
+  ctx.stroke();
+  if(style == "FILLED"){ ctx.fill(); }
+  ctx.restore();
+}
+
 export const  drawCircle = (x:number, y:number, radius:number, fill:any, stroke:any, strokeWidth:number, ctx:CanvasRenderingContext2D) => {
     ctx.beginPath()
     ctx.arc(x, y, radius, 0, 2 * Math.PI, false)
@@ -83,6 +121,8 @@ export const writeInPixels = (x:number, y:number, size:number, text:string, colo
 
 /**
  * Calculate the shape position of the text and break it up into chunks.
+ * TODO add alignments, the below is the topLeft alignment already.
+ * Need to add Center Alignment. Text moves left first for the entire width, then starts moving up with new lines added.
  * returns chunks:[{x,y,text}]
  */
 export const textToChunks = (x:number, y:number, sizeX:number, sizeY:number, textSize:number, text:string, align:string, shape:any) => {

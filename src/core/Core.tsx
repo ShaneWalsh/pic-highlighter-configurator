@@ -32,14 +32,18 @@ import { EntryPoint, Line, Shape, Shapes } from './DiagramElement';
 
     white out?
         - default value + option to change.
-        ~ I mean its just a white rect with the same fill, true, maybe just a button then like text?
+        ~ I mean its just a white rect with the same fill, maybe just a button then like text?
 
-    delete option
+    ~ delete option
 
-    Selection, edit existing elements. Hitboxes for checking and editing.
+    ~Selection, edit existing elements. Hitboxes for checking and editing.
         - tabbed header around creation, so its creation and editing modes.
             - edit V0.1 could just be selecting an elements so it can be resized and edited
-                - longer term, specific point manipulation
+                - longer term, specific point manipulation via dragging etc
+
+    Arrows
+    text Align in center
+
 
     OOS
     Line ArrowHead shape,
@@ -57,12 +61,15 @@ import { EntryPoint, Line, Shape, Shapes } from './DiagramElement';
         alignment support
             various fonts?
 
+    To the front, to the back options on selected element.
+
     ¬ Adding Background Toggle to Creation, so you can add elements freely that will always be displayed. Not highlight elements bound to entrypoints
         // Can just use default selected EP with no option to hover or select, then its a background and not an EP.
     
     Node Server
         Selecting BG pic from pc, loaded through nodejs server, then base64 encoded on UI added to export.
         Save Config to file, load config from file.
+
 */
 
 /**
@@ -79,7 +86,6 @@ class Core extends React.Component<any,any> {
         this.state = {
             currentEntryPoint: null,
             entryPoints:[],
-            src:src,
             currentEl: null,
             _selecting:false,
             _background:background, // image
@@ -99,6 +105,7 @@ class Core extends React.Component<any,any> {
                 selectedFillColor :"#fff",
                 selectedBorderColor :"#265828"
             },
+            src:src,
             export:""
         };
         this.startEntrypoint = this.startEntrypoint.bind(this);
@@ -114,6 +121,7 @@ class Core extends React.Component<any,any> {
         this.performReset = this.performReset.bind(this);
 
         this.toggleDisplay = this.toggleDisplay.bind(this);
+        this.performDeleteElement = this.performDeleteElement.bind(this);
         this.elementOptionUpdated = this.elementOptionUpdated.bind(this);
         this.defaultsUpdated = this.defaultsUpdated.bind(this);
     }
@@ -208,13 +216,18 @@ class Core extends React.Component<any,any> {
         delete exportValue._elementsNum;
         delete exportValue._background;
 
-        //delete exportValue._defaultValues;
-        // TODO add base64 copy of the background image if there is one.
-        let image = new Image();
-        image.crossOrigin = "Anonymous";
-        image.src = exportValue.src;
-        image.onload = () =>{
-            exportValue.src = this.imgToBase64(image);
+        // base64 encode src if its not already base64 encoded.
+        if(exportValue.src !== null && exportValue.src.indexOf("data:image") === -1){
+            let image = new Image();
+            image.crossOrigin = "Anonymous";
+            image.src = exportValue.src;
+            image.onload = () =>{
+                exportValue.src = this.imgToBase64(image);
+                this.setState({
+                    export:JSON.stringify(exportValue)
+                });
+            }
+        } else {
             this.setState({
                 export:JSON.stringify(exportValue)
             });
@@ -248,7 +261,7 @@ class Core extends React.Component<any,any> {
             entryPoints:newState,
             _defaultValues:jsonObj._defaultValues
         })
-    }
+    }  
     loadImage(src:any) {
         if(src !== null){
             let background = new Image();
@@ -257,7 +270,28 @@ class Core extends React.Component<any,any> {
         }
         return null;
     }
-
+    // delete the current element
+    performDeleteElement(){
+        this.setState(function(state:any, props:any):any {
+            let entryPoints = state.entryPoints;
+            let ep = state.currentEntryPoint;
+            let el = state.currentEl;
+            if(state.currentEntryPoint === state.currentEl){ // we are deleting the ep, so nothing should be selected.
+                entryPoints = entryPoints.filter((e:any) => e !== ep);
+                ep = null;
+                el = null;
+                // remove from entrypoints.
+            } else { // we are deleting an element on the EP, so set it as the active element after deletion.
+                state.currentEntryPoint.elements = state.currentEntryPoint.elements.filter( (v:any) => v !== state.currentEl)
+                el = ep;
+            }
+            return {
+                entryPoints:entryPoints,
+                currentEntryPoint: ep,
+                currentEl: el
+            };
+        });
+    }
     performReset(){
         this.setState({
             currentEntryPoint: null,
@@ -294,6 +328,7 @@ class Core extends React.Component<any,any> {
                         toggleDisplay={this.toggleDisplay}
                         elementOptionUpdated={this.elementOptionUpdated}
                         startSelection={this.startSelection}
+                        performDeleteElement={this.performDeleteElement}
                     />
                     <Defaults 
                         defaultsUpdated={this.defaultsUpdated}
