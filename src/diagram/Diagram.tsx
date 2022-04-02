@@ -12,15 +12,13 @@ class Diagram extends React.Component<any,any> {
         mouseY:0,
         leftClickHeld:false,
         heldCords:{x:0,y:0},
+        beingHovered:null
       };
       this.updateMousePosition = this.updateMousePosition.bind(this);
       this.mouseClick = this.mouseClick.bind(this);
       this.mouseClickRelease = this.mouseClickRelease.bind(this);
       this.rightClickContext = this.rightClickContext.bind(this);
       this.doubleClick = this.doubleClick.bind(this);
-
-      // Load the image whatever it is
-      
     }
 
     // After Render of the screen.
@@ -49,15 +47,43 @@ class Diagram extends React.Component<any,any> {
     updateMousePosition(e:MouseEvent) {
         const cords = this.getCords(e);
         const sizes = this.getSizes(e, cords);
+        let hovered = null;
         // TODO resolve this limitiation, where you can only drag from left to bottom right, if I dragged the other way the cords and sizes values just need to be flipped.
-        if(this.state.leftClickHeld) {
-            this.props.currentEl?.handleMove(sizes, cords);
+        if(!this.props.selecting){
+            if(this.state.leftClickHeld) {
+                this.props.currentEl?.handleMove(sizes, cords);
+            }
+        } else { // then highlight it, and on click, emit it.
+            for(let ep of this.props.entryPoints) {
+                hovered = this.tryFindHover(cords, ep);
+                if(hovered !== null) break;
+            }
         }
-
         this.setState({
+            beingHovered:hovered,
             mouseX:cords.x,mouseY:cords.y
         })
         this.draw(this.state.ctx);
+    }
+
+    /**
+     * Search the entrypoint for a hover, first the EP itself, then the child elements.
+     * returns the first element to be hovered on.
+     */
+    tryFindHover(cords:{x:number, y:number}, ep: any): Hovered {
+        for(let hb of ep.hitboxes()){
+            if(this.pointInsideSprite(cords,hb)){
+                return {ep:ep,el:ep}; 
+            }
+        }
+        for(let el of ep.elements) {
+            for(let hb of el.hitboxes()){
+                if(this.pointInsideSprite(cords,hb)){
+                    return {ep:ep,el:el}; 
+                }
+            }
+        }
+        return null;
     }
     
 
@@ -66,9 +92,11 @@ class Diagram extends React.Component<any,any> {
         if(e.button == 0) {
             const cords = this.getCords(e);
             this.setState({leftClickHeld:true,heldCords:cords});
-            this.props.currentEl?.setCords(cords);
-            // if in editing mode maybe we want to emit the position we clicked on?
-            // in creation mode with selected element, 
+            if(!this.props.selecting){
+                this.props.currentEl?.setCords(cords);
+            } else {
+                // if in editing mode maybe we want to emit the position we clicked on?
+            }
         }
         else if(e.button == 2) {
             console.log("Button 2")
@@ -80,7 +108,13 @@ class Diagram extends React.Component<any,any> {
         if(e.button == 0) {
             const cords = this.getCords(e);
             const sizes = this.getSizes(e, cords);
-            this.props.currentEl?.handleLeftRelease(sizes, cords)
+            if(!this.props.selecting) {
+                this.props.currentEl?.handleLeftRelease(sizes, cords)
+            } else {
+                if(this.state.beingHovered !== null){
+                    this.props.selectElement(this.state.beingHovered)
+                }
+            }
             this.setState({leftClickHeld:false})
         }
         this.draw(this.state.ctx);
@@ -114,8 +148,6 @@ class Diagram extends React.Component<any,any> {
     draw(ctx:CanvasRenderingContext2D) {
         ctx.clearRect(0,0,this.props.width,this.props.height);
         this.drawBase(ctx);
-        // Anything selected, being hovered etc from viewer
-
         // Render the current element
         if(this.props.currentEl){
             this.props.currentEl.draw(this.state.ctx);
@@ -126,6 +158,10 @@ class Diagram extends React.Component<any,any> {
                     el.draw(this.state.ctx);
                 }
             });
+        }
+        if(this.state.beingHovered !== null) {
+            let hovered = this.state.beingHovered;
+            hovered.el.drawHover(ctx)
         }
     }
 
@@ -140,6 +176,13 @@ class Diagram extends React.Component<any,any> {
         drawBorder(0,0,this.props.width,this.props.height,.1,'#000000',null, canvasCtx)
     }
     
+    pointInsideSprite(point:{x:number,y:number}, sprite:{x:number,y:number,sizeX:number,sizeY:number}) {
+        if(point.x > sprite.x && point.x < (sprite.x+sprite.sizeX) ){
+            if(point.y > sprite.y && point.y < (sprite.y+sprite.sizeY)){
+                return true;
+            }
+        }
+    }
 
     render() {
         return (
@@ -151,3 +194,10 @@ class Diagram extends React.Component<any,any> {
   };
 
 export default Diagram;
+
+export class Hovered {
+    // The element
+    el:any;
+    // The entrypoint parent
+    ep:any;
+}

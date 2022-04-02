@@ -1,3 +1,4 @@
+import { hasPointerEvents } from "@testing-library/user-event/dist/utils";
 import { drawBorder, drawCircle, drawLine, drawLineDashed, drawShape, textToChunks, writeInPixels } from "./Drawing";
 
 
@@ -35,10 +36,15 @@ export class DiagramElement {
         // childImplToDecide
     }
 
-    draw(ctx:CanvasRenderingContext2D) {
-        
-    }  
+    draw(ctx:CanvasRenderingContext2D) {}  
 
+    // When the editor hovers over them in selecting mode
+    drawHover(ctx:CanvasRenderingContext2D){}
+
+    // Some elements can have multiple hit boxes. e.g Line
+    hitboxes(){}
+
+    // handle the import of Json and mapping it to the element.
     mapJson(jsonObj:any) {
         this.id = jsonObj["id"];
         this.name = jsonObj["name"];
@@ -80,7 +86,7 @@ export class Shape extends DiagramElement {
         this.textColor = _defaultValues.textColor;
 
         this.fillColor = _defaultValues.fillColor;
-        this.isFilled = _defaultValues.isFilled || null;
+        this.isFilled = _defaultValues.isFilled || false;
     }
 
     setCords(cords:{x:number,y:number} ){
@@ -101,7 +107,7 @@ export class Shape extends DiagramElement {
 
     getFill(): any {
         return (this.isFilled)?this.fillColor:null;
-     }
+    }
 
     draw(ctx:CanvasRenderingContext2D) {
         if(this.shape === Shapes.RECT){
@@ -139,6 +145,12 @@ export class Shape extends DiagramElement {
             writeInPixels(_chunks.x, _chunks.y, this.textSize, _chunks.text,this.textColor,ctx);
         })
     }
+
+    drawHover(ctx:CanvasRenderingContext2D){
+        drawBorder(this.cords.x,this.cords.y,this.size.sizeX,this.size.sizeY,this.strokeWidth,"#77DD66",null,ctx,)
+    }
+
+    hitboxes(){return [{...this.cords,...this.size}]}
 
     mapJson(jsonObj:any) {
         super.mapJson(jsonObj);
@@ -307,6 +319,27 @@ export class Line extends DiagramElement {
             }
         }
     }
+
+    drawHover(ctx:CanvasRenderingContext2D){
+        let first = this.cords;
+        for(let i = 0; i < this.secondaryCords.length; i++){
+            let sec = this.secondaryCords[i];
+            drawBorder(first.x-5,first.y-5,sec.x+5,sec.y+5,this.strokeWidth,"#77DD66", null, ctx,)
+            first = sec;
+        }
+    }
+
+    hitboxes(){
+        let hb = [];
+        let first = this.cords;
+        for(let i = 0; i < this.secondaryCords.length; i++){
+            let sec = this.secondaryCords[i];
+            hb.push({x:first.x-5,y:first.y-5,sizeX:sec.x+5,sizeY:sec.y+5});
+            first = sec;
+        }
+        return hb;
+    }
+
     mapJson(jsonObj:any) {
         super.mapJson(jsonObj);
         this.lineStyle = jsonObj["lineStyle"];

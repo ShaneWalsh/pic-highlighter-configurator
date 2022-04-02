@@ -18,7 +18,7 @@ class Options extends React.Component<any,any> {
   render() {
     const entryPoints = this.props.entryPoints?.map((ep:any) => 
       <span key={ep.id}>
-          <span className="label-checkbox">{ep.name}</span>
+          <span className={this.props.currentEntryPoint === ep?'label-checkbox active-ep':'label-checkbox'}>{ep.name}</span>
           <input type="checkbox"
               checked={ep._display}
               onChange={() => this.toggleDisplay(ep)}
@@ -37,6 +37,7 @@ class Options extends React.Component<any,any> {
     return (
       <div>
           <h6>Entrypoints Display</h6>
+          <button type='button' onClick={this.props.startSelection}>Select Element</button>
           {entryPoints}
           <div>
             <h5>Options</h5>

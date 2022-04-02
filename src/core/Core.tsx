@@ -1,6 +1,6 @@
 import * as React from 'react'
 import Creation from '../creation/Creation';
-import Diagram from '../diagram/Diagram';
+import Diagram, { Hovered } from '../diagram/Diagram';
 import Options from '../options/Options';
 import Defaults from '../util/Defaults';
 import Util from '../util/Util';
@@ -33,6 +33,8 @@ import { EntryPoint, Line, Shape, Shapes } from './DiagramElement';
     white out?
         - default value + option to change.
         ~ I mean its just a white rect with the same fill, true, maybe just a button then like text?
+
+    delete option
 
     Selection, edit existing elements. Hitboxes for checking and editing.
         - tabbed header around creation, so its creation and editing modes.
@@ -79,6 +81,7 @@ class Core extends React.Component<any,any> {
             entryPoints:[],
             src:src,
             currentEl: null,
+            _selecting:false,
             _background:background, // image
             _elementsNum:0,
             _defaultValues:{
@@ -103,6 +106,9 @@ class Core extends React.Component<any,any> {
         this.startShape = this.startShape.bind(this);
         this.startText = this.startText.bind(this);
 
+        this.startSelection = this.startSelection.bind(this);
+        this.selectElement = this.selectElement.bind(this);
+
         this.performExport = this.performExport.bind(this);
         this.performImport = this.performImport.bind(this);
         this.performReset = this.performReset.bind(this);
@@ -120,6 +126,7 @@ class Core extends React.Component<any,any> {
         this.state.entryPoints.push(entryPoint);
         this.setState(function(state:any, props:any) {
             return {
+                _selecting:false,
                 currentEntryPoint:entryPoint,
                 entryPoints:state.entryPoints,
                 currentEl:entryPoint,
@@ -135,6 +142,7 @@ class Core extends React.Component<any,any> {
         this.state.currentEntryPoint.elements.push(line);
         this.setState(function(state:any, props:any) {
             return {
+                _selecting:false,
                 currentEl:line,
                 _elementsNum:state._elementsNum+1
             };
@@ -147,6 +155,7 @@ class Core extends React.Component<any,any> {
         this.state.currentEntryPoint.elements.push(shape);
         this.setState(function(state:any, props:any) {
             return {
+                _selecting:false,
                 currentEl:shape,
                 _elementsNum:state._elementsNum+1
             };
@@ -160,10 +169,26 @@ class Core extends React.Component<any,any> {
         this.state.currentEntryPoint.elements.push(shape);
         this.setState(function(state:any, props:any) {
             return {
+                _selecting:false,
                 currentEl:shape,
                 _elementsNum:state._elementsNum+1
             };
         });
+    }
+
+    startSelection(){
+        this.setState({
+            currentEntryPoint: null,
+            currentEl: null,
+            _selecting:true
+        })
+    }
+    selectElement(hovered:Hovered){
+        this.setState({
+            currentEntryPoint: hovered.ep,
+            currentEl: hovered.el,
+            _selecting:false
+        })
     }
 
     elementOptionUpdated(){ // hack to trigger a state change for any field change
@@ -264,9 +289,11 @@ class Core extends React.Component<any,any> {
                     />
                     <Options 
                         currentEl={this.state.currentEl}
+                        currentEntryPoint={this.state.currentEntryPoint}
                         entryPoints={this.state.entryPoints}
                         toggleDisplay={this.toggleDisplay}
                         elementOptionUpdated={this.elementOptionUpdated}
+                        startSelection={this.startSelection}
                     />
                     <Defaults 
                         defaultsUpdated={this.defaultsUpdated}
@@ -279,6 +306,8 @@ class Core extends React.Component<any,any> {
                         performReset={this.performReset}
                     />
                     <Diagram
+                        selecting={this.state._selecting}
+                        selectElement={this.selectElement}
                         background={this.state._background}
                         width={this.state._defaultValues.width}
                         height={this.state._defaultValues.height}
