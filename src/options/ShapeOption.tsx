@@ -28,7 +28,7 @@ const ShapeOption = (props:any) => {
             <div className="row">
                 <div className="six columns">
                     <label>Text</label>
-                    <input type="text" value={props.currentEl.text} onChange={(e) => {
+                    <textarea value={props.currentEl.text} onChange={(e) => {
                         props.currentEl.updateText(e.target.value)
                         props.elementOptionUpdated();
                     }}  className="u-full-width"/>

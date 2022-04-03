@@ -159,7 +159,7 @@ class Core extends React.Component<any,any> {
 
     startShape(){
         let shape = new Shape(this.state._elementsNum);
-        shape.setDefaults({...this.state.currentEntryPoint, text:""});
+        shape.setDefaults({...this.state.currentEntryPoint, text:"", link:""});
         this.state.currentEntryPoint.elements.push(shape);
         this.setState(function(state:any, props:any) {
             return {

@@ -126,21 +126,62 @@ export const writeInPixels = (x:number, y:number, size:number, text:string, colo
  * returns chunks:[{x,y,text}]
  */
 export const textToChunks = (x:number, y:number, sizeX:number, sizeY:number, textSize:number, text:string, align:string, shape:any) => {
-	if(sizeX > 10 && sizeY > 10) {
+	if(sizeX > 5 && sizeY > 2) {
     text = text.trim();
     const len = text.length;
     // so, lets make a formula for how much 
     let maxLen = Math.floor(sizeX / (textSize/2)) + Math.floor(sizeX/100);
     let curLen = 0;
     let chunks = [];
+    let topPadding = Math.round((textSize/100) * 90);
     for(let i =0; curLen < len; i++) {
       // TODO newline support, so it can be formatted nicer.
       let max = (curLen+maxLen >= len)?len:curLen+maxLen;
       while(text.charAt(max)!== ' ' && max < len && max > 2){max--;}
-      chunks.push({x:x + textSize,y:y+textSize+(i*textSize),text:text.substring(curLen,max).trim() });
+      chunks.push({x:x + 5,y:y+topPadding+(i*textSize),text:text.substring(curLen,max).trim() });
       curLen = max;
       if(i > 1000) return []; // sanity fallback
     }
+    return chunks;
+  } else {
+    return [];
+  }
+}
+
+/**
+ * Calc how many chunks there will be
+ * Then calculate the postions of them, factoring in alignment
+ * OOS shape support.
+ * returns chunks:[{x,y,text}]
+ */
+const calculateChunks = (x:number, y:number, sizeX:number, sizeY:number, textSize:number, text:string, align:string, shape:any) => {
+  if(sizeX > 5 && sizeY > 2) {
+    text = text.trim();
+    const len = text.length;
+    let maxLen = Math.floor(sizeX / (textSize/2)) + Math.floor(sizeX/100);
+    let curLen = 0;
+    let texts = [];
+    // work out the chunks of text based on the space
+    for(let i =0; curLen < len; i++) {
+      // TODO newline support, so it can be formatted nicer.
+      let max = (curLen+maxLen >= len)?len:curLen+maxLen;
+      while(text.charAt(max)!== ' ' && max < len && max > 2){max--;}
+      texts.push(text.substring(curLen,max).trim());
+      curLen = max;
+      if(i > 1000) return []; // sanity fallback
+    }
+    // then do the alignment
+    let chunks:any = [];
+    // for standard style
+    if(align === "TOPLEFT") {
+      let topPadding = Math.round((textSize/100) * 90);
+      for(let i = 0; i < texts.length;i++) {
+        chunks.push({x:x + 5,y:y+topPadding+(i*textSize),text:texts[i] });
+      }
+    } else if(align === "CENTER") {
+      // TODO
+    }
+
     return chunks;
   } else {
     return [];
