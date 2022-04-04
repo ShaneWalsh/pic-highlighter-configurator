@@ -41,9 +41,10 @@ import { EntryPoint, Line, Shape, Shapes } from './DiagramElement';
             - edit V0.1 could just be selecting an elements so it can be resized and edited
                 - longer term, specific point manipulation via dragging etc
 
-    Arrows
-    text Align in center
+    Arrows fix selection
+    Arrows fix drawing arrows end of a line.
 
+    ~text Align in center
 
     OOS
     Line ArrowHead shape,

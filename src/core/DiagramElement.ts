@@ -341,8 +341,23 @@ export class Line extends DiagramElement {
                 first = sec;
             }
             // draw the arrow heads for the two ends
-            drawArrowHeads(this.cords.x,this.cords.y,first.x,first.y,this.strokeWidth,this.color,ctx,
-                (this.startArrowStyle !== ArrowHeadStyle.NONE),(this.endArrowStyle !== ArrowHeadStyle.NONE), this.startArrowStyle, this.endArrowStyle);
+            if(this.secondaryCords.length > 1) {
+                if(this.startArrowStyle !== ArrowHeadStyle.NONE){
+                    drawArrowHeads(this.cords.x,this.cords.y,this.secondaryCords[0].x,this.secondaryCords[0].y,this.strokeWidth,this.color,ctx,
+                        true,false, this.startArrowStyle, this.endArrowStyle);
+                }
+                if(this.endArrowStyle !== ArrowHeadStyle.NONE) {
+                    let secondLast = this.secondaryCords[this.secondaryCords.length-2];
+                    let last = this.secondaryCords[this.secondaryCords.length-1];
+                    drawArrowHeads(secondLast.x,secondLast.y,last.x,last.y,this.strokeWidth,this.color,ctx,
+                        false,true, this.startArrowStyle, this.endArrowStyle);
+                }
+            } else {
+                drawArrowHeads(this.cords.x,this.cords.y,first.x,first.y,this.strokeWidth,this.color,ctx,
+                    (this.startArrowStyle !== ArrowHeadStyle.NONE), (this.endArrowStyle !== ArrowHeadStyle.NONE), 
+                    this.startArrowStyle, this.endArrowStyle);
+            }
+            
             if(this.held && this.tempCord){
                 drawer(
                     first.x,
