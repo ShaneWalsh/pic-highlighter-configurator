@@ -1,4 +1,4 @@
-import { drawArrowHead, drawArrowHeads, drawBorder, drawCircle, drawLine, drawLineDashed, drawShape, textToChunks, writeInPixels } from "./Drawing";
+import { calculateChunks, drawArrowHead, drawArrowHeads, drawBorder, drawCircle, drawLine, drawLineDashed, drawShape, textToChunks, writeInPixels } from "./Drawing";
 
 
 export class DiagramElement {
@@ -61,6 +61,11 @@ export enum Shapes {
     NONE="NONE"
 }
 
+export enum TextAlign {
+    CENTER="CENTER",
+    TOPLEFT="TOPLEFT"
+}
+
 export class Shape extends DiagramElement {
     size:{sizeX:number, sizeY:number} = {sizeX:0,sizeY:0};
     shape:Shapes = Shapes.RECT;
@@ -69,6 +74,7 @@ export class Shape extends DiagramElement {
     text:string="";
     textSize:number = 15;
     textColor:any = '#333'
+    textAlign:TextAlign = TextAlign.CENTER;
 
     fillColor:string = "#FFFFFF";
     isFilled =false;
@@ -85,6 +91,7 @@ export class Shape extends DiagramElement {
         this.text = _defaultValues.text || "";
         this.textSize = _defaultValues.textSize;
         this.textColor = _defaultValues.textColor;
+        this.textAlign = _defaultValues.textAlign || TextAlign.CENTER;
 
         this.fillColor = _defaultValues.fillColor;
         this.isFilled = _defaultValues.isFilled || false;
@@ -103,7 +110,13 @@ export class Shape extends DiagramElement {
 
     updateText(text:string) {
         this.text = text;
-        this._chunks = textToChunks(this.cords.x,this.cords.y,this.size.sizeX, this.size.sizeY,this.textSize,this.text,"","");
+        //this._chunks = textToChunks(this.cords.x,this.cords.y,this.size.sizeX, this.size.sizeY,this.textSize,this.text,"","");
+        this._chunks = calculateChunks(this.cords.x,this.cords.y,this.size.sizeX, this.size.sizeY,this.textSize,this.text,this.textAlign,"");
+    }
+
+    updateAlign(align:any) {
+        this.textAlign = align;
+        this._chunks = calculateChunks(this.cords.x,this.cords.y,this.size.sizeX, this.size.sizeY,this.textSize,this.text,this.textAlign,"");
     }
 
     getFill(): any {
@@ -162,6 +175,7 @@ export class Shape extends DiagramElement {
         this.textColor = jsonObj["textColor"];
         this.fillColor = jsonObj["fillColor"];
         this.isFilled = jsonObj["isFilled"];
+        this.updateAlign(jsonObj["textAlign"]);
         this.updateText(jsonObj["text"]);
         // Dont forget to set backwards compatibility if new variables are added.
     }

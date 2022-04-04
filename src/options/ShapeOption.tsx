@@ -26,6 +26,23 @@ const ShapeOption = (props:any) => {
             </div>
 
             <div className="row">
+            <div className="six columns">
+                    <label>Link</label>
+                    <input type="text" value={props.currentEl.link} onChange={(e) => {
+                        props.currentEl.link = e.target.value;
+                        props.elementOptionUpdated();
+                    }}  className="u-full-width"/>
+                </div>
+                <div className="six columns">
+                    <label>Line Width</label>
+                    <input type="text" value={props.currentEl.strokeWidth} onChange={(e) => {
+                        props.currentEl.strokeWidth = e.target.value;
+                        props.elementOptionUpdated();
+                    }}  className="u-full-width"/>
+                </div>
+            </div>
+
+            <div className="row">
                 <div className="six columns">
                     <label>Text</label>
                     <textarea value={props.currentEl.text} onChange={(e) => {
@@ -52,11 +69,14 @@ const ShapeOption = (props:any) => {
                     }}  className="u-full-width"/>
                 </div>
                 <div className="six columns">
-                    <label>Line Width</label>
-                    <input type="text" value={props.currentEl.strokeWidth} onChange={(e) => {
-                        props.currentEl.strokeWidth = e.target.value;
+                    <label>Text Alignment</label>
+                    <select value={props.currentEl.textAlign} onChange={(e) => {
+                        props.currentEl.updateAlign(e.target.value)
                         props.elementOptionUpdated();
-                    }}  className="u-full-width"/>
+                    }} className="u-full-width">
+                        <option value="CENTER">CENTER</option>
+                        <option value="TOPLEFT">TOPLEFT</option>
+                    </select>
                 </div>
             </div>
 
@@ -77,15 +97,6 @@ const ShapeOption = (props:any) => {
                             props.elementOptionUpdated();
                         }}
                     />
-                </div>
-            </div>
-            <div className="row">
-                <div className="six columns">
-                    <label>Link</label>
-                    <input type="text" value={props.currentEl.link} onChange={(e) => {
-                        props.currentEl.link = e.target.value;
-                        props.elementOptionUpdated();
-                    }}  className="u-full-width"/>
                 </div>
             </div>
 
