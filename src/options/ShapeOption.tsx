@@ -76,6 +76,7 @@ const ShapeOption = (props:any) => {
                     }} className="u-full-width">
                         <option value="CENTER">CENTER</option>
                         <option value="TOPLEFT">TOPLEFT</option>
+                        <option value="TOPCENTER">TOPCENTER</option>
                     </select>
                 </div>
             </div>

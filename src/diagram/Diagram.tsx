@@ -12,7 +12,11 @@ class Diagram extends React.Component<any,any> {
         mouseY:0,
         leftClickHeld:false,
         heldCords:{x:0,y:0},
-        beingHovered:null
+        beingHovered:null,
+
+        dragging:null,
+        draggingXOffset:null,
+        draggingYOffset:null
       };
       this.updateMousePosition = this.updateMousePosition.bind(this);
       this.mouseClick = this.mouseClick.bind(this);
@@ -54,10 +58,14 @@ class Diagram extends React.Component<any,any> {
                 this.props.currentEl?.handleMove(sizes, cords);
             }
         } else { // then highlight it, and on click, emit it.
-            for(let ep of this.props.entryPoints) {
-                if(ep._display){
-                    hovered = this.tryFindHover(cords, ep);
-                    if(hovered !== null) break;
+            if ( this.state.dragging ) { // we have clicked on something.
+                this.state.dragging.el.updateCords({x:cords.x+this.state.draggingXOffset, y:cords.y+this.state.draggingYOffset});
+            } else { // else highlight whatever I am hovering over
+                for( let ep of this.props.entryPoints ) {
+                    if( ep._display ) {
+                        hovered = this.tryFindHover(cords, ep);
+                        if(hovered !== null) break;
+                    }
                 }
             }
         }
@@ -78,6 +86,7 @@ class Diagram extends React.Component<any,any> {
                 return {ep:ep,el:ep}; 
             }
         }
+        // TODO, loop on these elements backwards, so the latest drawn can be first selected, as elements are sometimes layered.
         for(let el of ep.elements) {
             for(let hb of el.hitboxes()){
                 if(this.pointInsideSprite(cords,hb)){
@@ -97,7 +106,13 @@ class Diagram extends React.Component<any,any> {
             if(!this.props.selecting){
                 this.props.currentEl?.setCords(cords);
             } else {
-                // TODO add dragging of the element to change its position?
+                if(this.state.beingHovered){
+                    this.setState({
+                        dragging:this.state.beingHovered,
+                        draggingXOffset:this.state.beingHovered.el.cords.x - cords.x,
+                        draggingYOffset:this.state.beingHovered.el.cords.y - cords.y
+                    })
+                }
             }
         }
         else if(e.button == 2) {
@@ -115,6 +130,20 @@ class Diagram extends React.Component<any,any> {
             } else {
                 if(this.state.beingHovered !== null){
                     this.props.selectElement(this.state.beingHovered)
+                    this.setState({
+                        dragging:null,
+                        beingHovered:null,
+                        draggingXOffset:null,
+                        draggingYOffset:null
+                    })
+                } else if(this.state.dragging !== null){
+                    this.props.selectElement(this.state.dragging)
+                    this.setState({
+                        dragging:null,
+                        beingHovered:null,
+                        draggingXOffset:null,
+                        draggingYOffset:null
+                    })
                 }
             }
             this.setState({leftClickHeld:false})

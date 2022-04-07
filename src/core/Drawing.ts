@@ -41,22 +41,22 @@ export const drawLineDashed = (x:number,y:number,xx:number,yy:number, width:numb
     reset(ctx);
 }
 
-export const drawArrowHeads = (x:number,y:number,xx:number,yy:number, width:number,color:string,ctx:CanvasRenderingContext2D, start:boolean, end:boolean, startStyle:any,endStyle:any) => {
+export const drawArrowHeads = (x:number,y:number,xx:number,yy:number, width:number,color:string,ctx:CanvasRenderingContext2D, start:boolean, end:boolean, startStyle:any,endStyle:any,startSize:any,endSize:any) => {
     // draw the starting arrowhead
     if(start){
       var startRadians=Math.atan((yy-y)/(xx-x));
       startRadians+=((xx>x)?-90:90)*Math.PI/180;
-      drawArrowHead(x,y,startRadians,width,color,ctx,startStyle);
+      drawArrowHead(x,y,startRadians,width,color,ctx,startStyle,startSize);
     }
     // draw the ending arrowhead
     if(end){
       var endRadians=Math.atan((yy-y)/(xx-x));
       endRadians+=((xx>x)?90:-90)*Math.PI/180;
-      drawArrowHead(xx,yy,endRadians,width,color,ctx,endStyle);
+      drawArrowHead(xx,yy,endRadians,width,color,ctx,endStyle,endSize);
     }
 }
 
-export const drawArrowHead = (x:number,y:number,radians:any, width:number,color:string,ctx:CanvasRenderingContext2D, style:any) => {
+export const drawArrowHead = (x:number,y:number,radians:any, width:number,color:string,ctx:CanvasRenderingContext2D, style:any, size:any) => {
   ctx.save();
   ctx.beginPath();
   ctx.lineWidth = width;
@@ -65,18 +65,35 @@ export const drawArrowHead = (x:number,y:number,radians:any, width:number,color:
   ctx.translate(x,y);
   ctx.rotate(radians);
   ctx.moveTo(0,0);
+  let sizes = getSize(size);
   if(style == "ARROW"){
-    ctx.lineTo(10,20);
+    ctx.lineTo(sizes.nose,sizes.wing);
     ctx.lineTo(0,0);
-    ctx.lineTo(-10,20);
+    ctx.lineTo(sizes.nose*-1,sizes.wing);
   } else { // Full or Empty so draw the entire arrow
-    ctx.lineTo(10,20);
-    ctx.lineTo(-10,20);
+    ctx.lineTo(sizes.nose,sizes.wing);
+    ctx.lineTo(sizes.nose*-1,sizes.wing);
   }
   ctx.closePath();
   ctx.stroke();
   if(style == "FILLED"){ ctx.fill(); }
+  if(style == "UNFILLED"){ ctx.fillStyle = "#FFF";ctx.fill(); }
   ctx.restore();
+}
+
+const getSize = (size:any) => {
+  if(size == "TINY"){
+    return {nose:5,wing:6}
+  } else   if(size == "SMALL"){
+    return {nose:5,wing:9}
+  } else   if(size == "MEDIUM"){
+    return {nose:6,wing:12 }
+  } else   if(size == "LARGE"){
+    return {nose:10,wing:20}
+  } else   if(size == "HUGE"){
+    return {nose:15,wing:30}
+  }
+  return {nose:5,wing:10};
 }
 
 export const  drawCircle = (x:number, y:number, radius:number, fill:any, stroke:any, strokeWidth:number, ctx:CanvasRenderingContext2D) => {
@@ -199,6 +216,20 @@ export const calculateChunks = (x:number, y:number, sizeX:number, sizeY:number, 
         let odd = Math.floor(texts.length/2); // round down.
         startingY = startingY - (textSize * odd);
       }
+      // X will be worked out independently for each line
+      for(let i = 0; i < texts.length;i++) {
+        let txt = texts[i];
+        let centeringAdjustment = 0;
+        if(txt.length < 10) centeringAdjustment = halfText;
+        let percentage = ((txt.length/maxLen)*100); // whats this text % of the total length is this string? Then half it.
+        let widthOffset = ((sizeX/2)/100)*percentage; // now take this half percentage from the startingX which is centered.
+        chunks.push({x:x+(startingX - widthOffset)-centeringAdjustment ,y:y+startingY+(i*textSize),text:texts[i] });
+      }
+    } else if(align === "TOPCENTER") {
+      // TODO
+      let halfText = textSize/2;
+      let startingY = Math.round((textSize/100) * 90);
+      let startingX = (sizeX/2)+halfText;
       // X will be worked out independently for each line
       for(let i = 0; i < texts.length;i++) {
         let txt = texts[i];

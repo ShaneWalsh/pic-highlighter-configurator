@@ -38,22 +38,50 @@ const LineOption = (props:any) => {
                         props.currentEl.startArrowStyle = e.target.value
                         props.elementOptionUpdated();
                     }} className="u-full-width">
-                        <option value="FILLED">FILLED</option>
-                        <option value="UNFILLED">UNFILLED</option>
-                        <option value="ARROW">ARROW</option>
-                        <option value="NONE">NONE</option>
+                        <option value="FILLED">Filled</option>
+                        <option value="UNFILLED">Unfilled</option>
+                        <option value="ARROW">Arrow</option>
+                        <option value="NONE">None</option>
                     </select>
                 </div>
+                <div className="six columns">
+                    <label>Start Arrow Size</label>
+                    <select value={props.currentEl.startArrowSize} onChange={(e) => {
+                        props.currentEl.startArrowSize = e.target.value
+                        props.elementOptionUpdated();
+                    }} className="u-full-width">
+                        <option value="TINY">Tiny</option>
+                        <option value="SMALL">Small</option>
+                        <option value="MEDIUM">Medium</option>
+                        <option value="LARGE">Large</option>
+                        <option value="HUGE">Huge</option>
+                    </select>
+                </div>
+            </div>
+            <div className="row">
                 <div className="six columns">
                     <label>End Arrow</label>
                     <select value={props.currentEl.endArrowStyle} onChange={(e) => {
                         props.currentEl.endArrowStyle = e.target.value
                         props.elementOptionUpdated();
                     }} className="u-full-width">
-                        <option value="FILLED">FILLED</option>
-                        <option value="UNFILLED">UNFILLED</option>
-                        <option value="ARROW">ARROW</option>
-                        <option value="NONE">NONE</option>
+                         <option value="FILLED">Filled</option>
+                        <option value="UNFILLED">Unfilled</option>
+                        <option value="ARROW">Arrow</option>
+                        <option value="NONE">None</option>
+                    </select>
+                </div>
+                <div className="six columns">
+                    <label>End Arrow Size</label>
+                    <select value={props.currentEl.endArrowSize} onChange={(e) => {
+                        props.currentEl.endArrowSize = e.target.value
+                        props.elementOptionUpdated();
+                    }} className="u-full-width">
+                        <option value="TINY">Tiny</option>
+                        <option value="SMALL">Small</option>
+                        <option value="MEDIUM">Medium</option>
+                        <option value="LARGE">Large</option>
+                        <option value="HUGE">Huge</option>
                     </select>
                 </div>
             </div>

@@ -1,4 +1,4 @@
-import { calculateChunks, drawArrowHead, drawArrowHeads, drawBorder, drawCircle, drawLine, drawLineDashed, drawShape, textToChunks, writeInPixels } from "./Drawing";
+import { calculateChunks, drawArrowHeads, drawBorder, drawCircle, drawLine, drawLineDashed, drawShape, writeInPixels } from "./Drawing";
 
 
 export class DiagramElement {
@@ -63,7 +63,8 @@ export enum Shapes {
 
 export enum TextAlign {
     CENTER="CENTER",
-    TOPLEFT="TOPLEFT"
+    TOPLEFT="TOPLEFT",
+    TOPCENTER="TOPCENTER"
 }
 
 export class Shape extends DiagramElement {
@@ -100,6 +101,11 @@ export class Shape extends DiagramElement {
     setCords(cords:{x:number,y:number} ){
         this.cords = cords;
         this.size = {sizeX:0,sizeY:0};
+        this.updateText(this.text);
+    }
+
+    updateCords(cords:{x:number,y:number} ){
+        this.cords = cords;
         this.updateText(this.text);
     }
     
@@ -269,12 +275,22 @@ export enum ArrowHeadStyle {
     NONE="NONE"
 }
 
+export enum ArrowHeadSize {
+    TINY="TINY",
+    SMALL="SMALL",
+    MEDIUM="MEDIUM",
+    LARGE="LARGE",
+    HUGE="HUGE"
+}
+
 export class Line extends DiagramElement {
     constructor(num:number,code="LN"){
         super(num,code);
     }
     startArrowStyle:ArrowHeadStyle = ArrowHeadStyle.NONE;
-    endArrowStyle:ArrowHeadStyle = ArrowHeadStyle.NONE;
+    endArrowStyle:ArrowHeadStyle = ArrowHeadStyle.NONE;    
+    startArrowSize:ArrowHeadSize = ArrowHeadSize.SMALL;
+    endArrowSize:ArrowHeadSize = ArrowHeadSize.SMALL;
     lineStyle:LineStyle = LineStyle.FULL;
     secondaryCords:{x:number,y:number}[] = [];
     
@@ -289,6 +305,16 @@ export class Line extends DiagramElement {
             this.tempStartCord = cords;
         }
         this.held = true;
+    }
+
+    updateCords(cords:{x:number,y:number} ){
+        let diffX = this.cords.x - cords.x;
+        let diffY = this.cords.y - cords.y;
+        this.cords = cords;
+        for(let secCord of this.secondaryCords){
+            secCord.x = secCord.x + diffX;
+            secCord.y = secCord.y + diffY;
+        }
     }
 
     handleMove(size:{sizeX:number, sizeY:number}, secondaryCords:{x:number,y:number}){
@@ -344,18 +370,18 @@ export class Line extends DiagramElement {
             if(this.secondaryCords.length > 1) {
                 if(this.startArrowStyle !== ArrowHeadStyle.NONE){
                     drawArrowHeads(this.cords.x,this.cords.y,this.secondaryCords[0].x,this.secondaryCords[0].y,this.strokeWidth,this.color,ctx,
-                        true,false, this.startArrowStyle, this.endArrowStyle);
+                        true,false, this.startArrowStyle, this.endArrowStyle,this.startArrowSize,this.endArrowSize);
                 }
                 if(this.endArrowStyle !== ArrowHeadStyle.NONE) {
                     let secondLast = this.secondaryCords[this.secondaryCords.length-2];
                     let last = this.secondaryCords[this.secondaryCords.length-1];
                     drawArrowHeads(secondLast.x,secondLast.y,last.x,last.y,this.strokeWidth,this.color,ctx,
-                        false,true, this.startArrowStyle, this.endArrowStyle);
+                        false,true, this.startArrowStyle, this.endArrowStyle,this.startArrowSize,this.endArrowSize);
                 }
             } else {
                 drawArrowHeads(this.cords.x,this.cords.y,first.x,first.y,this.strokeWidth,this.color,ctx,
                     (this.startArrowStyle !== ArrowHeadStyle.NONE), (this.endArrowStyle !== ArrowHeadStyle.NONE), 
-                    this.startArrowStyle, this.endArrowStyle);
+                    this.startArrowStyle, this.endArrowStyle,this.startArrowSize,this.endArrowSize);
             }
             
             if(this.held && this.tempCord){
@@ -395,7 +421,9 @@ export class Line extends DiagramElement {
     mapJson(jsonObj:any) {
         super.mapJson(jsonObj);
         this.startArrowStyle = jsonObj["startArrowStyle"];
-        this.endArrowStyle = jsonObj["endArrowStyle"];
+        this.endArrowStyle = jsonObj["endArrowStyle"];        
+        this.startArrowSize = jsonObj["startArrowSize"];
+        this.endArrowSize = jsonObj["endArrowSize"];
         this.lineStyle = jsonObj["lineStyle"];
         this.secondaryCords = jsonObj["secondaryCords"];
         // Dont forget to set backwards compatibility if new variables are added.
