@@ -307,22 +307,22 @@ export class Line extends DiagramElement {
         this.held = true;
     }
 
-    updateCords(cords:{x:number,y:number} ){
-        let diffX = this.cords.x - cords.x;
-        let diffY = this.cords.y - cords.y;
-        this.cords = cords;
-        for(let secCord of this.secondaryCords){
-            secCord.x = secCord.x + diffX;
-            secCord.y = secCord.y + diffY;
+    updateCords(cordsNew:{x:number,y:number} ) {
+        let diffX = this.cords.x - cordsNew.x;
+        let diffY = this.cords.y - cordsNew.y;
+        this.cords = cordsNew;
+        for(let secCord of this.secondaryCords) {
+            secCord.x = secCord.x - diffX;
+            secCord.y = secCord.y - diffY;
         }
     }
 
-    handleMove(size:{sizeX:number, sizeY:number}, secondaryCords:{x:number,y:number}){
+    handleMove(size:{sizeX:number, sizeY:number}, secondaryCords:{x:number,y:number}) {
         this.tempCord = secondaryCords;
     }
 
     // Handle the mouse release
-    handleLeftRelease(size:{sizeX:number, sizeY:number}, secondaryCords:{x:number,y:number}){
+    handleLeftRelease(size:{sizeX:number, sizeY:number}, secondaryCords:{x:number,y:number}) {
         if(this.cordsSet) {
             this.secondaryCords.push(secondaryCords);
         } else {
@@ -405,6 +405,9 @@ export class Line extends DiagramElement {
             drawBorder(first.x-5,first.y-5,sec.x+5,sec.y+5,this.strokeWidth,"#77DD66", null, ctx,)
             first = sec;
         }
+        for(let box of this.hitboxes()){
+            drawBorder(box.x,box.y,box.sizeX,box.sizeY,this.strokeWidth,"#77DD66", null, ctx,)
+        }
     }
 
     hitboxes(){
@@ -412,7 +415,23 @@ export class Line extends DiagramElement {
         let first = this.cords;
         for(let i = 0; i < this.secondaryCords.length; i++){
             let sec = this.secondaryCords[i];
-            hb.push({x:first.x-5,y:first.y-5,sizeX:sec.x+5,sizeY:sec.y+5});
+            let xDiff = first.x - sec.x; // these will be positives in the end, like counters for the remaining distance.
+            let yDiff = first.y - sec.y;
+            let xPositive= xDiff > -1;
+            let yPositive= yDiff > -1;
+            xDiff = !xPositive? xDiff *-1:xDiff;
+            yDiff = !yPositive? yDiff *-1:yDiff;
+            let xRectSize = xDiff/10;
+            let yRectSize = yDiff/10; 
+            while (xDiff > 0 && yDiff > 0){
+                hb.push({
+                    x:((xPositive)?first.x-xDiff:first.x+xDiff)-5,
+                    y:((yPositive)?first.y-yDiff:first.y+yDiff)-5,
+                    sizeX:xRectSize+5,
+                    sizeY:yRectSize+5});
+                xDiff = xDiff -xRectSize;
+                yDiff = yDiff -yRectSize;
+            }
             first = sec;
         }
         return hb;
