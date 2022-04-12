@@ -129,11 +129,34 @@ export const drawShape = (cords:{x:number,y:number}[], width:number, color:strin
   ctx.stroke();
 }
 
-export const writeInPixels = (x:number, y:number, size:number, text:string, color:string, ctx:any) => {
+export const writeInPixels = (x:number, y:number, size:number, text:string, color:string, align:string, cords:any, sizes:any, ctx:any) => {
 	//ctx.font = size + "px 'Century Gothic'";
-	ctx.font = size + "px 'sans-serif'";
-	ctx.fillStyle = color;
-	ctx.fillText(text, x, y);
+  if(align === "SIDEBARLEFT"){
+    let newX = cords.x + (y-cords.y);
+    let newY = cords.y + sizes.sizeY
+    ctx.save();
+    ctx.font = size + "px 'sans-serif'";
+    ctx.fillStyle = color;
+    ctx.translate( newX, newY);
+    ctx.rotate(-Math.PI/2);
+    ctx.fillText(text, 5, 0);
+    ctx.restore();
+  } else if(align === "SIDEBARCENTER"){
+    let newX = cords.x + (y-cords.y);
+    let newY = cords.y + (sizes.sizeY/2)
+    ctx.save();
+    ctx.font = size + "px 'sans-serif'";
+    ctx.fillStyle = color;
+    ctx.translate( newX, newY);
+    ctx.rotate(-Math.PI/2);
+    ctx.textAlign = 'center';
+    ctx.fillText(text, 5, 0);
+    ctx.restore();
+  } else {
+    ctx.font = size + "px 'sans-serif'";
+    ctx.fillStyle = color;
+    ctx.fillText(text, x+size, y);
+  }
 }
 
 /**
@@ -176,6 +199,9 @@ export const calculateChunks = (x:number, y:number, sizeX:number, sizeY:number, 
     text = text.trim();
     const len = text.length;
     let maxLen = Math.floor(sizeX / (textSize/2)) + Math.floor(sizeX/100);
+    if(align === "SIDEBARLEFT" || align === "SIDEBARCENTER") { // the size is actually measured by height when doing sidebar
+      maxLen = Math.floor(sizeY / (textSize/2)) + Math.floor(sizeY/100);
+    }
     let curLen = 0;
     let texts:any[] = [];
     // work out the chunks of text based on the space
@@ -198,7 +224,7 @@ export const calculateChunks = (x:number, y:number, sizeX:number, sizeY:number, 
     // then do the alignment
     let chunks:any = [];
     // for standard style
-    if(align === "TOPLEFT") {
+    if(align === "TOPLEFT" || align === "SIDEBARLEFT" || align === "SIDEBARCENTER") {
       let topPadding = Math.round((textSize/100) * 90);
       for(let i = 0; i < texts.length;i++) {
         chunks.push({x:x + 5,y:y+topPadding+(i*textSize),text:texts[i] });
@@ -207,7 +233,7 @@ export const calculateChunks = (x:number, y:number, sizeX:number, sizeY:number, 
       // TODO
       let halfText = textSize/2;
       let startingY = 5 + (sizeY/2);
-      let startingX = (sizeX/2)+halfText;
+      let startingX = (sizeX/2);
       // Lets work out the starting Y
       if(texts.length % 2 === 0 && texts.length > 1){ // even
         let even = texts.length/2;
@@ -229,7 +255,7 @@ export const calculateChunks = (x:number, y:number, sizeX:number, sizeY:number, 
       // TODO
       let halfText = textSize/2;
       let startingY = Math.round((textSize/100) * 90);
-      let startingX = (sizeX/2)+halfText;
+      let startingX = (sizeX/2);
       // X will be worked out independently for each line
       for(let i = 0; i < texts.length;i++) {
         let txt = texts[i];

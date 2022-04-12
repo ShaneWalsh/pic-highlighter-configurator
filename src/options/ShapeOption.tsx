@@ -74,9 +74,11 @@ const ShapeOption = (props:any) => {
                         props.currentEl.updateAlign(e.target.value)
                         props.elementOptionUpdated();
                     }} className="u-full-width">
-                        <option value="CENTER">CENTER</option>
-                        <option value="TOPLEFT">TOPLEFT</option>
-                        <option value="TOPCENTER">TOPCENTER</option>
+                        <option value="CENTER">Center</option>
+                        <option value="TOPLEFT">Top Left</option>
+                        <option value="TOPCENTER">Top Center</option>
+                        <option value="SIDEBARLEFT">Sidebar Left</option>
+                        <option value="SIDEBARCENTER">Sidebar Center</option>
                     </select>
                 </div>
             </div>

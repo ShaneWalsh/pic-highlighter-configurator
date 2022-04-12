@@ -64,7 +64,9 @@ export enum Shapes {
 export enum TextAlign {
     CENTER="CENTER",
     TOPLEFT="TOPLEFT",
-    TOPCENTER="TOPCENTER"
+    TOPCENTER="TOPCENTER",
+    SIDEBARLEFT="SIDEBARLEFT",
+    SIDEBARCENTER="SIDEBARCENTER",
 }
 
 export class Shape extends DiagramElement {
@@ -162,7 +164,7 @@ export class Shape extends DiagramElement {
         }
         this._chunks.forEach(_chunks => {
             // writeInPixels(this.cords.x+this.size.sizeX/2, this.cords.y+this.size.sizeY/2,15,this.text,this.color,ctx);
-            writeInPixels(_chunks.x, _chunks.y, this.textSize, _chunks.text,this.textColor,ctx);
+            writeInPixels(_chunks.x, _chunks.y, this.textSize, _chunks.text,this.textColor,this.textAlign, this.cords, this.size, ctx);
         })
     }
 
@@ -230,13 +232,13 @@ export class EntryPoint extends Shape {
         });
         this._chunks.forEach(_chunks => {
             // writeInPixels(this.cords.x+this.size.sizeX/2, this.cords.y+this.size.sizeY/2,15,this.text,this.color,ctx);
-            writeInPixels(_chunks.x, _chunks.y, this.textSize, _chunks.text,this.textColor,ctx);
+            writeInPixels(_chunks.x, _chunks.y, this.textSize, _chunks.text,this.textColor, this.textAlign, this.cords, this.size, ctx);
         })
     }
 
     drawHover(ctx:CanvasRenderingContext2D){
         super.drawHover(ctx);
-        writeInPixels(this.cords.x, this.cords.y-10, 20, this.name, highlightColor, ctx);
+        writeInPixels(this.cords.x, this.cords.y-10, 20, this.name, highlightColor, this.textAlign, this.cords, this.size, ctx);
     }
 
     mapJson(jsonObj:any) {
