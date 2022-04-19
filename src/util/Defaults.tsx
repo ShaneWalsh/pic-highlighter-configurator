@@ -20,6 +20,15 @@ const Defaults = (props:any) => {
                 props.defaultsUpdated(defaults);
               }}  className="u-full-width"/>
             </div>
+          </div>          
+          <div className='row'>
+            <div className="six columns">
+              <label>BG Color</label>
+              <input type="text" value={props.defaults.backgroundColor} onChange={(e) => {
+                const defaults = {...props.defaults, backgroundColor:e.target.value}
+                props.defaultsUpdated(defaults);
+              }}  className="u-full-width"/>
+            </div>
           </div>
           <div className='row'>
             <div className="six columns">

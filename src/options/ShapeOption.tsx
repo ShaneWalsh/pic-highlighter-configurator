@@ -26,17 +26,29 @@ const ShapeOption = (props:any) => {
             </div>
 
             <div className="row">
-            <div className="six columns">
-                    <label>Link</label>
-                    <input type="text" value={props.currentEl.link} onChange={(e) => {
-                        props.currentEl.link = e.target.value;
+                <div className="six columns">
+                    <label>Line Style</label>
+                    <select value={props.currentEl.lineStyle} onChange={(e) => {
+                        props.currentEl.lineStyle = e.target.value
                         props.elementOptionUpdated();
-                    }}  className="u-full-width"/>
+                    }} className="u-full-width">
+                        <option value="FULL">Full</option>
+                        <option value="DOTTED">Dotted</option>
+                    </select>
                 </div>
                 <div className="six columns">
                     <label>Line Width</label>
                     <input type="text" value={props.currentEl.strokeWidth} onChange={(e) => {
                         props.currentEl.strokeWidth = e.target.value;
+                        props.elementOptionUpdated();
+                    }}  className="u-full-width"/>
+                </div>
+            </div>
+            <div className="row">
+                <div className="six columns">
+                    <label>Link</label>
+                    <input type="text" value={props.currentEl.link} onChange={(e) => {
+                        props.currentEl.link = e.target.value;
                         props.elementOptionUpdated();
                     }}  className="u-full-width"/>
                 </div>

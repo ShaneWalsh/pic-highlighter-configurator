@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { drawBorder } from '../core/Drawing';
+import { reversed } from '../core/Lib2d';
 
 class Diagram extends React.Component<any,any> {
     constructor(props:any) {
@@ -61,7 +62,7 @@ class Diagram extends React.Component<any,any> {
             if ( this.state.dragging ) { // we have clicked on something.
                 this.state.dragging.el.updateCords({x:cords.x+this.state.draggingXOffset, y:cords.y+this.state.draggingYOffset});
             } else { // else highlight whatever I am hovering over
-                for( let ep of this.props.entryPoints ) {
+                for( let ep of reversed(this.props.entryPoints)) {
                     if( ep._display ) {
                         hovered = this.tryFindHover(cords, ep);
                         if(hovered !== null) break;
@@ -81,17 +82,17 @@ class Diagram extends React.Component<any,any> {
      * returns the first element to be hovered on.
      */
     tryFindHover(cords:{x:number, y:number}, ep: any): Hovered {
-        for(let hb of ep.hitboxes()){
-            if(this.pointInsideSprite(cords,hb)){
-                return {ep:ep,el:ep}; 
-            }
-        }
         // TODO, loop on these elements backwards, so the latest drawn can be first selected, as elements are sometimes layered.
-        for(let el of ep.elements) {
+        for(let el of reversed(ep.elements)) {
             for(let hb of el.hitboxes()){
                 if(this.pointInsideSprite(cords,hb)){
                     return {ep:ep,el:el}; 
                 }
+            }
+        }
+        for(let hb of ep.hitboxes()){
+            if(this.pointInsideSprite(cords,hb)){
+                return {ep:ep,el:ep}; 
             }
         }
         return null;
@@ -197,14 +198,14 @@ class Diagram extends React.Component<any,any> {
     }
 
     drawBase(canvasCtx:any) {
-        canvasCtx.fillStyle = '#F8F8F8';
+        canvasCtx.fillStyle = this.props.backgroundColor;
         canvasCtx.fillRect(0,0,this.props.width,this.props.height);
         // draw the background image whatever it is
         if(this.props.background){
             canvasCtx.drawImage(this.props.background, 0, 0, this.props.width, this.props.height);
         }
         // border on the canvas
-        drawBorder(0,0,this.props.width,this.props.height,.1,'#000000',null, canvasCtx)
+        drawBorder(0,0,this.props.width,this.props.height,.1,'#000000',null, "", canvasCtx)
     }
     
     pointInsideSprite(point:{x:number,y:number}, sprite:{x:number,y:number,sizeX:number,sizeY:number}) {

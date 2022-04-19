@@ -1,5 +1,9 @@
-import { calculateChunks, drawArrowHeads, drawBorder, drawCircle, drawLine, drawLineDashed, drawShape, writeInPixels } from "./Drawing";
+import { calculateChunks, drawArrowHeads, drawBorder, drawCircle, drawLine, drawShape, writeInPixels } from "./Drawing";
 
+export enum LineStyle {
+    FULL="FULL",
+    DOTTED="DOTTED"
+}
 
 export class DiagramElement {
     id:string = "replacement";
@@ -7,6 +11,7 @@ export class DiagramElement {
 
     color: string = '#bbb';
     strokeWidth:number=.4;
+    lineStyle:LineStyle = LineStyle.FULL;
 
     cords:{x:number,y:number} = {x:0,y:0};
 
@@ -50,6 +55,7 @@ export class DiagramElement {
         this.color = jsonObj["color"];
         this.strokeWidth = jsonObj["strokeWidth"];
         this.cords = jsonObj["cords"];
+        this.lineStyle = jsonObj["lineStyle"];
         // Dont forget to set backwards compatibility if new variables are added.
     }
 }
@@ -141,6 +147,7 @@ export class Shape extends DiagramElement {
                 this.strokeWidth,
                 this.color,
                 this.getFill(),
+                this.lineStyle,
                 ctx,
             )
         } else if(this.shape === Shapes.DIAMOND){
@@ -149,7 +156,7 @@ export class Shape extends DiagramElement {
             const right = {x:this.cords.x + this.size.sizeX, y :this.cords.y+ (this.size.sizeY/2) };
             const bottom = {x:this.cords.x+ (this.size.sizeX/2), y :this.cords.y+ this.size.sizeY };
 
-            drawShape([{x:left.x,y:left.y},{x:top.x,y:top.y},{x:right.x,y:right.y},{x:bottom.x,y:bottom.y},{x:left.x,y:left.y}], this.strokeWidth, this.color, this.getFill(), ctx)
+            drawShape([{x:left.x,y:left.y},{x:top.x,y:top.y},{x:right.x,y:right.y},{x:bottom.x,y:bottom.y},{x:left.x,y:left.y}], this.strokeWidth, this.color, this.getFill(),this.lineStyle, ctx)
             // TODO replace with a drawshape method, takes cords, connects the dots with lines, fills with provided fill value
         } else if(this.shape === Shapes.CIRCLE){
             drawCircle(
@@ -159,6 +166,7 @@ export class Shape extends DiagramElement {
                 this.getFill(),
                 this.color,
                 this.strokeWidth,
+                this.lineStyle,
                 ctx
             )
         }
@@ -169,7 +177,7 @@ export class Shape extends DiagramElement {
     }
 
     drawHover(ctx:CanvasRenderingContext2D){
-        drawBorder(this.cords.x,this.cords.y,this.size.sizeX,this.size.sizeY,this.strokeWidth,highlightColor,null,ctx,)
+        drawBorder(this.cords.x,this.cords.y,this.size.sizeX,this.size.sizeY,this.strokeWidth,highlightColor,null, "", ctx,)
     }
 
     hitboxes(){return [{...this.cords,...this.size}]}
@@ -217,23 +225,24 @@ export class EntryPoint extends Shape {
     
     // TEXT OOS
     draw(ctx:CanvasRenderingContext2D) {
-        drawBorder(
-            this.cords.x,
-            this.cords.y,
-            this.size.sizeX,
-            this.size.sizeY,
-            this.strokeWidth,
-            this.color,
-            this.getFill(),
-            ctx
-        );
         this.elements.forEach( (el:DiagramElement) => {
             el.draw(ctx)
         });
-        this._chunks.forEach(_chunks => {
-            // writeInPixels(this.cords.x+this.size.sizeX/2, this.cords.y+this.size.sizeY/2,15,this.text,this.color,ctx);
-            writeInPixels(_chunks.x, _chunks.y, this.textSize, _chunks.text,this.textColor, this.textAlign, this.cords, this.size, ctx);
-        })
+        super.draw(ctx);
+        // drawBorder(
+        //     this.cords.x,
+        //     this.cords.y,
+        //     this.size.sizeX,
+        //     this.size.sizeY,
+        //     this.strokeWidth,
+        //     this.color,
+        //     this.getFill(),
+        //     ctx
+        // );
+        // this._chunks.forEach(_chunks => {
+        //     // writeInPixels(this.cords.x+this.size.sizeX/2, this.cords.y+this.size.sizeY/2,15,this.text,this.color,ctx);
+        //     writeInPixels(_chunks.x, _chunks.y, this.textSize, _chunks.text,this.textColor, this.textAlign, this.cords, this.size, ctx);
+        // })
     }
 
     drawHover(ctx:CanvasRenderingContext2D){
@@ -265,11 +274,6 @@ export class EntryPoint extends Shape {
     }
 }
 
-export enum LineStyle {
-    FULL="FULL",
-    DOTTED="DOTTED"
-}
-
 export enum ArrowHeadStyle {
     FILLED="FILLED",
     UNFILLED="UNFILLED",
@@ -293,7 +297,6 @@ export class Line extends DiagramElement {
     endArrowStyle:ArrowHeadStyle = ArrowHeadStyle.NONE;    
     startArrowSize:ArrowHeadSize = ArrowHeadSize.SMALL;
     endArrowSize:ArrowHeadSize = ArrowHeadSize.SMALL;
-    lineStyle:LineStyle = LineStyle.FULL;
     secondaryCords:{x:number,y:number}[] = [];
     
     // Transiant variables
@@ -340,9 +343,6 @@ export class Line extends DiagramElement {
 
     draw(ctx:CanvasRenderingContext2D){
         let drawer = drawLine;
-        if(this.lineStyle === LineStyle.DOTTED){
-            drawer = drawLineDashed;
-        }
         if(!this.cordsSet && this.tempStartCord && this.tempCord){
             drawer(
                 this.tempStartCord.x,
@@ -351,6 +351,7 @@ export class Line extends DiagramElement {
                 this.tempCord.y,
                 this.strokeWidth,
                 this.color,
+                this.lineStyle,
                 ctx
             )
         } else {
@@ -364,6 +365,7 @@ export class Line extends DiagramElement {
                     sec.y,
                     this.strokeWidth,
                     this.color,
+                    this.lineStyle,
                     ctx
                 )
                 first = sec;
@@ -394,6 +396,7 @@ export class Line extends DiagramElement {
                     this.tempCord.y,
                     this.strokeWidth,
                     this.color,
+                    this.lineStyle,
                     ctx
                 )
             }
@@ -404,11 +407,11 @@ export class Line extends DiagramElement {
         let first = this.cords;
         for(let i = 0; i < this.secondaryCords.length; i++){
             let sec = this.secondaryCords[i];
-            drawBorder(first.x-5,first.y-5,sec.x+5,sec.y+5,this.strokeWidth,"#77DD66", null, ctx,)
+            drawBorder(first.x-5,first.y-5,sec.x+5,sec.y+5,this.strokeWidth,"#77DD66", null,"", ctx)
             first = sec;
         }
         for(let box of this.hitboxes()){
-            drawBorder(box.x,box.y,box.sizeX,box.sizeY,this.strokeWidth,"#77DD66", null, ctx,)
+            drawBorder(box.x,box.y,box.sizeX,box.sizeY,this.strokeWidth,"#77DD66", null, "", ctx)
         }
     }
 
@@ -445,7 +448,6 @@ export class Line extends DiagramElement {
         this.endArrowStyle = jsonObj["endArrowStyle"];        
         this.startArrowSize = jsonObj["startArrowSize"];
         this.endArrowSize = jsonObj["endArrowSize"];
-        this.lineStyle = jsonObj["lineStyle"];
         this.secondaryCords = jsonObj["secondaryCords"];
         // Dont forget to set backwards compatibility if new variables are added.
     }

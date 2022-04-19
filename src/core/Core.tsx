@@ -41,28 +41,28 @@ import { EntryPoint, Line, Shape, Shapes } from './DiagramElement';
             - edit V0.1 could just be selecting an elements so it can be resized and edited
                 - longer term, specific point manipulation via dragging etc
 
-    Arrows fix selection
-    Arrows fix drawing arrows end of a line.
+    ~Arrows fix selection
+    ~Arrows fix drawing arrows end of a line.
 
     ~text Align in center
 
     OOS
-    Line ArrowHead shape,
+    ~Line ArrowHead shape,
         End [] , Shape DDSelect
         Start [] , Shape DDSelect
 
-    copy pasta link? 
+    copy pasta link? (Highlighter task)
         Add a button in one of the corners, looks like a copy symbol and copy data to the users board.
         - add link option to shapes.
 
     Right click to start a new element of the same type? For improved usability.
 
     Text
-        Better positioning and formula
+        ~Better positioning and formula
         alignment support
             various fonts?
 
-    To the front, to the back options on selected element.
+    To the front, to the back options on selected element. For ordering?
 
     ¬ Adding Background Toggle to Creation, so you can add elements freely that will always be displayed. Not highlight elements bound to entrypoints
         // Can just use default selected EP with no option to hover or select, then its a background and not an EP.
@@ -104,7 +104,8 @@ class Core extends React.Component<any,any> {
                 fillColor : "#fff",
                 hoverBorderColor :"#77DD66",
                 selectedFillColor :"#fff",
-                selectedBorderColor :"#265828"
+                selectedBorderColor :"#265828",
+                backgroundColor :"#F8F8F8"
             },
             src:src,
             export:""
@@ -344,6 +345,7 @@ class Core extends React.Component<any,any> {
                     <Diagram
                         selecting={this.state._selecting}
                         selectElement={this.selectElement}
+                        backgroundColor={this.state._defaultValues.backgroundColor}
                         background={this.state._background}
                         width={this.state._defaultValues.width}
                         height={this.state._defaultValues.height}

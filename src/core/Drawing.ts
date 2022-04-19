@@ -5,8 +5,12 @@ const reset = (ctx:CanvasRenderingContext2D) => {
   ctx.setLineDash([]);
 }
 
-export const drawBorder = (x:number,y:number,sizeX:number,sizeY:number, width:number,color:any, fill:any, ctx:CanvasRenderingContext2D) => {
+export const drawBorder = (x:number,y:number,sizeX:number,sizeY:number, width:number,color:any, fill:any, style:any, ctx:CanvasRenderingContext2D) => {
+    ctx.save();     
     ctx.beginPath()
+    if(style === "DOTTED") {
+      ctx.setLineDash([5, 5]);
+    }
     if (fill) {
       ctx.fillStyle = fill
       ctx.fillRect(x,y,sizeX,sizeY);
@@ -17,28 +21,22 @@ export const drawBorder = (x:number,y:number,sizeX:number,sizeY:number, width:nu
     
     ctx.closePath()
     reset(ctx);
+    ctx.restore();
 }
 
-export const drawLine = (x:number,y:number,xx:number,yy:number, width:number, color:string,ctx:CanvasRenderingContext2D) => {
+export const drawLine = (x:number,y:number,xx:number,yy:number, width:number, color:string, style:any, ctx:CanvasRenderingContext2D) => {
+    ctx.save();    
     ctx.beginPath();
+    if(style === "DOTTED") {
+      ctx.setLineDash([5, 5]);
+    }
     ctx.lineWidth = width;
     ctx.moveTo(x, y);
     ctx.lineTo(xx, yy);
     ctx.strokeStyle = color;
     ctx.stroke();
-    ctx.closePath()
-}
-
-export const drawLineDashed = (x:number,y:number,xx:number,yy:number, width:number,color:string,ctx:CanvasRenderingContext2D) => {
-    ctx.beginPath();
-    ctx.lineWidth = width;
-    ctx.setLineDash([5, 5]);
-    ctx.moveTo(x, y);
-    ctx.lineTo(xx, yy);
-    ctx.strokeStyle = color;
-    ctx.stroke();
-    ctx.closePath()
-    reset(ctx);
+    ctx.closePath();
+    ctx.restore();
 }
 
 export const drawArrowHeads = (x:number,y:number,xx:number,yy:number, width:number,color:string,ctx:CanvasRenderingContext2D, start:boolean, end:boolean, startStyle:any,endStyle:any,startSize:any,endSize:any) => {
@@ -66,7 +64,7 @@ export const drawArrowHead = (x:number,y:number,radians:any, width:number,color:
   ctx.rotate(radians);
   ctx.moveTo(0,0);
   let sizes = getSize(size);
-  if(style == "ARROW"){
+  if(style === "ARROW"){
     ctx.lineTo(sizes.nose,sizes.wing);
     ctx.lineTo(0,0);
     ctx.lineTo(sizes.nose*-1,sizes.wing);
@@ -76,28 +74,32 @@ export const drawArrowHead = (x:number,y:number,radians:any, width:number,color:
   }
   ctx.closePath();
   ctx.stroke();
-  if(style == "FILLED"){ ctx.fill(); }
-  if(style == "UNFILLED"){ ctx.fillStyle = "#FFF";ctx.fill(); }
+  if(style === "FILLED"){ ctx.fill(); }
+  if(style === "UNFILLED"){ ctx.fillStyle = "#FFF";ctx.fill(); }
   ctx.restore();
 }
 
 const getSize = (size:any) => {
-  if(size == "TINY"){
+  if(size === "TINY"){
     return {nose:5,wing:6}
-  } else   if(size == "SMALL"){
+  } else   if(size === "SMALL"){
     return {nose:5,wing:9}
-  } else   if(size == "MEDIUM"){
+  } else   if(size === "MEDIUM"){
     return {nose:6,wing:12 }
-  } else   if(size == "LARGE"){
+  } else   if(size === "LARGE"){
     return {nose:10,wing:20}
-  } else   if(size == "HUGE"){
+  } else   if(size === "HUGE"){
     return {nose:15,wing:30}
   }
   return {nose:5,wing:10};
 }
 
-export const  drawCircle = (x:number, y:number, radius:number, fill:any, stroke:any, strokeWidth:number, ctx:CanvasRenderingContext2D) => {
+export const  drawCircle = (x:number, y:number, radius:number, fill:any, stroke:any, strokeWidth:number, style:any, ctx:CanvasRenderingContext2D) => {
+    ctx.save();  
     ctx.beginPath()
+    if(style === "DOTTED") {
+      ctx.setLineDash([5, 5]);
+    }
     ctx.arc(x, y, radius, 0, 2 * Math.PI, false)
     if (fill) {
       ctx.fillStyle = fill
@@ -109,11 +111,16 @@ export const  drawCircle = (x:number, y:number, radius:number, fill:any, stroke:
       ctx.stroke()
     }
     ctx.closePath()
+    ctx.restore();
 }
 
-export const drawShape = (cords:{x:number,y:number}[], width:number, color:string, fill:any, ctx:CanvasRenderingContext2D) => {
+export const drawShape = (cords:{x:number,y:number}[], width:number, color:string, fill:any, style:any, ctx:CanvasRenderingContext2D) => {
+  ctx.save();  
   ctx.beginPath();
   ctx.lineWidth = width;
+  if(style === "DOTTED") {
+    ctx.setLineDash([5, 5]);
+  }
   let cord1=cords[0];
   ctx.moveTo(cord1.x, cord1.y);
   for(let i =1; i < cords.length;i++){
@@ -127,6 +134,7 @@ export const drawShape = (cords:{x:number,y:number}[], width:number, color:strin
   }
   ctx.strokeStyle = color;
   ctx.stroke();
+  ctx.restore();
 }
 
 export const writeInPixels = (x:number, y:number, size:number, text:string, color:string, align:string, cords:any, sizes:any, ctx:any) => {
@@ -153,9 +161,11 @@ export const writeInPixels = (x:number, y:number, size:number, text:string, colo
     ctx.fillText(text, 5, 0);
     ctx.restore();
   } else {
+    ctx.save();
     ctx.font = size + "px 'sans-serif'";
     ctx.fillStyle = color;
     ctx.fillText(text, x+size, y);
+    ctx.restore();
   }
 }
 
