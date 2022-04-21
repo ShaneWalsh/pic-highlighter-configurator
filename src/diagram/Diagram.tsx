@@ -129,19 +129,9 @@ class Diagram extends React.Component<any,any> {
             if(!this.props.selecting) {
                 this.props.currentEl?.handleLeftRelease(sizes, cords)
             } else {
-                if(this.state.beingHovered !== null){
-                    this.props.selectElement(this.state.beingHovered)
+                if(this.state.dragging !== null) {
                     this.setState({
                         dragging:null,
-                        beingHovered:null,
-                        draggingXOffset:null,
-                        draggingYOffset:null
-                    })
-                } else if(this.state.dragging !== null){
-                    this.props.selectElement(this.state.dragging)
-                    this.setState({
-                        dragging:null,
-                        beingHovered:null,
                         draggingXOffset:null,
                         draggingYOffset:null
                     })
@@ -158,7 +148,20 @@ class Diagram extends React.Component<any,any> {
         // TODO cancel whatever state we are in, back to inital clean state.
         this.draw(this.state.ctx);
     }
-    doubleClick(e:MouseEvent){ this.draw(this.state.ctx); }
+    doubleClick(e:MouseEvent){ 
+        if(this.props.selecting) {
+            if(this.state.beingHovered !== null) {
+                this.props.selectElement(this.state.beingHovered)
+                this.setState({
+                    dragging:null,
+                    beingHovered:null,
+                    draggingXOffset:null,
+                    draggingYOffset:null
+                })
+            }
+        }
+        this.draw(this.state.ctx); 
+    }
     getOffset(el:HTMLCanvasElement) {
         const rect = el.getBoundingClientRect();
         return {

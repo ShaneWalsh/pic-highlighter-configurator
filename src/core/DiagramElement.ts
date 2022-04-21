@@ -15,6 +15,11 @@ export class DiagramElement {
 
     cords:{x:number,y:number} = {x:0,y:0};
 
+    // transient
+    _isHovered=false;
+    _isSelected=false;
+    _hoverOverride=false;
+
     constructor(elements:number,code:string) {
         this.id = code+Date.now();
         this.name = elementNames[Math.floor(Math.random()*elementNames.length)]+'-'+elements
@@ -44,6 +49,10 @@ export class DiagramElement {
 
     // When the editor hovers over them in selecting mode
     drawHover(ctx:CanvasRenderingContext2D){}
+
+    setHovered(bool:boolean){this._isHovered= bool; if(!this._isHovered){this._hoverOverride = false}}
+    setSelected(bool:boolean){this._isSelected= bool; this._hoverOverride = true;}
+    toggleSelected(){this._isSelected = !this._isSelected; this._hoverOverride = true;}
 
     // Some elements can have multiple hit boxes. e.g Line
     hitboxes(){}
@@ -133,8 +142,12 @@ export class Shape extends DiagramElement {
         this._chunks = calculateChunks(this.cords.x,this.cords.y,this.size.sizeX, this.size.sizeY,this.textSize,this.text,this.textAlign,"");
     }
 
-    getFill(): any {
+    getFill() {
         return (this.isFilled)?this.fillColor:null;
+    }
+
+    getColor() {
+        return this.color;
     }
 
     draw(ctx:CanvasRenderingContext2D) {
@@ -145,7 +158,7 @@ export class Shape extends DiagramElement {
                 this.size.sizeX,
                 this.size.sizeY,
                 this.strokeWidth,
-                this.color,
+                this.getColor(),
                 this.getFill(),
                 this.lineStyle,
                 ctx,
@@ -156,7 +169,7 @@ export class Shape extends DiagramElement {
             const right = {x:this.cords.x + this.size.sizeX, y :this.cords.y+ (this.size.sizeY/2) };
             const bottom = {x:this.cords.x+ (this.size.sizeX/2), y :this.cords.y+ this.size.sizeY };
 
-            drawShape([{x:left.x,y:left.y},{x:top.x,y:top.y},{x:right.x,y:right.y},{x:bottom.x,y:bottom.y},{x:left.x,y:left.y}], this.strokeWidth, this.color, this.getFill(),this.lineStyle, ctx)
+            drawShape([{x:left.x,y:left.y},{x:top.x,y:top.y},{x:right.x,y:right.y},{x:bottom.x,y:bottom.y},{x:left.x,y:left.y}], this.strokeWidth, this.getColor(), this.getFill(),this.lineStyle, ctx)
             // TODO replace with a drawshape method, takes cords, connects the dots with lines, fills with provided fill value
         } else if(this.shape === Shapes.CIRCLE){
             drawCircle(
@@ -164,7 +177,7 @@ export class Shape extends DiagramElement {
                 this.cords.y + (this.size.sizeY/2),
                 this.size.sizeX/2,
                 this.getFill(),
-                this.color,
+                this.getColor(),
                 this.strokeWidth,
                 this.lineStyle,
                 ctx
@@ -223,26 +236,11 @@ export class EntryPoint extends Shape {
     _display=true;
     toggleDisplay(){this._display = !this._display}
     
-    // TEXT OOS
     draw(ctx:CanvasRenderingContext2D) {
         this.elements.forEach( (el:DiagramElement) => {
             el.draw(ctx)
         });
         super.draw(ctx);
-        // drawBorder(
-        //     this.cords.x,
-        //     this.cords.y,
-        //     this.size.sizeX,
-        //     this.size.sizeY,
-        //     this.strokeWidth,
-        //     this.color,
-        //     this.getFill(),
-        //     ctx
-        // );
-        // this._chunks.forEach(_chunks => {
-        //     // writeInPixels(this.cords.x+this.size.sizeX/2, this.cords.y+this.size.sizeY/2,15,this.text,this.color,ctx);
-        //     writeInPixels(_chunks.x, _chunks.y, this.textSize, _chunks.text,this.textColor, this.textAlign, this.cords, this.size, ctx);
-        // })
     }
 
     drawHover(ctx:CanvasRenderingContext2D){

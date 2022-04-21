@@ -67,6 +67,10 @@ import { EntryPoint, Line, Shape, Shapes } from './DiagramElement';
     ¬ Adding Background Toggle to Creation, so you can add elements freely that will always be displayed. Not highlight elements bound to entrypoints
         // Can just use default selected EP with no option to hover or select, then its a background and not an EP.
     
+    undo and redo support?
+    copy paste support?
+    subEntrypoints?
+
     Node Server
         Selecting BG pic from pc, loaded through nodejs server, then base64 encoded on UI added to export.
         Save Config to file, load config from file.
@@ -77,6 +81,7 @@ import { EntryPoint, Line, Shape, Shapes } from './DiagramElement';
  * Main Component, will hold the state of the current diagram
  */
 class Core extends React.Component<any,any> {
+    version = "1.0.0"
     constructor(props:any) {
         super(props);
 
@@ -130,7 +135,6 @@ class Core extends React.Component<any,any> {
     
     // User wants to create a new entrypoint
     startEntrypoint(){
-        // create an entrypoint
         let entryPoint = new EntryPoint(this.state._elementsNum);
         entryPoint.setDefaults(this.state._defaultValues);
         this.state.entryPoints.push(entryPoint);
@@ -143,7 +147,6 @@ class Core extends React.Component<any,any> {
                 _elementsNum:state._elementsNum+1
             };
         });
-        // options should display default values,
     }
 
     startLine(){
@@ -187,6 +190,7 @@ class Core extends React.Component<any,any> {
     }
 
     startSelection(){
+        // TODO loop through EP and any EP with no cords 0,0 or size 0,0 and no elements, remove it from the list
         this.setState({
             currentEntryPoint: null,
             currentEl: null,
@@ -217,6 +221,7 @@ class Core extends React.Component<any,any> {
         delete exportValue.currentEl;
         delete exportValue._elementsNum;
         delete exportValue._background;
+        exportValue.version = this.version;
 
         // base64 encode src if its not already base64 encoded.
         if(exportValue.src !== null && exportValue.src.indexOf("data:image") === -1){
