@@ -244,8 +244,27 @@ export class EntryPoint extends Shape {
     }
 
     drawHover(ctx:CanvasRenderingContext2D){
-        super.drawHover(ctx);
+        drawBorder(this.cords.x,this.cords.y,this.size.sizeX,this.size.sizeY,this.strokeWidth,this.hoverBorderColor,null, "", ctx,)
         writeInPixels(this.cords.x, this.cords.y-10, 20, this.name, highlightColor, this.textAlign, this.cords, this.size, ctx);
+    }
+
+    getFill() {
+        if(this.isFilled){
+            if(this._isSelected){
+                return this.selectedFillColor;
+            } else {
+                return this.fillColor;
+            }
+        }
+        return null;
+    }
+
+    getColor() {
+        if(this._isSelected){
+            return this.selectedBorderColor;
+        } else {
+            return this.color;
+        }
     }
 
     mapJson(jsonObj:any) {

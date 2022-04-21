@@ -51,11 +51,13 @@ import { EntryPoint, Line, Shape, Shapes } from './DiagramElement';
         End [] , Shape DDSelect
         Start [] , Shape DDSelect
 
-    copy pasta link? (Highlighter task)
-        Add a button in one of the corners, looks like a copy symbol and copy data to the users board.
-        - add link option to shapes.
+    ~copy pasta link? (Highlighter task)
+        ~Add a button in one of the corners, looks like a copy symbol and copy data to the users board.
+            - implemented with a right click on the element.
+        ~add link option to shapes.
 
     Right click to start a new element of the same type? For improved usability.
+    After dragging and creating the element, the selected element should then have draggable sections in the corners to increase size or x,y
 
     Text
         ~Better positioning and formula
@@ -68,6 +70,7 @@ import { EntryPoint, Line, Shape, Shapes } from './DiagramElement';
         // Can just use default selected EP with no option to hover or select, then its a background and not an EP.
     
     undo and redo support?
+        - Could be implmented with export and import logic, already existing mostly.
     copy paste support?
     subEntrypoints?
 
@@ -134,9 +137,13 @@ class Core extends React.Component<any,any> {
     }
     
     // User wants to create a new entrypoint
-    startEntrypoint(){
+    startEntrypoint() {
+        if(this.state.currentEntryPoint){
+            this.state.currentEntryPoint.setSelected(false);
+        }
         let entryPoint = new EntryPoint(this.state._elementsNum);
         entryPoint.setDefaults(this.state._defaultValues);
+        entryPoint.setSelected(true);
         this.state.entryPoints.push(entryPoint);
         this.setState(function(state:any, props:any) {
             return {
@@ -190,14 +197,31 @@ class Core extends React.Component<any,any> {
     }
 
     startSelection(){
-        // TODO loop through EP and any EP with no cords 0,0 or size 0,0 and no elements, remove it from the list
+        let eps = this.cleanEP();
         this.setState({
             currentEntryPoint: null,
             currentEl: null,
+            entryPoints:eps,
             _selecting:true
         })
     }
+
+    // TODO loop through EP and any EP with no cords 0,0 or size 0,0 and no elements, remove it from the list
+    cleanEP() {
+        let eps = [];
+        for(let i = 0; i < this.state.entryPoints.length;i++){
+            let ep = this.state.entryPoints[i];
+            if(ep.cords.x === 0 && ep.cords.y === 0 && ep.size.sizeX === 0 && ep.size.sizeY === 0){
+                continue;
+            }
+            eps.push(ep);
+            ep.setSelected(false);
+        }
+        return eps;
+    }
+
     selectElement(hovered:Hovered){
+        hovered.ep.setSelected(true);
         this.setState({
             currentEntryPoint: hovered.ep,
             currentEl: hovered.el,
