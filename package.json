@@ -1,5 +1,5 @@
 {
-  "homepage":"http://ShaneWalsh.github.io/pic-highlighter-configurator",
+  "homepage":"https://ShaneWalsh.github.io/pic-highlighter-configurator/",
   "name": "pic-highlighter-configurator",
   "version": "0.1.0",
   "private": true,
@@ -19,7 +19,7 @@
   },
   "scripts": {
     "predeploy":"npm run build",
-    "deploy":"",
+    "deploy":"gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
