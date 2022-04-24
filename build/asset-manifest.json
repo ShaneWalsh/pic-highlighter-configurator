@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/pic-highlighter-configurator/static/css/main.ff418af2.css",
+    "main.js": "/pic-highlighter-configurator/static/js/main.d93c4ab0.js",
+    "static/js/787.dffb4bb8.chunk.js": "/pic-highlighter-configurator/static/js/787.dffb4bb8.chunk.js",
+    "index.html": "/pic-highlighter-configurator/index.html",
+    "main.ff418af2.css.map": "/pic-highlighter-configurator/static/css/main.ff418af2.css.map",
+    "main.d93c4ab0.js.map": "/pic-highlighter-configurator/static/js/main.d93c4ab0.js.map",
+    "787.dffb4bb8.chunk.js.map": "/pic-highlighter-configurator/static/js/787.dffb4bb8.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.ff418af2.css",
+    "static/js/main.d93c4ab0.js"
+  ]
+}
