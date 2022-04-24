@@ -46,7 +46,6 @@ import { EntryPoint, Line, Shape, Shapes } from './DiagramElement';
 
     ~text Align in center
 
-    OOS
     ~Line ArrowHead shape,
         End [] , Shape DDSelect
         Start [] , Shape DDSelect
@@ -56,6 +55,23 @@ import { EntryPoint, Line, Shape, Shapes } from './DiagramElement';
             - implemented with a right click on the element.
         ~add link option to shapes.
 
+    ¬ Adding Background Toggle to Creation, so you can add elements freely that will always be displayed. Not highlight elements bound to entrypoints
+        // Can just use default selected EP with no option to hover or select, then its a background and not an EP.
+    
+    OOS
+    
+    subentryPoint?
+        - on deselect parent, all his children should be deselected. Does not go back up the chain though.
+        - SEP do not know they are SEP.
+
+    undo and redo support?
+        - Could be implmented with export and import logic, already existing mostly.
+    copy paste support?
+    subEntrypoints? 
+
+    github website exposure? React-Pages.
+
+    V1.1
     Right click to start a new element of the same type? For improved usability.
     After dragging and creating the element, the selected element should then have draggable sections in the corners to increase size or x,y
 
@@ -65,14 +81,6 @@ import { EntryPoint, Line, Shape, Shapes } from './DiagramElement';
             various fonts?
 
     To the front, to the back options on selected element. For ordering?
-
-    ¬ Adding Background Toggle to Creation, so you can add elements freely that will always be displayed. Not highlight elements bound to entrypoints
-        // Can just use default selected EP with no option to hover or select, then its a background and not an EP.
-    
-    undo and redo support?
-        - Could be implmented with export and import logic, already existing mostly.
-    copy paste support?
-    subEntrypoints?
 
     Node Server
         Selecting BG pic from pc, loaded through nodejs server, then base64 encoded on UI added to export.
@@ -119,6 +127,7 @@ class Core extends React.Component<any,any> {
             export:""
         };
         this.startEntrypoint = this.startEntrypoint.bind(this);
+        this.startSubEntrypoint = this.startSubEntrypoint.bind(this);
         this.startLine = this.startLine.bind(this);
         this.startShape = this.startShape.bind(this);
         this.startText = this.startText.bind(this);
@@ -145,6 +154,27 @@ class Core extends React.Component<any,any> {
         entryPoint.setDefaults(this.state._defaultValues);
         entryPoint.setSelected(true);
         this.state.entryPoints.push(entryPoint);
+        this.setState(function(state:any, props:any) {
+            return {
+                _selecting:false,
+                currentEntryPoint:entryPoint,
+                entryPoints:state.entryPoints,
+                currentEl:entryPoint,
+                _elementsNum:state._elementsNum+1
+            };
+        });
+    }    
+    
+    // User wants to create a new entrypoint
+    startSubEntrypoint() {
+        if(this.state.currentEntryPoint){
+            this.state.currentEntryPoint.setSelected(false);
+        }
+        let entryPoint = new EntryPoint(this.state._elementsNum, "SEP");
+        entryPoint.name = this.state.currentEntryPoint.name +"-"+ entryPoint.name;
+        entryPoint.setDefaults(this.state._defaultValues);
+        entryPoint.setSelected(true);
+        this.state.currentEntryPoint.elements.push(entryPoint);
         this.setState(function(state:any, props:any) {
             return {
                 _selecting:false,
@@ -348,6 +378,7 @@ class Core extends React.Component<any,any> {
                     <Creation 
                         currentEntryPoint={this.state.currentEntryPoint}
                         startEntrypoint={this.startEntrypoint}
+                        startSubEntrypoint={this.startSubEntrypoint}
                         startLine={this.startLine}
                         startShape={this.startShape}
                         startText={this.startText}

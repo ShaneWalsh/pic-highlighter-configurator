@@ -9,7 +9,8 @@ Export, import into displayer
 
 ## Usage
 Create entrypoints. Elements created will be linked to selected entrypoint.
-To move elements around, click selectElements. Then left click and drag to move. Doubleclick to select element for editing.
+To move elements around, click selectElements. Then left click and drag to move. 
+Doubleclick to select element for editing.
 
 ## OOS
 Editing

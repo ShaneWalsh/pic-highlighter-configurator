@@ -4,6 +4,7 @@ class Creation extends React.Component<any,any> {
   constructor(props:any) {
     super(props);
     this.startEntrypoint = this.startEntrypoint.bind(this);
+    this.startSubEntrypoint = this.startSubEntrypoint.bind(this);
     this.startLine = this.startLine.bind(this);
     this.startShape = this.startShape.bind(this);
     this.startText = this.startText.bind(this);
@@ -11,6 +12,10 @@ class Creation extends React.Component<any,any> {
 
   startEntrypoint(event:any){
     this.props.startEntrypoint();
+  }
+
+  startSubEntrypoint(event:any){
+    this.props.startSubEntrypoint();
   }
 
   startLine(event:any){
@@ -31,7 +36,7 @@ class Creation extends React.Component<any,any> {
           <h5>Creation</h5>
           <div className='row'>
             <button type='button' className='six columns' onClick={this.startEntrypoint}> Entrypoint</button>
-            <button type='button' className='six columns' onClick={this.startEntrypoint} disabled> Sub Entrypoint</button>
+            <button type='button' className='six columns' onClick={this.startSubEntrypoint} disabled={this.props.currentEntryPoint === null}> Sub Entrypoint</button>
           </div>
           <div className='row'>
             <button type='button' className='four columns' onClick={this.startLine} disabled={this.props.currentEntryPoint === null}> Line </button>

@@ -91,7 +91,7 @@ export class Shape extends DiagramElement {
     link:string="";
     text:string="";
     textSize:number = 15;
-    textColor:any = '#333'
+    textColor:any = '#333';
     textAlign:TextAlign = TextAlign.CENTER;
 
     fillColor:string = "#FFFFFF";
@@ -235,11 +235,14 @@ export class EntryPoint extends Shape {
     
     _display=true;
     toggleDisplay(){this._display = !this._display}
+    setSelected(bool:boolean){this._isSelected= bool; this._hoverOverride = true; if(bool){this._display = true;}}
     
     draw(ctx:CanvasRenderingContext2D) {
-        this.elements.forEach( (el:DiagramElement) => {
-            el.draw(ctx)
-        });
+        if(this._display) { 
+            this.elements.forEach( (el:DiagramElement) => {
+                el.draw(ctx)
+            });
+        }
         super.draw(ctx);
     }
 
@@ -285,6 +288,10 @@ export class EntryPoint extends Shape {
                 const shape = new Shape(0);
                 shape.mapJson(obj);
                 this.elements.push(shape);
+            } else if(obj["id"].indexOf("SEP") > -1){
+                const entrypoint = new EntryPoint(0);
+                entrypoint.mapJson(obj);
+                this.elements.push(entrypoint);
             }
         }
         // Dont forget to set backwards compatibility if new variables are added.

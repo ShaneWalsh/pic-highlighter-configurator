@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { EntryPoint } from '../core/DiagramElement';
 import { drawBorder } from '../core/Drawing';
 import { reversed } from '../core/Lib2d';
 
@@ -63,10 +64,8 @@ class Diagram extends React.Component<any,any> {
                 this.state.dragging.el.updateCords({x:cords.x+this.state.draggingXOffset, y:cords.y+this.state.draggingYOffset});
             } else { // else highlight whatever I am hovering over
                 for( let ep of reversed(this.props.entryPoints)) {
-                    if( ep._display ) {
-                        hovered = this.tryFindHover(cords, ep);
-                        if(hovered !== null) break;
-                    }
+                    hovered = this.tryFindHover(cords, ep);
+                    if(hovered !== null) break;
                 }
             }
         }
@@ -82,11 +81,17 @@ class Diagram extends React.Component<any,any> {
      * returns the first element to be hovered on.
      */
     tryFindHover(cords:{x:number, y:number}, ep: any): Hovered {
-        // TODO, loop on these elements backwards, so the latest drawn can be first selected, as elements are sometimes layered.
-        for(let el of reversed(ep.elements)) {
-            for(let hb of el.hitboxes()){
-                if(this.pointInsideSprite(cords,hb)){
-                    return {ep:ep,el:el}; 
+        if( ep._display ) {
+            for(let el of reversed(ep.elements)) {
+                if(el instanceof EntryPoint){ // Handling for SubEntryPoints
+                   let hover = this.tryFindHover(cords, el);
+                   if(hover !== null) return hover;
+                } else {
+                    for(let hb of el.hitboxes()){
+                        if(this.pointInsideSprite(cords,hb)){
+                            return {ep:ep,el:el}; 
+                        }
+                    }
                 }
             }
         }
@@ -184,14 +189,12 @@ class Diagram extends React.Component<any,any> {
         ctx.clearRect(0,0,this.props.width,this.props.height);
         this.drawBase(ctx);
         // Render the current element
-        if(this.props.currentEl){
+        if(this.props.currentEl) {
             this.props.currentEl.draw(this.state.ctx);
         }
         if(this.props.entryPoints) {
             this.props.entryPoints.forEach((el: any) => {
-                if(el._display) {
-                    el.draw(this.state.ctx);
-                }
+                el.draw(this.state.ctx);
             });
         }
         if(this.state.beingHovered !== null) {
