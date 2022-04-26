@@ -72,8 +72,15 @@ import { EntryPoint, Line, Shape, Shapes } from './DiagramElement';
     github website exposure? React-Pages.
 
     V1.1
+    Add Color picker to tool
+    http://casesandberg.github.io/react-color/
+    Add oval shape, Hexagon Shape.
+    Add class shapes, where text auto appears on top, only supports left or center top.
+
     Right click to start a new element of the same type? For improved usability.
     After dragging and creating the element, the selected element should then have draggable sections in the corners to increase size or x,y
+
+    Copy Notification in some form. popup, or floating, disolving update.
 
     Text
         ~Better positioning and formula
@@ -119,7 +126,7 @@ class Core extends React.Component<any,any> {
 
                 fillColor : "#fff",
                 hoverBorderColor :"#77DD66",
-                selectedFillColor :"#fff",
+                selectedFillColor :"#eee",
                 selectedBorderColor :"#265828",
                 backgroundColor :"#F8F8F8"
             },
