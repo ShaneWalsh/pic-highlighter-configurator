@@ -1,4 +1,4 @@
-import { calculateChunks, drawArrowHeads, drawBorder, drawCircle, drawLine, drawShape, writeInPixels } from "./Drawing";
+import { calculateChunks, drawArrowHeads, drawBorder, drawCircle, drawLine, drawOval, drawRoundRect, drawShape, writeInPixels } from "./Drawing";
 
 export enum LineStyle {
     FULL="FULL",
@@ -72,6 +72,8 @@ export class DiagramElement {
 
 export enum Shapes {
     RECT="RECT",
+    ROUNDEDRECT="ROUNDEDRECT",
+    OVAL="OVAL",
     CIRCLE="CIRCLE",
     DIAMOND="DIAMOND",
     NONE="NONE"
@@ -164,6 +166,10 @@ export class Shape extends DiagramElement {
                 this.lineStyle,
                 ctx,
             )
+        } else if(this.shape === Shapes.ROUNDEDRECT){
+            drawRoundRect( this.cords.x, this.cords.y, this.size.sizeX, this.size.sizeY, this.strokeWidth, 5, this.getColor(), this.getFill(), this.lineStyle, ctx )
+        } else if(this.shape === Shapes.OVAL){
+            drawOval( this.cords.x + this.size.sizeX/2 , this.cords.y + this.size.sizeY/2, this.size.sizeX/2, this.size.sizeY/2, this.strokeWidth, this.getColor(), this.getFill(), this.lineStyle, ctx )
         } else if(this.shape === Shapes.DIAMOND){
             const left = {x:this.cords.x, y :this.cords.y+ (this.size.sizeY/2) };
             const top = {x:this.cords.x + (this.size.sizeX/2), y :this.cords.y };
@@ -222,6 +228,7 @@ export class EntryPoint extends Shape {
         this.selectedFillColor = _defaultValues.selectedFillColor;
         this.selectedBorderColor = _defaultValues.selectedBorderColor;
     }
+    shape:Shapes = Shapes.ROUNDEDRECT;
     // All of the elements related to this entrypoint
     elements:DiagramElement[]=[]
 

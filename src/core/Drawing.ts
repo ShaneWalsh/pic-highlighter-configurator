@@ -6,52 +6,52 @@ const reset = (ctx:CanvasRenderingContext2D) => {
 }
 
 export const drawBorder = (x:number,y:number,sizeX:number,sizeY:number, width:number,color:any, fill:any, style:any, ctx:CanvasRenderingContext2D) => {
-    ctx.save();     
-    ctx.beginPath()
-    if(style === "DOTTED") {
-      ctx.setLineDash([5, 5]);
-    }
-    if (fill) {
-      ctx.fillStyle = fill
-      ctx.fillRect(x,y,sizeX,sizeY);
-    }
-    ctx.lineWidth = width;
-    ctx.strokeStyle = color;
-    ctx.strokeRect(x,y,sizeX,sizeY);
-    
-    ctx.closePath()
-    reset(ctx);
-    ctx.restore();
+  ctx.save();     
+  ctx.beginPath()
+  if(style === "DOTTED") {
+    ctx.setLineDash([5, 5]);
+  }
+  if (fill) {
+    ctx.fillStyle = fill
+    ctx.fillRect(x,y,sizeX,sizeY);
+  }
+  ctx.lineWidth = width;
+  ctx.strokeStyle = color;
+  ctx.strokeRect(x,y,sizeX,sizeY);
+  
+  ctx.closePath()
+  reset(ctx);
+  ctx.restore();
 }
 
 export const drawLine = (x:number,y:number,xx:number,yy:number, width:number, color:string, style:any, ctx:CanvasRenderingContext2D) => {
-    ctx.save();    
-    ctx.beginPath();
-    if(style === "DOTTED") {
-      ctx.setLineDash([5, 5]);
-    }
-    ctx.lineWidth = width;
-    ctx.moveTo(x, y);
-    ctx.lineTo(xx, yy);
-    ctx.strokeStyle = color;
-    ctx.stroke();
-    ctx.closePath();
-    ctx.restore();
+  ctx.save();    
+  ctx.beginPath();
+  if(style === "DOTTED") {
+    ctx.setLineDash([5, 5]);
+  }
+  ctx.lineWidth = width;
+  ctx.moveTo(x, y);
+  ctx.lineTo(xx, yy);
+  ctx.strokeStyle = color;
+  ctx.stroke();
+  ctx.closePath();
+  ctx.restore();
 }
 
 export const drawArrowHeads = (x:number,y:number,xx:number,yy:number, width:number,color:string,ctx:CanvasRenderingContext2D, start:boolean, end:boolean, startStyle:any,endStyle:any,startSize:any,endSize:any) => {
-    // draw the starting arrowhead
-    if(start){
-      var startRadians=Math.atan((yy-y)/(xx-x));
-      startRadians+=((xx>x)?-90:90)*Math.PI/180;
-      drawArrowHead(x,y,startRadians,width,color,ctx,startStyle,startSize);
-    }
-    // draw the ending arrowhead
-    if(end){
-      var endRadians=Math.atan((yy-y)/(xx-x));
-      endRadians+=((xx>x)?90:-90)*Math.PI/180;
-      drawArrowHead(xx,yy,endRadians,width,color,ctx,endStyle,endSize);
-    }
+  // draw the starting arrowhead
+  if(start){
+    var startRadians=Math.atan((yy-y)/(xx-x));
+    startRadians+=((xx>x)?-90:90)*Math.PI/180;
+    drawArrowHead(x,y,startRadians,width,color,ctx,startStyle,startSize);
+  }
+  // draw the ending arrowhead
+  if(end){
+    var endRadians=Math.atan((yy-y)/(xx-x));
+    endRadians+=((xx>x)?90:-90)*Math.PI/180;
+    drawArrowHead(xx,yy,endRadians,width,color,ctx,endStyle,endSize);
+  }
 }
 
 export const drawArrowHead = (x:number,y:number,radians:any, width:number,color:string,ctx:CanvasRenderingContext2D, style:any, size:any) => {
@@ -95,23 +95,23 @@ const getSize = (size:any) => {
 }
 
 export const  drawCircle = (x:number, y:number, radius:number, fill:any, stroke:any, strokeWidth:number, style:any, ctx:CanvasRenderingContext2D) => {
-    ctx.save();  
-    ctx.beginPath()
-    if(style === "DOTTED") {
-      ctx.setLineDash([5, 5]);
-    }
-    ctx.arc(x, y, radius, 0, 2 * Math.PI, false)
-    if (fill) {
-      ctx.fillStyle = fill
-      ctx.fill()
-    }
-    if (stroke) {
-      ctx.lineWidth = strokeWidth
-      ctx.strokeStyle = stroke
-      ctx.stroke()
-    }
-    ctx.closePath()
-    ctx.restore();
+  ctx.save();  
+  ctx.beginPath()
+  if(style === "DOTTED") {
+    ctx.setLineDash([5, 5]);
+  }
+  ctx.arc(x, y, radius, 0, 2 * Math.PI, false)
+  if (fill) {
+    ctx.fillStyle = fill
+    ctx.fill()
+  }
+  if (stroke) {
+    ctx.lineWidth = strokeWidth
+    ctx.strokeStyle = stroke
+    ctx.stroke()
+  }
+  ctx.closePath()
+  ctx.restore();
 }
 
 export const drawShape = (cords:{x:number,y:number}[], width:number, color:string, fill:any, style:any, ctx:CanvasRenderingContext2D) => {
@@ -136,6 +136,63 @@ export const drawShape = (cords:{x:number,y:number}[], width:number, color:strin
   ctx.stroke();
   ctx.restore();
 }
+
+export const drawRoundRect = (x:number, y:number, sizeX:number,sizeY:number, width:number, radius:any, color:string, fill:any, style:any, ctx:any) => {
+  ctx.save();  
+  ctx.beginPath();
+  if (typeof radius === 'undefined') {
+    radius = 5;
+  }
+  if (typeof radius === 'number') {
+    radius = {tl: radius, tr: radius, br: radius, bl: radius};
+  } else {
+    var defaultRadius:any = {tl: 0, tr: 0, br: 0, bl: 0};
+    for (var side in defaultRadius) {
+      radius[side] = radius[side] || defaultRadius[side];
+    }
+  }
+  if( style === "DOTTED" ) {
+    ctx.setLineDash([5, 5]);
+  }
+  ctx.lineWidth = width;
+  ctx.moveTo(x + radius.tl, y);
+  ctx.lineTo(x + sizeX - radius.tr, y);
+  ctx.quadraticCurveTo(x + sizeX, y, x + sizeX, y + radius.tr);
+  ctx.lineTo(x + sizeX, y + sizeY - radius.br);
+  ctx.quadraticCurveTo(x + sizeX, y + sizeY, x + sizeX - radius.br, y + sizeY);
+  ctx.lineTo(x + radius.bl, y + sizeY);
+  ctx.quadraticCurveTo(x, y + sizeY, x, y + sizeY - radius.bl);
+  ctx.lineTo(x, y + radius.tl);
+  ctx.quadraticCurveTo(x, y, x + radius.tl, y);
+  ctx.closePath();
+  if (fill) {
+    ctx.fillStyle = fill;
+    ctx.fill();
+  }
+  ctx.strokeStyle = color;
+  ctx.stroke();
+  ctx.restore();
+}
+
+export const drawOval = (x:number, y:number, sizeX:number,sizeY:number, width:number, color:string, fill:any, style:any, ctx:any) => {
+  ctx.save();  
+  ctx.beginPath();
+  if( style === "DOTTED" ) {
+    ctx.setLineDash([5, 5]);
+  }
+  ctx.lineWidth = width;
+  ctx.ellipse(x, y, sizeX, sizeY, 0, 0, Math.PI*2);
+  if (fill) {
+    ctx.fillStyle = fill;
+    ctx.fill();
+  }
+  ctx.strokeStyle = color;
+  ctx.stroke();
+  ctx.restore();
+}
+
+
+
 
 export const writeInPixels = (x:number, y:number, size:number, text:string, color:string, align:string, cords:any, sizes:any, ctx:any) => {
 	//ctx.font = size + "px 'Century Gothic'";

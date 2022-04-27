@@ -60,6 +60,16 @@ import { EntryPoint, Line, Shape, Shapes } from './DiagramElement';
     
     OOS
     
+Front to back, would be very handy when editing.
+Undo would be very handy.
+Auto cache exports in browser, load them up on load?
+Add settings option, so allow resizing in 5px. Or whatever number they want? Default is 1? so as it is now. Might help with uniform shapes though to jump in sizes.
+        ~How to hide Sub entrypoints.
+How to make it clearer to the user what can be selected/hovered?
+        Rounded rect by default for EP, rect for shapes? Subtle difference?
+Little icon for links? Blue arrow > in the bottom so people can see it more clearly.
+
+
     subentryPoint?
         - on deselect parent, all his children should be deselected. Does not go back up the chain though.
         - SEP do not know they are SEP.

@@ -11,6 +11,8 @@ const ShapeOption = (props:any) => {
                         props.elementOptionUpdated();
                     }} className="u-full-width">
                         <option value="RECT">Rect</option>
+                        <option value="ROUNDEDRECT">Rounded Rect</option>
+                        <option value="OVAL">Oval</option>
                         <option value="CIRCLE">Circle</option>
                         <option value="DIAMOND">Diamond</option>
                         <option value="NONE">None</option>
