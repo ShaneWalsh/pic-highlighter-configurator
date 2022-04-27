@@ -50,6 +50,7 @@ export class DiagramElement {
     // When the editor hovers over them in selecting mode
     drawHover(ctx:CanvasRenderingContext2D){}
 
+    isDisplay(){return true}
     setHovered(bool:boolean){this._isHovered= bool; if(!this._isHovered){this._hoverOverride = false}}
     setSelected(bool:boolean){this._isSelected= bool; this._hoverOverride = true;}
     toggleSelected(){this._isSelected = !this._isSelected; this._hoverOverride = true;}
@@ -235,12 +236,15 @@ export class EntryPoint extends Shape {
     
     _display=true;
     toggleDisplay(){this._display = !this._display}
+    isDisplay(){return this._display};
     setSelected(bool:boolean){this._isSelected= bool; this._hoverOverride = true; if(bool){this._display = true;}}
     
     draw(ctx:CanvasRenderingContext2D) {
         if(this._display) { 
             this.elements.forEach( (el:DiagramElement) => {
-                el.draw(ctx)
+                if(el.isDisplay()){
+                    el.draw(ctx);
+                }
             });
         }
         super.draw(ctx);
@@ -268,6 +272,17 @@ export class EntryPoint extends Shape {
         } else {
             return this.color;
         }
+    }
+
+    // TODO should be a variable thats updated when new elements are added/deleted, but then it has to be stripped from the export. Size concerns, uncessary excess data.
+    getSubEntrypoints():EntryPoint[]{
+        let arr:EntryPoint[] = [];
+        this.elements.forEach(el => {
+            if(el instanceof EntryPoint){
+                arr.push(el);
+            }
+        })
+        return arr;
     }
 
     mapJson(jsonObj:any) {

@@ -82,6 +82,9 @@ import { EntryPoint, Line, Shape, Shapes } from './DiagramElement';
 
     Copy Notification in some form. popup, or floating, disolving update.
 
+    Add theme buttons to defaults to set some nice default themes for you?
+        Also go down to shapes and lines?
+
     Text
         ~Better positioning and formula
         alignment support

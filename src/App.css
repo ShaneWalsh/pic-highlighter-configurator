@@ -44,3 +44,7 @@ div.option-div label {
 .active-ep {
   color: green;
 }
+
+.display-span {
+  font-weight: bold;
+}
