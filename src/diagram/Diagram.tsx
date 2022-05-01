@@ -176,12 +176,17 @@ class Diagram extends React.Component<any,any> {
     }
     getCords(e:MouseEvent){
         const v= this.getOffset(this.state.canvas);
-        const x =  Math.floor(e.pageX)-v.left;
-        const y =  Math.floor(e.pageY)-v.top;
+        let x =  Math.floor(e.pageX)-v.left;
+        let y =  Math.floor(e.pageY)-v.top;
+        x = x - (x % this.props.scale)
+        y = y - (y % this.props.scale)
         return {x,y}
     }
     getSizes(e: MouseEvent, cords:any) {
-        return {sizeX:(cords.x-this.state.heldCords.x ),sizeY:(cords.y-this.state.heldCords.y)}
+        let sizes = {sizeX:(cords.x-this.state.heldCords.x ),sizeY:(cords.y-this.state.heldCords.y)};
+        sizes.sizeX = sizes.sizeX - (sizes.sizeX % this.props.scale)
+        sizes.sizeY = sizes.sizeY - (sizes.sizeY % this.props.scale)
+        return sizes
     }
 
     // Draw everything, NO STATE CHANGES!

@@ -29,6 +29,13 @@ const Defaults = (props:any) => {
                 props.defaultsUpdated(defaults);
               }}  className="u-full-width"/>
             </div>
+            <div className="six columns">
+              <label>Move Scale</label>
+              <input type="text" value={props.defaults.scale} onChange={(e) => {
+                const defaults = {...props.defaults, scale:e.target.value}
+                props.defaultsUpdated(defaults);
+              }}  className="u-full-width"/>
+            </div>
           </div>
           <div className='row'>
             <div className="six columns">

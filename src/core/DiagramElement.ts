@@ -474,6 +474,8 @@ export class Line extends DiagramElement {
             yDiff = !yPositive? yDiff *-1:yDiff;
             let xRectSize = xDiff/10;
             let yRectSize = yDiff/10; 
+            xRectSize = xRectSize < 5 ? 5 :xRectSize;
+            yRectSize = yRectSize < 5 ? 5 :yRectSize;
             while (xDiff > 0 && yDiff > 0){
                 hb.push({
                     x:((xPositive)?first.x-xDiff:first.x+xDiff)-5,
