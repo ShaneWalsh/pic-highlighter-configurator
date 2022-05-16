@@ -85,6 +85,7 @@ export enum TextAlign {
     TOPCENTER="TOPCENTER",
     SIDEBARLEFT="SIDEBARLEFT",
     SIDEBARCENTER="SIDEBARCENTER",
+    CODE="CODE",
 }
 
 export class Shape extends DiagramElement {
@@ -503,7 +504,7 @@ export class Line extends DiagramElement {
 
 const highlightColor = "#77DD66";
 
-const elementNames = ['Werewolf','Dragon','Chimera','Loch Ness Monster','Mermaid','Yeti','Basilisk','Sphinx','Medusa','Griffin','Centaur','Hippogriff','Fairy','Kappa','Pegasus',
+export const elementNames = ['Werewolf','Dragon','Chimera','Loch Ness Monster','Mermaid','Yeti','Basilisk','Sphinx','Medusa','Griffin','Centaur','Hippogriff','Fairy','Kappa','Pegasus',
 'Ghoul','Pixie','Cyclops','Redcap','Manticore','Typhon','Sea Serpent','Leprechaun','Fenrir','Hippocampus','Cipactli','Imp','Minotaur','Hydra','Fomorians',
 'Charybdis','Behemoth','Cerberus','Echidna','Adlet','Cacus','Hecatoncheires','Geryon','Scorpion Man','Fachan','Ogre','Humbaba','Scylla','Hadhayosh',
 'Kee-wakw','Abaia','Calygreyhound','Phoenix','Tarasque','Cockatrice','Harpy','Makara','Ammit','Garuda','Winged Lion','Leviathan','Wyvern','Namazu',

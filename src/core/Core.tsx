@@ -4,7 +4,7 @@ import Diagram, { Hovered } from '../diagram/Diagram';
 import Options from '../options/Options';
 import Defaults from '../util/Defaults';
 import Util from '../util/Util';
-import { EntryPoint, Line, Shape, Shapes } from './DiagramElement';
+import { elementNames, EntryPoint, Line, Shape, Shapes, TextAlign } from './DiagramElement';
 
 // TODO interfaces for types!
 // interface Props {
@@ -59,15 +59,19 @@ import { EntryPoint, Line, Shape, Shapes } from './DiagramElement';
         // Can just use default selected EP with no option to hover or select, then its a background and not an EP.
     
     OOS
-    
-Front to back, would be very handy when editing.
-Undo would be very handy.
-Auto cache exports in browser, load them up on load?
-        ~Add settings option, so allow resizing in 5px. Or whatever number they want? Default is 1? so as it is now. Might help with uniform shapes though to jump in sizes.
-        ~How to hide Sub entrypoints.
-How to make it clearer to the user what can be selected/hovered?
-        Rounded rect by default for EP, rect for shapes? Subtle difference?
-Little icon for links? Blue arrow > in the bottom so people can see it more clearly.
+    Code Block
+        Code Text Alignment.
+    Color picker
+    Front to back, would be very handy when editing.
+
+    Undo would be very handy.
+    Auto cache exports in browser, load them up on load?
+        Save all configs you have done on the machine, allow loading them?
+    ~Add settings option, so allow resizing in 5px. Or whatever number they want? Default is 1? so as it is now. Might help with uniform shapes though to jump in sizes.
+    ~How to hide Sub entrypoints.
+    How to make it clearer to the user what can be selected/hovered?
+            Rounded rect by default for EP, rect for shapes? Subtle difference?
+    Little icon for links? Blue arrow > in the bottom so people can see it more clearly.
 
     UI rethink perhaps?
         Add few modes to the diagrammer. Change the Border color based on the mode so its easy to tell.
@@ -126,6 +130,7 @@ class Core extends React.Component<any,any> {
         
 
         this.state = {
+            highlighterName: elementNames[Math.floor(Math.random()*elementNames.length)]+'-'+Date.now(),
             currentEntryPoint: null,
             entryPoints:[],
             currentEl: null,
@@ -157,6 +162,7 @@ class Core extends React.Component<any,any> {
         this.startLine = this.startLine.bind(this);
         this.startShape = this.startShape.bind(this);
         this.startText = this.startText.bind(this);
+        this.startCodeBlock = this.startCodeBlock.bind(this);
 
         this.startSelection = this.startSelection.bind(this);
         this.selectElement = this.selectElement.bind(this);
@@ -252,6 +258,25 @@ class Core extends React.Component<any,any> {
         });
     }
 
+    startCodeBlock() {
+        let shape = new Shape(this.state._elementsNum);
+        shape.setDefaults({...this.state.currentEntryPoint, text:"CODE"});
+        shape.shape = Shapes.RECT;
+        shape.textAlign = TextAlign.CODE;
+        shape.textColor = '#444';
+        shape.fillColor = '#fff';
+        shape.textSize = 18;
+        shape.isFilled = true;
+        this.state.currentEntryPoint.elements.push(shape);
+        this.setState(function(state:any, props:any) {
+            return {
+                _selecting:false,
+                currentEl:shape,
+                _elementsNum:state._elementsNum+1
+            };
+        });
+    }
+
     startSelection(){
         let eps = this.cleanEP();
         this.setState({
@@ -260,6 +285,14 @@ class Core extends React.Component<any,any> {
             entryPoints:eps,
             _selecting:true
         })
+    }
+
+    toFront(){
+        // TODO move current element to the back of whatever array its in
+    }   
+    
+    toBack(){
+        // TODO move current element to the front of whatever array its in
     }
 
     // TODO loop through EP and any EP with no cords 0,0 or size 0,0 and no elements, remove it from the list
@@ -408,6 +441,7 @@ class Core extends React.Component<any,any> {
                         startLine={this.startLine}
                         startShape={this.startShape}
                         startText={this.startText}
+                        startCodeBlock={this.startCodeBlock}
                     />
                     <Options 
                         currentEl={this.state.currentEl}

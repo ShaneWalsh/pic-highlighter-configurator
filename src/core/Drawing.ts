@@ -263,78 +263,88 @@ export const textToChunks = (x:number, y:number, sizeX:number, sizeY:number, tex
  */
 export const calculateChunks = (x:number, y:number, sizeX:number, sizeY:number, textSize:number, text:string, align:string, shape:any) => {
   if(sizeX > 5 && sizeY > 2) {
-    text = text.trim();
-    const len = text.length;
-    let maxLen = Math.floor(sizeX / (textSize/2)) + Math.floor(sizeX/100);
-    if(align === "SIDEBARLEFT" || align === "SIDEBARCENTER") { // the size is actually measured by height when doing sidebar
-      maxLen = Math.floor(sizeY / (textSize/2)) + Math.floor(sizeY/100);
-    }
-    let curLen = 0;
-    let texts:any[] = [];
-    // work out the chunks of text based on the space
-    for(let i =0; curLen < len; i++) {
-      let max = (curLen+maxLen >= len)?len:curLen+maxLen;
-      while(text.charAt(max)!== ' ' && max < len && max > 2){max--;}
-      let txt = text.substring(curLen,max); //.trim();
-
-      // Check for newlines in this text and split on it.
-      let newLineSplits = txt.split('\n');// .map(t => t.trim());
-      if(newLineSplits.length === 1){
-        curLen = max;
-      } else {
-        curLen = curLen + newLineSplits[0].length + 1 // +1 to get past the \n
-      }
-      texts.push(newLineSplits[0]);
-      if(i > 10000) return []; // sanity fallback
-    }
-    texts = texts.map(t => t.trim()).filter(t => t.length > 0); // trim everything. We cannot do it above, because we need the full lenghts for measuring
-    // then do the alignment
-    let chunks:any = [];
-    // for standard style
-    if(align === "TOPLEFT" || align === "SIDEBARLEFT" || align === "SIDEBARCENTER") {
-      let topPadding = Math.round((textSize/100) * 90);
+    if(align === "CODE"){
+      let texts:any[] = text.split("\n");
+      let chunks:any = [];
+      let topPadding = Math.round((textSize/100) * 130);
       for(let i = 0; i < texts.length;i++) {
         chunks.push({x:x + 5,y:y+topPadding+(i*textSize),text:texts[i] });
       }
-    } else if(align === "CENTER") {
-      // TODO
-      let halfText = textSize/2;
-      let startingY = 5 + (sizeY/2);
-      let startingX = (sizeX/2);
-      // Lets work out the starting Y
-      if(texts.length % 2 === 0 && texts.length > 1){ // even
-        let even = texts.length/2;
-        startingY = (startingY+halfText) - (textSize * even);
-      } else if((texts.length % 2 === 1 && texts.length > 1)){
-        let odd = Math.floor(texts.length/2); // round down.
-        startingY = startingY - (textSize * odd);
+      return chunks
+    } else {
+      text = text.trim();
+      const len = text.length;
+      let maxLen = Math.floor(sizeX / (textSize/2)) + Math.floor(sizeX/100);
+      if(align === "SIDEBARLEFT" || align === "SIDEBARCENTER") { // the size is actually measured by height when doing sidebar
+        maxLen = Math.floor(sizeY / (textSize/2)) + Math.floor(sizeY/100);
       }
-      // X will be worked out independently for each line
-      for(let i = 0; i < texts.length;i++) {
-        let txt = texts[i];
-        let centeringAdjustment = 0;
-        if(txt.length < 10) centeringAdjustment = halfText;
-        let percentage = ((txt.length/maxLen)*100); // whats this text % of the total length is this string? Then half it.
-        let widthOffset = ((sizeX/2)/100)*percentage; // now take this half percentage from the startingX which is centered.
-        chunks.push({x:x+(startingX - widthOffset)-centeringAdjustment ,y:y+startingY+(i*textSize),text:texts[i] });
-      }
-    } else if(align === "TOPCENTER") {
-      // TODO
-      let halfText = textSize/2;
-      let startingY = Math.round((textSize/100) * 90);
-      let startingX = (sizeX/2);
-      // X will be worked out independently for each line
-      for(let i = 0; i < texts.length;i++) {
-        let txt = texts[i];
-        let centeringAdjustment = 0;
-        if(txt.length < 10) centeringAdjustment = halfText;
-        let percentage = ((txt.length/maxLen)*100); // whats this text % of the total length is this string? Then half it.
-        let widthOffset = ((sizeX/2)/100)*percentage; // now take this half percentage from the startingX which is centered.
-        chunks.push({x:x+(startingX - widthOffset)-centeringAdjustment ,y:y+startingY+(i*textSize),text:texts[i] });
-      }
-    }
+      let curLen = 0;
+      let texts:any[] = [];
+      // work out the chunks of text based on the space
+      for(let i =0; curLen < len; i++) {
+        let max = (curLen+maxLen >= len)?len:curLen+maxLen;
+        while(text.charAt(max)!== ' ' && max < len && max > 2){max--;}
+        let txt = text.substring(curLen,max); //.trim();
 
-    return chunks;
+        // Check for newlines in this text and split on it.
+        let newLineSplits = txt.split('\n');// .map(t => t.trim());
+        if(newLineSplits.length === 1){
+          curLen = max;
+        } else {
+          curLen = curLen + newLineSplits[0].length + 1 // +1 to get past the \n
+        }
+        texts.push(newLineSplits[0]);
+        if(i > 10000) return []; // sanity fallback
+      }
+      texts = texts.map(t => t.trim()).filter(t => t.length > 0); // trim everything. We cannot do it above, because we need the full lenghts for measuring
+      // then do the alignment
+      let chunks:any = [];
+      // for standard style
+      if(align === "TOPLEFT" || align === "SIDEBARLEFT" || align === "SIDEBARCENTER") {
+        let topPadding = Math.round((textSize/100) * 90);
+        for(let i = 0; i < texts.length;i++) {
+          chunks.push({x:x + 5,y:y+topPadding+(i*textSize),text:texts[i] });
+        }
+      } else if(align === "CENTER") {
+        // TODO
+        let halfText = textSize/2;
+        let startingY = 5 + (sizeY/2);
+        let startingX = (sizeX/2);
+        // Lets work out the starting Y
+        if(texts.length % 2 === 0 && texts.length > 1){ // even
+          let even = texts.length/2;
+          startingY = (startingY+halfText) - (textSize * even);
+        } else if((texts.length % 2 === 1 && texts.length > 1)){
+          let odd = Math.floor(texts.length/2); // round down.
+          startingY = startingY - (textSize * odd);
+        }
+        // X will be worked out independently for each line
+        for(let i = 0; i < texts.length;i++) {
+          let txt = texts[i];
+          let centeringAdjustment = 0;
+          if(txt.length < 10) centeringAdjustment = halfText;
+          let percentage = ((txt.length/maxLen)*100); // whats this text % of the total length is this string? Then half it.
+          let widthOffset = ((sizeX/2)/100)*percentage; // now take this half percentage from the startingX which is centered.
+          chunks.push({x:x+(startingX - widthOffset)-centeringAdjustment ,y:y+startingY+(i*textSize),text:texts[i] });
+        }
+      } else if(align === "TOPCENTER") {
+        // TODO
+        let halfText = textSize/2;
+        let startingY = Math.round((textSize/100) * 90);
+        let startingX = (sizeX/2);
+        // X will be worked out independently for each line
+        for(let i = 0; i < texts.length;i++) {
+          let txt = texts[i];
+          let centeringAdjustment = 0;
+          if(txt.length < 10) centeringAdjustment = halfText;
+          let percentage = ((txt.length/maxLen)*100); // whats this text % of the total length is this string? Then half it.
+          let widthOffset = ((sizeX/2)/100)*percentage; // now take this half percentage from the startingX which is centered.
+          chunks.push({x:x+(startingX - widthOffset)-centeringAdjustment ,y:y+startingY+(i*textSize),text:texts[i] });
+        }
+      }
+
+      return chunks;
+    }
   } else {
     return [];
   }

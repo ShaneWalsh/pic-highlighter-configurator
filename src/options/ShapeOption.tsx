@@ -93,6 +93,7 @@ const ShapeOption = (props:any) => {
                         <option value="TOPCENTER">Top Center</option>
                         <option value="SIDEBARLEFT">Sidebar Left</option>
                         <option value="SIDEBARCENTER">Sidebar Center</option>
+                        <option value="CODE">Code Block</option>
                     </select>
                 </div>
             </div>
