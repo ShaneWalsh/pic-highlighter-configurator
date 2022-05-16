@@ -59,8 +59,8 @@ import { elementNames, EntryPoint, Line, Shape, Shapes, TextAlign } from './Diag
         // Can just use default selected EP with no option to hover or select, then its a background and not an EP.
     
     OOS
-    Code Block
-        Code Text Alignment.
+    ~ Code Block
+        ~ Code Text Alignment.
     Color picker
     Front to back, would be very handy when editing.
 

@@ -8,7 +8,7 @@
 }
 
 #left {
-  width: 400px;
+  width: 450px;
   overflow-y: scroll;
   height: 900px;
 }
@@ -16,7 +16,7 @@
 #diagram {
   position: absolute;
   top: 0px;
-  left: 400px;
+  left: 450px;
 }
 
 .danger-zone {
@@ -47,4 +47,9 @@ div.option-div label {
 
 .display-span {
   font-weight: bold;
+}
+
+.github-picker {
+  margin-top: 15px; 
+  margin-bottom: 2px;
 }

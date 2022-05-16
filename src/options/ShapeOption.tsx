@@ -1,4 +1,6 @@
 import * as React from 'react'
+import { GithubPicker } from 'react-color';
+import { BlockColors } from './BlockColors';
 
 const ShapeOption = (props:any) => {
     return (
@@ -19,9 +21,9 @@ const ShapeOption = (props:any) => {
                     </select>
                 </div>
                 <div className="six columns">
-                    <label>Color</label>
-                    <input type="text" value={props.currentEl.color} onChange={(e) => {
-                        props.currentEl.color = e.target.value
+                    <label>Link</label>
+                    <input type="text" value={props.currentEl.link} onChange={(e) => {
+                        props.currentEl.link = e.target.value;
                         props.elementOptionUpdated();
                     }}  className="u-full-width"/>
                 </div>
@@ -47,38 +49,65 @@ const ShapeOption = (props:any) => {
                 </div>
             </div>
             <div className="row">
-                <div className="six columns">
-                    <label>Link</label>
-                    <input type="text" value={props.currentEl.link} onChange={(e) => {
-                        props.currentEl.link = e.target.value;
+                <div className="three columns">
+                    <label>Color</label>
+                    <input type="text" value={props.currentEl.color} onChange={(e) => {
+                        props.currentEl.color = e.target.value
                         props.elementOptionUpdated();
                     }}  className="u-full-width"/>
+                    
+                </div>
+                <div className="nine columns">
+                <GithubPicker 
+                        width='300px'
+                        color={props.currentEl.color}
+                        colors={BlockColors}
+                        triangle='hide'
+                        onChangeComplete={(color) => {
+                            props.currentEl.color = color.hex;
+                            props.elementOptionUpdated();
+                        }}
+                    />
                 </div>
             </div>
 
             <div className="row">
-                <div className="six columns">
+                <div className="twelve columns">
                     <label>Text</label>
                     <textarea value={props.currentEl.text} onChange={(e) => {
                         props.currentEl.updateText(e.target.value)
                         props.elementOptionUpdated();
                     }}  className="u-full-width"/>
                 </div>
-                <div className="six columns">
-                    <label>Text Size</label>
-                    <input type="text" value={props.currentEl.textSize} onChange={(e) => {
-                        props.currentEl.textSize = Number(e.target.value);
-                        props.currentEl.updateText(props.currentEl.text)
-                        props.elementOptionUpdated();
-                    }}  className="u-full-width"/>
-                </div>
+                
             </div>
 
             <div className="row">
                 <div className="six columns">
                     <label>Text Color</label>
+                    <GithubPicker 
+                        color={props.currentEl.textColor}
+                        onChangeComplete={(color) => {
+                            props.currentEl.textColor = color.hex;
+                            props.elementOptionUpdated();
+                        }}
+                    />
+                </div>
+                <div className="six columns">
                     <input type="text" value={props.currentEl.textColor} onChange={(e) => {
                         props.currentEl.textColor = e.target.value;
+                        props.elementOptionUpdated();
+                    }}  className="u-full-width"/>
+                </div>
+                
+            </div>
+
+            <div className="row">
+                <div className="six columns">
+                    <label>Text Size</label>
+                    <input type="text" value={props.currentEl.textSize} onChange={(e) => {
+                        props.currentEl.textSize = Number(e.target.value);
+                        props.currentEl.updateText(props.currentEl.text)
                         props.elementOptionUpdated();
                     }}  className="u-full-width"/>
                 </div>
@@ -97,15 +126,7 @@ const ShapeOption = (props:any) => {
                     </select>
                 </div>
             </div>
-
             <div className="row">
-                <div className="six columns">
-                    <label>Fill Color</label>
-                    <input type="text" value={props.currentEl.fillColor} onChange={(e) => {
-                        props.currentEl.fillColor = e.target.value;
-                        props.elementOptionUpdated();
-                    }}  className="u-full-width"/>
-                </div>
                 <div className="six columns">
                     <label className="label-checkbox">Fill</label>
                     <input type="checkbox" 
@@ -115,6 +136,24 @@ const ShapeOption = (props:any) => {
                             props.elementOptionUpdated();
                         }}
                     />
+                </div>
+            </div>
+            <div className="row">
+                <div className="six columns">
+                    <label>Fill Color</label>
+                    <GithubPicker 
+                        color={props.currentEl.fillColor}
+                        onChangeComplete={(color) => {
+                            props.currentEl.fillColor = color.hex;
+                            props.elementOptionUpdated();
+                        }}
+                    />
+                </div>
+                <div className="six columns">
+                    <input type="text" value={props.currentEl.fillColor} onChange={(e) => {
+                        props.currentEl.fillColor = e.target.value;
+                        props.elementOptionUpdated();
+                    }}  className="u-full-width"/>
                 </div>
             </div>
 
