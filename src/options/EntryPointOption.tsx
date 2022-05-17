@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { GithubPicker } from 'react-color';
+import { BlockColors } from '../core/Lookups';
 import ShapeOption from './ShapeOption';
 
 const EntryPointOption = (props:any) => {
@@ -51,75 +52,65 @@ const EntryPointOption = (props:any) => {
             <ShapeOption currentEl={props.currentEl} elementOptionUpdated={props.elementOptionUpdated}/>
 
             <div className="row">
-                <div className="six columns">
+                <div className="three columns">
                     <label>Hover Border Color</label>
-                    <GithubPicker 
-                        color={props.currentEl.hoverBorderColor}
-                        width={'250px'}
-                        colors={['#B80000', '#DB3E00', '#FCCB00', '#008B02', '#006B76', '#1273DE', '#004DCF', '#5300EB', '#EB9694', '#FAD0C3', '#FEF3BD', '#C1E1C5', '#BEDADC', '#C4DEF6', '#BED3F3', '#D4C4FB', '#eeeeee']}
-                        onChangeComplete={(color) => {
-                            props.currentEl.hoverBorderColor = color.hex;
-                            props.elementOptionUpdated();
-                        }}/>
-                </div>
-                <div className="six columns">
                     <input type="text" value={props.currentEl.hoverBorderColor} onChange={(e) => {
                         props.currentEl.hoverBorderColor = e.target.value;
                         props.elementOptionUpdated();
                     }}  className="u-full-width"/>
                 </div>
-            </div>
-            <div className="row">
-                <div className="six columns">
-                    <label>Selected Fill</label>
+                <div className="nine columns">
                     <GithubPicker 
-                        color={props.currentEl.selectedFillColor}
+                        width='300px'
+                        color={props.currentEl.hoverBorderColor}
+                        colors={BlockColors}
+                        triangle='hide'
                         onChangeComplete={(color) => {
-                            props.currentEl.selectedFillColor = color.hex;
+                            props.currentEl.hoverBorderColor = color.hex;
                             props.elementOptionUpdated();
                         }} />
                 </div>
-                <div className="six columns">
+            </div>
+            <div className="row">
+                <div className="three columns">
+                    <label>Selected Fill</label>
                     <input type="text" value={props.currentEl.selectedFillColor} onChange={(e) => {
                         props.currentEl.selectedFillColor = e.target.value;
                         props.elementOptionUpdated();
                     }}  className="u-full-width"/>
                 </div>
-            </div>
-            <div className="row">
-                <div className="six columns">
-                    <label>Selected Border</label>
+                <div className="nine columns">
                     <GithubPicker 
-                        color={props.currentEl.selectedBorderColor}
+                        width='300px'
+                        color={props.currentEl.selectedFillColor}
+                        colors={BlockColors}
+                        triangle='hide'
                         onChangeComplete={(color) => {
-                            props.currentEl.selectedBorderColor = color.hex;
+                            props.currentEl.selectedFillColor = color.hex;
                             props.elementOptionUpdated();
                         }} />
                 </div>
-                <div className="six columns">
+            </div>
+            <div className="row">
+                <div className="three columns">
+                    <label>Selected Border</label>
                     <input type="text" value={props.currentEl.selectedBorderColor} onChange={(e) => {
                         props.currentEl.selectedBorderColor = e.target.value;
                         props.elementOptionUpdated();
                     }}  className="u-full-width"/>
                 </div>
+                <div className="nine columns">
+                    <GithubPicker 
+                        width='300px'
+                        color={props.currentEl.selectedBorderColor}
+                        colors={BlockColors}
+                        triangle='hide'
+                        onChangeComplete={(color) => {
+                            props.currentEl.selectedBorderColor = color.hex;
+                            props.elementOptionUpdated();
+                        }} />
+                </div>
             </div>
-            {/* <div className="row">
-                <div className="six columns">
-                    <label>Color</label>
-                    <input type="text" value={props.currentEl.color} onChange={(e) => {
-                        props.currentEl.color = e.target.value
-                        props.elementOptionUpdated();
-                        }}  className="u-full-width"/>
-                </div>
-                <div className="six columns">
-                    <label>Text</label>
-                    <input type="text" value={props.currentEl.text} onChange={(e) =>  {
-                        props.currentEl.updateText(e.target.value)
-                        props.elementOptionUpdated();
-                        }}
-                     className="u-full-width"/>
-                </div>
-            </div> */}
             
         </div>
     )

@@ -35,9 +35,13 @@ class Util extends React.Component<any,any> {
           <h5>Util</h5>
           <div className='row'>
             <button type='button' onClick={this.performReset} className="danger-zone"> Reset </button>
+            {/* // TODO implement this, remove from Local Storage */}
+            <button type='button' onClick={this.performReset} className="danger-zone"> Clear From Cache </button>
             <button type='button' onClick={this.performExport}> Export </button>
             <input type="text" value={this.props.export} className="u-full-width"/>
             <button type='button' onClick={this.performImport}> Import </button>
+            <input type="text" value={this.state.import} onChange={this.handleImport} className="u-full-width"/>
+            <h5>Select Old Config</h5>
             <input type="text" value={this.state.import} onChange={this.handleImport} className="u-full-width"/>
           </div>
       </div>

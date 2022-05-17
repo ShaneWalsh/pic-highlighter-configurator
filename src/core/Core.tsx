@@ -4,7 +4,8 @@ import Diagram, { Hovered } from '../diagram/Diagram';
 import Options from '../options/Options';
 import Defaults from '../util/Defaults';
 import Util from '../util/Util';
-import { elementNames, EntryPoint, Line, Shape, Shapes, TextAlign } from './DiagramElement';
+import { EntryPoint, Line, Shape, Shapes, TextAlign } from './DiagramElement';
+import { elementNames } from './Lookups';
 
 // TODO interfaces for types!
 // interface Props {
@@ -61,12 +62,14 @@ import { elementNames, EntryPoint, Line, Shape, Shapes, TextAlign } from './Diag
     OOS
     ~ Code Block
         ~ Code Text Alignment.
-    Color picker
+    ~ Color picker
     Front to back, would be very handy when editing.
-
-    Undo would be very handy.
-    Auto cache exports in browser, load them up on load?
-        Save all configs you have done on the machine, allow loading them?
+    ~ Name Diagrams
+        Auto cache exports in browser, load them up on load? Allow the user to select them from a dropdown?
+            Save all configs you have done on the machine, allow loading them?
+        Undo would be very handy.
+            Keep Track of all exports/changes in local, so can roll back.
+    
     ~Add settings option, so allow resizing in 5px. Or whatever number they want? Default is 1? so as it is now. Might help with uniform shapes though to jump in sizes.
     ~How to hide Sub entrypoints.
     How to make it clearer to the user what can be selected/hovered?
@@ -115,6 +118,24 @@ import { elementNames, EntryPoint, Line, Shape, Shapes, TextAlign } from './Diag
         Selecting BG pic from pc, loaded through nodejs server, then base64 encoded on UI added to export.
         Save Config to file, load config from file.
 
+    Usage Feedback
+        ~Add Text to text by default so you can see it.
+        Line Selection… PLEASE!
+        Add Pic Export, DL
+        A little Awkward at the moment to move around, having to click the select element a lot. I would rather it changed intiutively.
+            Also being able to drag elements while still editing the selected element would be cool. 
+            Resizing required to resolve alot of the above I think.
+                Maybe Try and copy how Draw.io does it, likely its well designed.
+        Line to Shape connection points? 
+        Shape to EP conversion Button?
+        UNDO
+        Shapes
+            DB Shape is a must have
+        Arrows
+            To many (To-Many Arrow is an inverted Arrow….)
+        Middle Mouse Press and Drag, to move EVERYTHING
+        Selection Drag to Move All Selected Elements
+
 */
 
 /**
@@ -122,15 +143,15 @@ import { elementNames, EntryPoint, Line, Shape, Shapes, TextAlign } from './Diag
  */
 class Core extends React.Component<any,any> {
     version = "1.0.0"
+    undoStack:any = [];
+
     constructor(props:any) {
         super(props);
 
         let src = null;//'https://i.ibb.co/ThXk4sV/class.jpg';
         let background = this.loadImage(src);
-        
 
         this.state = {
-            highlighterName: elementNames[Math.floor(Math.random()*elementNames.length)]+'-'+Date.now(),
             currentEntryPoint: null,
             entryPoints:[],
             currentEl: null,
@@ -138,6 +159,7 @@ class Core extends React.Component<any,any> {
             _background:background, // image
             _elementsNum:0,
             _defaultValues:{
+                highlighterName: elementNames[Math.floor(Math.random()*elementNames.length)]+'-'+Date.now(),
                 width : 1024,
                 height : 800,
                 scale : 4, // how many pixels each is resizing is by.
@@ -170,13 +192,19 @@ class Core extends React.Component<any,any> {
         this.performExport = this.performExport.bind(this);
         this.performImport = this.performImport.bind(this);
         this.performReset = this.performReset.bind(this);
+        this.performUndo = this.performUndo.bind(this);
 
         this.toggleDisplay = this.toggleDisplay.bind(this);
         this.performDeleteElement = this.performDeleteElement.bind(this);
         this.elementOptionUpdated = this.elementOptionUpdated.bind(this);
         this.defaultsUpdated = this.defaultsUpdated.bind(this);
     }
-    
+    componentDidMount() {
+        let latestConfig:any = localStorage.getItem("latest");
+        if(latestConfig && latestConfig.length > 0){
+            this.performImport(latestConfig)
+        }
+    }
     // User wants to create a new entrypoint
     startEntrypoint() {
         if(this.state.currentEntryPoint){
@@ -195,6 +223,7 @@ class Core extends React.Component<any,any> {
                 _elementsNum:state._elementsNum+1
             };
         });
+        this.triggerCache();
     }    
     
     // User wants to create a new entrypoint
@@ -216,6 +245,7 @@ class Core extends React.Component<any,any> {
                 _elementsNum:state._elementsNum+1
             };
         });
+        this.triggerCache();
     }
 
     startLine(){
@@ -229,6 +259,7 @@ class Core extends React.Component<any,any> {
                 _elementsNum:state._elementsNum+1
             };
         });
+        this.triggerCache();
     }
 
     startShape(){
@@ -242,12 +273,14 @@ class Core extends React.Component<any,any> {
                 _elementsNum:state._elementsNum+1
             };
         });
+        this.triggerCache();
     }
 
     startText(){
         let shape = new Shape(this.state._elementsNum);
         shape.setDefaults({...this.state.currentEntryPoint, text:""});
         shape.shape = Shapes.NONE;
+        shape.text = "Text";
         this.state.currentEntryPoint.elements.push(shape);
         this.setState(function(state:any, props:any) {
             return {
@@ -256,6 +289,7 @@ class Core extends React.Component<any,any> {
                 _elementsNum:state._elementsNum+1
             };
         });
+        this.triggerCache();
     }
 
     startCodeBlock() {
@@ -275,6 +309,7 @@ class Core extends React.Component<any,any> {
                 _elementsNum:state._elementsNum+1
             };
         });
+        this.triggerCache();
     }
 
     startSelection(){
@@ -284,7 +319,8 @@ class Core extends React.Component<any,any> {
             currentEl: null,
             entryPoints:eps,
             _selecting:true
-        })
+        });
+        this.triggerCache();
     }
 
     toFront(){
@@ -315,17 +351,18 @@ class Core extends React.Component<any,any> {
             currentEntryPoint: hovered.ep,
             currentEl: hovered.el,
             _selecting:false
-        })
+        });
+        this.triggerCache();
     }
-
+    
     elementOptionUpdated(){ // hack to trigger a state change for any field change
         this.setState({currentEl:this.state.currentEl});
     }    
-
+    
     defaultsUpdated(defaults:any){ // hack to trigger a state change for any field change
         this.setState({_defaultValues:defaults});
     }
-
+    
     performExport(){
         console.log(JSON.stringify(this.state));
         let exportValue = {...this.state};
@@ -335,7 +372,7 @@ class Core extends React.Component<any,any> {
         delete exportValue._elementsNum;
         delete exportValue._background;
         exportValue.version = this.version;
-
+        
         // base64 encode src if its not already base64 encoded.
         if(exportValue.src !== null && exportValue.src.indexOf("data:image") === -1){
             let image = new Image();
@@ -353,7 +390,7 @@ class Core extends React.Component<any,any> {
             });
         }
     }
-
+    
     imgToBase64(img:any) {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
@@ -362,7 +399,7 @@ class Core extends React.Component<any,any> {
         ctx.drawImage(img, 0, 0);
         return canvas.toDataURL();
     }
-
+    
     // import logic to map json to system entities
     performImport(importValue:any){
         const jsonObj = JSON.parse(importValue);
@@ -373,6 +410,7 @@ class Core extends React.Component<any,any> {
             ep.mapJson(element)
             newState.push(ep)
         }
+        this.clearStack();
         this.setState({
             currentEntryPoint: null,
             currentEl: null,
@@ -418,6 +456,39 @@ class Core extends React.Component<any,any> {
             entryPoints:[],
             currentEl: null,
         });
+        this.clearStack();
+    }
+    
+    /**
+     * trigger all caching logic, stack for undo and local storage for reloading later.
+     */
+    triggerCache() {
+        this.performExport();
+        this.cacheLocalStorage();
+        this.cacheUndoStack();
+    }
+
+    cacheUndoStack() {
+        this.undoStack.push(this.state.export);
+    }
+
+    performUndo(){
+        if(this.undoStack.length > 0){
+            let v = this.undoStack.pop();
+            this.performImport(v);
+        }
+    }
+
+    clearStack(){
+        this.undoStack = [];
+    }
+
+    /**
+     * Will get a freash 
+     */
+    cacheLocalStorage() {
+        localStorage.setItem(this.state._defaultValues.highlighterName, this.state.export);
+        localStorage.setItem("latest", this.state.export);
     }
     // TODO work out a better way to do this checkbox change handling.
     // Currently I have to pass the click evnet all the way up here so I can trigger a state change, to trigger a rerender.
@@ -465,6 +536,7 @@ class Core extends React.Component<any,any> {
                     <Diagram
                         selecting={this.state._selecting}
                         selectElement={this.selectElement}
+                        performUndo={this.performUndo}
                         backgroundColor={this.state._defaultValues.backgroundColor}
                         background={this.state._background}
                         width={this.state._defaultValues.width}

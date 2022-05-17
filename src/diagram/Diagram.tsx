@@ -1,4 +1,6 @@
+import { stringify } from 'querystring';
 import * as React from 'react'
+import { isIfStatement } from 'typescript';
 import { EntryPoint } from '../core/DiagramElement';
 import { drawBorder } from '../core/Drawing';
 import { reversed } from '../core/Lib2d';
@@ -18,7 +20,9 @@ class Diagram extends React.Component<any,any> {
 
         dragging:null,
         draggingXOffset:null,
-        draggingYOffset:null
+        draggingYOffset:null,
+
+        keyPressed:[]
       };
       this.updateMousePosition = this.updateMousePosition.bind(this);
       this.mouseClick = this.mouseClick.bind(this);
@@ -37,6 +41,9 @@ class Diagram extends React.Component<any,any> {
         canvasRef.addEventListener("mouseup", this.mouseClickRelease, false);
         canvasRef.addEventListener("contextmenu", this.rightClickContext, false);
 
+        document.addEventListener("keydown", this.keyDown.bind(this), false);
+        document.addEventListener("keyup", this.keyUp.bind(this), false);
+
         this.drawBase(canvasCtx);
         
         this.setState({
@@ -48,6 +55,35 @@ class Diagram extends React.Component<any,any> {
 
     componentWillUnmount() {
       document.removeEventListener("mousemove",this.updateMousePosition);
+      document.removeEventListener("dblclick", this.doubleClick);
+      document.removeEventListener("mousedown", this.mouseClick);
+      document.removeEventListener("mouseup", this.mouseClickRelease);
+      document.removeEventListener("contextmenu", this.rightClickContext);
+
+      document.removeEventListener("keydown", this.keyDown);
+      document.removeEventListener("keyup", this.keyUp);
+    }
+
+    keyDown(event:KeyboardEvent) {
+        this.setState(function(state:any, props:any) {
+            state.keyPressed.push(event.key);
+            return {
+                keyPressed:state.keyPressed
+            };
+        });
+    }
+
+    keyUp(event:KeyboardEvent) {
+        var name = event.key;
+        if (name === 'z' && this.state.keyPressed.indexOf('Control') > -1) {
+            this.props.performUndo();
+        }
+        this.setState(function(state:any, props:any) {
+            let arr:any = state.keyPressed.filter((key: string) => key !== event.key)
+            return {
+                keyPressed:arr
+            };
+        });
     }
 
     updateMousePosition(e:MouseEvent) {

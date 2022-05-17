@@ -6,6 +6,15 @@ const Defaults = (props:any) => {
           <h5>Default Settings</h5>
 
           <div className='row'>
+            <div className="twelve columns">
+              <label>Highlighter Name</label>
+              <input type="text" value={props.defaults.highlighterName} onChange={(e) => {
+                const defaults = {...props.defaults, highlighterName:e.target.value}
+                props.defaultsUpdated(defaults);
+              }}  className="u-full-width"/>
+            </div>
+          </div>
+          <div className='row'>
             <div className="six columns">
               <label>Canvas Width</label>
               <input type="text" value={props.defaults.width} onChange={(e) => {

@@ -1,4 +1,5 @@
 import { calculateChunks, drawArrowHeads, drawBorder, drawCircle, drawLine, drawOval, drawRoundRect, drawShape, writeInPixels } from "./Drawing";
+import { elementNames } from "./Lookups";
 
 export enum LineStyle {
     FULL="FULL",
@@ -504,10 +505,3 @@ export class Line extends DiagramElement {
 
 const highlightColor = "#77DD66";
 
-export const elementNames = ['Werewolf','Dragon','Chimera','Loch Ness Monster','Mermaid','Yeti','Basilisk','Sphinx','Medusa','Griffin','Centaur','Hippogriff','Fairy','Kappa','Pegasus',
-'Ghoul','Pixie','Cyclops','Redcap','Manticore','Typhon','Sea Serpent','Leprechaun','Fenrir','Hippocampus','Cipactli','Imp','Minotaur','Hydra','Fomorians',
-'Charybdis','Behemoth','Cerberus','Echidna','Adlet','Cacus','Hecatoncheires','Geryon','Scorpion Man','Fachan','Ogre','Humbaba','Scylla','Hadhayosh',
-'Kee-wakw','Abaia','Calygreyhound','Phoenix','Tarasque','Cockatrice','Harpy','Makara','Ammit','Garuda','Winged Lion','Leviathan','Wyvern','Namazu',
-'Centicore','Elf','Mares of Diomedes','Serpopard','Antero','Indus','Ahuizotl','Psoglav','Aspidochelone','Sirin','Cynocephaly','Myrmecoleon','Argus Panoptes',
-'Ekek','Oozlum Bird','Hellhound','Monocerus','Leper','Ophiotaurus','Unktehila','Capacun','Mapinguari','Yali','Fish-Man','Asakku','Sleipnir',
-'Ushi-oni','Longma','Nguruvilu','Lou Carcolh','Yacuruna','Bashee','Teju Jagua','Indrik','Onocentaur','Simargl','Erchitu','Huay Chay','Laestrygonians','Mboi Tui'];
