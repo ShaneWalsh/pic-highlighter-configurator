@@ -43,13 +43,13 @@ export const drawArrowHeads = (x:number,y:number,xx:number,yy:number, width:numb
   // draw the starting arrowhead
   if(start){
     var startRadians=Math.atan((yy-y)/(xx-x));
-    startRadians+=((xx>x)?-90:90)*Math.PI/180;
+    startRadians+=((xx>x || xx === x)?-90:90)*Math.PI/180;
     drawArrowHead(x,y,startRadians,width,color,ctx,startStyle,startSize);
   }
   // draw the ending arrowhead
   if(end){
     var endRadians=Math.atan((yy-y)/(xx-x));
-    endRadians+=((xx>x)?90:-90)*Math.PI/180;
+    endRadians+=((xx>x || xx === x)?90:-90)*Math.PI/180;
     drawArrowHead(xx,yy,endRadians,width,color,ctx,endStyle,endSize);
   }
 }

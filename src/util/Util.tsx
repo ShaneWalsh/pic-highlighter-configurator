@@ -42,6 +42,9 @@ class Util extends React.Component<any,any> {
             <button type='button' onClick={this.performImport}> Import </button>
             <input type="text" value={this.state.import} onChange={this.handleImport} className="u-full-width"/>
             <h5>Select Old Config</h5>
+            {/* TODO add logic to load keys, and present to user to select and load a config.
+              Object.entries(localStorage) 
+            */}
             <input type="text" value={this.state.import} onChange={this.handleImport} className="u-full-width"/>
           </div>
       </div>

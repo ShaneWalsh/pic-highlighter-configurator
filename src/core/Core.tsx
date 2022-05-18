@@ -65,10 +65,11 @@ import { elementNames } from './Lookups';
     ~ Color picker
     Front to back, would be very handy when editing.
     ~ Name Diagrams
-        Auto cache exports in browser, load them up on load? Allow the user to select them from a dropdown?
-            Save all configs you have done on the machine, allow loading them?
+        ~ Auto cache exports in browser, load them up on load? Allow the user to select them from a dropdown?
+           Save all configs you have done on the machine, allow loading them?
         Undo would be very handy.
-            Keep Track of all exports/changes in local, so can roll back.
+            ~ Keep Track of all exports/changes in local, so can roll back.
+            Needs more hooks for the Engine, like clicks, attribute changes.
     
     ~Add settings option, so allow resizing in 5px. Or whatever number they want? Default is 1? so as it is now. Might help with uniform shapes though to jump in sizes.
     ~How to hide Sub entrypoints.

@@ -1,4 +1,5 @@
 import { calculateChunks, drawArrowHeads, drawBorder, drawCircle, drawLine, drawOval, drawRoundRect, drawShape, writeInPixels } from "./Drawing";
+import { MoveDirection } from "./Lib2d";
 import { elementNames } from "./Lookups";
 
 export enum LineStyle {
@@ -463,29 +464,22 @@ export class Line extends DiagramElement {
         }
     }
 
+
     hitboxes(){
-        let hb = [];
+        let hb:any = [];
         let first = this.cords;
-        for(let i = 0; i < this.secondaryCords.length; i++){
+        const boxSize = 10;
+        for(let i = 0; i < this.secondaryCords.length; i++) {
             let sec = this.secondaryCords[i];
-            let xDiff = first.x - sec.x; // these will be positives in the end, like counters for the remaining distance.
-            let yDiff = first.y - sec.y;
-            let xPositive= xDiff > -1;
-            let yPositive= yDiff > -1;
-            xDiff = !xPositive? xDiff *-1:xDiff;
-            yDiff = !yPositive? yDiff *-1:yDiff;
-            let xRectSize = xDiff/10;
-            let yRectSize = yDiff/10; 
-            xRectSize = xRectSize < 5 ? 5 :xRectSize;
-            yRectSize = yRectSize < 5 ? 5 :yRectSize;
-            while (xDiff > 0 && yDiff > 0){
-                hb.push({
-                    x:((xPositive)?first.x-xDiff:first.x+xDiff)-5,
-                    y:((yPositive)?first.y-yDiff:first.y+yDiff)-5,
-                    sizeX:xRectSize+5,
-                    sizeY:yRectSize+5});
-                xDiff = xDiff -xRectSize;
-                yDiff = yDiff -yRectSize;
+            var direction = new MoveDirection(10, first,sec);
+            hb.push({ x:sec.x,y:sec.y,sizeX:boxSize,sizeY:boxSize});
+            while(!direction.isComplete()) {
+                let cords = direction.update();
+                hb.push({ 
+                        x:cords.x,
+                        y:cords.y,
+                        sizeX:boxSize,
+                        sizeY:boxSize}); 
             }
             first = sec;
         }
