@@ -156,7 +156,8 @@ class Core extends React.Component<any,any> {
             currentEntryPoint: null,
             entryPoints:[],
             currentEl: null,
-            _selecting:false,
+            _selecting:true,
+            _placing:false,
             _background:background, // image
             _elementsNum:0,
             _defaultValues:{
@@ -189,6 +190,7 @@ class Core extends React.Component<any,any> {
 
         this.startSelection = this.startSelection.bind(this);
         this.selectElement = this.selectElement.bind(this);
+        this.placedElement = this.placedElement.bind(this);
 
         this.performExport = this.performExport.bind(this);
         this.performImport = this.performImport.bind(this);
@@ -218,6 +220,7 @@ class Core extends React.Component<any,any> {
         this.setState(function(state:any, props:any) {
             return {
                 _selecting:false,
+                _placing:true,
                 currentEntryPoint:entryPoint,
                 entryPoints:state.entryPoints,
                 currentEl:entryPoint,
@@ -240,6 +243,7 @@ class Core extends React.Component<any,any> {
         this.setState(function(state:any, props:any) {
             return {
                 _selecting:false,
+                _placing:true,
                 currentEntryPoint:entryPoint,
                 entryPoints:state.entryPoints,
                 currentEl:entryPoint,
@@ -256,6 +260,7 @@ class Core extends React.Component<any,any> {
         this.setState(function(state:any, props:any) {
             return {
                 _selecting:false,
+                _placing:true,
                 currentEl:line,
                 _elementsNum:state._elementsNum+1
             };
@@ -270,6 +275,7 @@ class Core extends React.Component<any,any> {
         this.setState(function(state:any, props:any) {
             return {
                 _selecting:false,
+                _placing:true,
                 currentEl:shape,
                 _elementsNum:state._elementsNum+1
             };
@@ -286,6 +292,7 @@ class Core extends React.Component<any,any> {
         this.setState(function(state:any, props:any) {
             return {
                 _selecting:false,
+                _placing:true,
                 currentEl:shape,
                 _elementsNum:state._elementsNum+1
             };
@@ -306,6 +313,7 @@ class Core extends React.Component<any,any> {
         this.setState(function(state:any, props:any) {
             return {
                 _selecting:false,
+                _placing:true,
                 currentEl:shape,
                 _elementsNum:state._elementsNum+1
             };
@@ -319,7 +327,8 @@ class Core extends React.Component<any,any> {
             currentEntryPoint: null,
             currentEl: null,
             entryPoints:eps,
-            _selecting:true
+            _selecting:true,
+            _placing:false
         });
         this.triggerCache();
     }
@@ -347,11 +356,21 @@ class Core extends React.Component<any,any> {
     }
 
     selectElement(hovered:Hovered){
+        this.state.currentEntryPoint?.setSelected(false);
         hovered.ep.setSelected(true);
         this.setState({
             currentEntryPoint: hovered.ep,
             currentEl: hovered.el,
-            _selecting:false
+            _selecting:true,
+            _placing:false
+        });
+        this.triggerCache();
+    }
+
+    placedElement(placed:any){
+        this.setState({
+            _placing:false,
+            _selecting:true
         });
         this.triggerCache();
     }
@@ -536,6 +555,8 @@ class Core extends React.Component<any,any> {
                     />
                     <Diagram
                         selecting={this.state._selecting}
+                        placing={this.state._placing}
+                        placedElement={this.placedElement}
                         selectElement={this.selectElement}
                         performUndo={this.performUndo}
                         backgroundColor={this.state._defaultValues.backgroundColor}

@@ -48,6 +48,7 @@ class Options extends React.Component<any,any> {
 
     return (
       <div>
+          <button type='button' onClick={this.props.performDeleteElement} className="danger-zone"> Delete Element</button>
           <button type='button' onClick={this.props.startSelection}>Select Element</button>
           <div className='row'>
             <span className='display-span'>Entrypoints Display: </span>
@@ -61,7 +62,7 @@ class Options extends React.Component<any,any> {
             <h5>Element Options</h5>
             {opt}
             <div className='row'>
-              <button type='button' onClick={this.props.performDeleteElement} className="danger-zone"> Delete Element</button>
+              
             </div>
           </div>
       </div>

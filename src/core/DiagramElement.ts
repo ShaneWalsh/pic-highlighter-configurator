@@ -101,7 +101,7 @@ export class Shape extends DiagramElement {
     textAlign:TextAlign = TextAlign.CENTER;
 
     fillColor:string = "#FFFFFF";
-    isFilled =false;
+    isFilled =true;
 
     _chunks:{x:number,y:number,text:string}[] = [];
 
@@ -118,7 +118,7 @@ export class Shape extends DiagramElement {
         this.textAlign = _defaultValues.textAlign || TextAlign.CENTER;
 
         this.fillColor = _defaultValues.fillColor;
-        this.isFilled = _defaultValues.isFilled || false;
+        this.isFilled = _defaultValues.isFilled || true;
     }
 
     setCords(cords:{x:number,y:number} ){

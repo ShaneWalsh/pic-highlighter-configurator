@@ -1,6 +1,4 @@
-import { stringify } from 'querystring';
 import * as React from 'react'
-import { isIfStatement } from 'typescript';
 import { EntryPoint } from '../core/DiagramElement';
 import { drawBorder } from '../core/Drawing';
 import { reversed } from '../core/Lib2d';
@@ -91,17 +89,19 @@ class Diagram extends React.Component<any,any> {
         const sizes = this.getSizes(e, cords);
         let hovered = null;
         // TODO resolve this limitiation, where you can only drag from left to bottom right, if I dragged the other way the cords and sizes values just need to be flipped.
-        if(!this.props.selecting){
+        if(this.props.placing){
             if(this.state.leftClickHeld) {
                 this.props.currentEl?.handleMove(sizes, cords);
             }
-        } else { // then highlight it, and on click, emit it.
+        } else if(this.props.selecting) { // then highlight it, and on click, emit it.
             if ( this.state.dragging ) { // we have clicked on something.
                 this.state.dragging.el.updateCords({x:cords.x+this.state.draggingXOffset, y:cords.y+this.state.draggingYOffset});
             } else { // else highlight whatever I am hovering over
                 for( let ep of reversed(this.props.entryPoints)) {
                     hovered = this.tryFindHover(cords, ep);
-                    if(hovered !== null) break;
+                    if(hovered !== null) {
+                        break;
+                    }
                 }
             }
         }
@@ -145,10 +145,12 @@ class Diagram extends React.Component<any,any> {
         if(e.button == 0) {
             const cords = this.getCords(e);
             this.setState({leftClickHeld:true,heldCords:cords});
-            if(!this.props.selecting){
+            if(this.props.placing){
                 this.props.currentEl?.setCords(cords);
-            } else {
+            } else if(this.props.selecting) {
                 if(this.state.beingHovered){
+                    // if its a resize block, then we are resizing and not moving
+                    
                     this.setState({
                         dragging:this.state.beingHovered,
                         draggingXOffset:this.state.beingHovered.el.cords.x - cords.x,
@@ -167,9 +169,10 @@ class Diagram extends React.Component<any,any> {
         if(e.button == 0) {
             const cords = this.getCords(e);
             const sizes = this.getSizes(e, cords);
-            if(!this.props.selecting) {
-                this.props.currentEl?.handleLeftRelease(sizes, cords)
-            } else {
+            if(this.props.placing) {
+                this.props.currentEl?.handleLeftRelease(sizes, cords);
+                this.props.placedElement(this.props.currentEl);
+            } else if(this.props.selecting) {
                 if(this.state.dragging !== null) {
                     this.setState({
                         dragging:null,

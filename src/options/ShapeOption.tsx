@@ -30,48 +30,6 @@ const ShapeOption = (props:any) => {
             </div>
 
             <div className="row">
-                <div className="six columns">
-                    <label>Line Style</label>
-                    <select value={props.currentEl.lineStyle} onChange={(e) => {
-                        props.currentEl.lineStyle = e.target.value
-                        props.elementOptionUpdated();
-                    }} className="u-full-width">
-                        <option value="FULL">Full</option>
-                        <option value="DOTTED">Dotted</option>
-                    </select>
-                </div>
-                <div className="six columns">
-                    <label>Line Width</label>
-                    <input type="text" value={props.currentEl.strokeWidth} onChange={(e) => {
-                        props.currentEl.strokeWidth = e.target.value;
-                        props.elementOptionUpdated();
-                    }}  className="u-full-width"/>
-                </div>
-            </div>
-            <div className="row">
-                <div className="three columns">
-                    <label>Color</label>
-                    <input type="text" value={props.currentEl.color} onChange={(e) => {
-                        props.currentEl.color = e.target.value
-                        props.elementOptionUpdated();
-                    }}  className="u-full-width"/>
-                    
-                </div>
-                <div className="nine columns">
-                <GithubPicker 
-                        width='300px'
-                        color={props.currentEl.color}
-                        colors={BlockColors}
-                        triangle='hide'
-                        onChangeComplete={(color) => {
-                            props.currentEl.color = color.hex;
-                            props.elementOptionUpdated();
-                        }}
-                    />
-                </div>
-            </div>
-
-            <div className="row">
                 <div className="twelve columns">
                     <label>Text</label>
                     <textarea value={props.currentEl.text} onChange={(e) => {
@@ -157,6 +115,47 @@ const ShapeOption = (props:any) => {
                         triangle='hide'
                         onChangeComplete={(color) => {
                             props.currentEl.fillColor = color.hex;
+                            props.elementOptionUpdated();
+                        }}
+                    />
+                </div>
+            </div>
+            <div className="row">
+                <div className="six columns">
+                    <label>Line Style</label>
+                    <select value={props.currentEl.lineStyle} onChange={(e) => {
+                        props.currentEl.lineStyle = e.target.value
+                        props.elementOptionUpdated();
+                    }} className="u-full-width">
+                        <option value="FULL">Full</option>
+                        <option value="DOTTED">Dotted</option>
+                    </select>
+                </div>
+                <div className="six columns">
+                    <label>Line Width</label>
+                    <input type="text" value={props.currentEl.strokeWidth} onChange={(e) => {
+                        props.currentEl.strokeWidth = e.target.value;
+                        props.elementOptionUpdated();
+                    }}  className="u-full-width"/>
+                </div>
+            </div>
+            <div className="row">
+                <div className="three columns">
+                    <label>Line Color</label>
+                    <input type="text" value={props.currentEl.color} onChange={(e) => {
+                        props.currentEl.color = e.target.value
+                        props.elementOptionUpdated();
+                    }}  className="u-full-width"/>
+                    
+                </div>
+                <div className="nine columns">
+                <GithubPicker 
+                        width='300px'
+                        color={props.currentEl.color}
+                        colors={BlockColors}
+                        triangle='hide'
+                        onChangeComplete={(color) => {
+                            props.currentEl.color = color.hex;
                             props.elementOptionUpdated();
                         }}
                     />
