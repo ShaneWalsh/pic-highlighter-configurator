@@ -4,7 +4,7 @@ import Diagram, { Hovered } from '../diagram/Diagram';
 import Options from '../options/Options';
 import Defaults from '../util/Defaults';
 import Util from '../util/Util';
-import { EntryPoint, Line, Shape, Shapes, TextAlign } from './DiagramElement';
+import { ArrowHeadStyle, EntryPoint, Line, Shape, Shapes, TextAlign } from './DiagramElement';
 import { elementNames } from './Lookups';
 
 // TODO interfaces for types!
@@ -256,6 +256,7 @@ class Core extends React.Component<any,any> {
     startLine(){
         let line = new Line(this.state._elementsNum);
         line.setDefaults(this.state.currentEntryPoint);
+        line.endArrowStyle = ArrowHeadStyle.ARROW;
         this.state.currentEntryPoint.elements.push(line);
         this.setState(function(state:any, props:any) {
             return {

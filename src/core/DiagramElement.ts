@@ -267,7 +267,7 @@ export class EntryPoint extends Shape {
 
     getFill() {
         if(this.isFilled){
-            if(this._isSelected){
+            if(this.isThisOrChildSelected()){
                 return this.selectedFillColor;
             } else {
                 return this.fillColor;
@@ -275,13 +275,22 @@ export class EntryPoint extends Shape {
         }
         return null;
     }
-
+    
     getColor() {
-        if(this._isSelected){
+        if(this.isThisOrChildSelected()){
             return this.selectedBorderColor;
         } else {
             return this.color;
         }
+    }
+
+    isThisOrChildSelected(): boolean {
+        if(this._isSelected) return true;
+        let arr = this.getSubEntrypoints();
+        for(let  i = 0; i < arr.length; i++){
+            if(arr[i].isThisOrChildSelected()) return true;
+        }
+        return false;
     }
 
     // TODO should be a variable thats updated when new elements are added/deleted, but then it has to be stripped from the export. Size concerns, uncessary excess data.
@@ -453,12 +462,6 @@ export class Line extends DiagramElement {
     }
 
     drawHover(ctx:CanvasRenderingContext2D){
-        let first = this.cords;
-        for(let i = 0; i < this.secondaryCords.length; i++){
-            let sec = this.secondaryCords[i];
-            drawBorder(first.x-5,first.y-5,sec.x+5,sec.y+5,this.strokeWidth,"#77DD66", null,"", ctx)
-            first = sec;
-        }
         for(let box of this.hitboxes()){
             drawBorder(box.x,box.y,box.sizeX,box.sizeY,this.strokeWidth,"#77DD66", null, "", ctx)
         }
@@ -488,6 +491,7 @@ export class Line extends DiagramElement {
 
     mapJson(jsonObj:any) {
         super.mapJson(jsonObj);
+        this.cordsSet = true;
         this.startArrowStyle = jsonObj["startArrowStyle"];
         this.endArrowStyle = jsonObj["endArrowStyle"];        
         this.startArrowSize = jsonObj["startArrowSize"];

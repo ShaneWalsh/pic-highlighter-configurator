@@ -84,12 +84,16 @@ class Diagram extends React.Component<any,any> {
         });
     }
 
+    isShiftPressed():boolean{
+        return this.state.keyPressed.indexOf('Shift') > -1;
+    }
+
     updateMousePosition(e:MouseEvent) {
         const cords = this.getCords(e);
         const sizes = this.getSizes(e, cords);
         let hovered = null;
         // TODO resolve this limitiation, where you can only drag from left to bottom right, if I dragged the other way the cords and sizes values just need to be flipped.
-        if(this.props.placing){
+        if(this.props.placing || this.isShiftPressed()){
             if(this.state.leftClickHeld) {
                 this.props.currentEl?.handleMove(sizes, cords);
             }
@@ -145,12 +149,11 @@ class Diagram extends React.Component<any,any> {
         if(e.button == 0) {
             const cords = this.getCords(e);
             this.setState({leftClickHeld:true,heldCords:cords});
-            if(this.props.placing){
+            if(this.props.placing || this.isShiftPressed()){
                 this.props.currentEl?.setCords(cords);
             } else if(this.props.selecting) {
                 if(this.state.beingHovered){
                     // if its a resize block, then we are resizing and not moving
-                    
                     this.setState({
                         dragging:this.state.beingHovered,
                         draggingXOffset:this.state.beingHovered.el.cords.x - cords.x,
@@ -169,7 +172,7 @@ class Diagram extends React.Component<any,any> {
         if(e.button == 0) {
             const cords = this.getCords(e);
             const sizes = this.getSizes(e, cords);
-            if(this.props.placing) {
+            if(this.props.placing || this.isShiftPressed()) {
                 this.props.currentEl?.handleLeftRelease(sizes, cords);
                 this.props.placedElement(this.props.currentEl);
             } else if(this.props.selecting) {
