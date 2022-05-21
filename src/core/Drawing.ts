@@ -217,11 +217,18 @@ export const writeInPixels = (x:number, y:number, size:number, text:string, colo
     ctx.textAlign = 'center';
     ctx.fillText(text, 5, 0);
     ctx.restore();
+  } else if (align === "CENTER" || align === "TOPCENTER") {
+    ctx.save();
+    ctx.font = size + "px 'sans-serif'";
+    ctx.fillStyle = color;
+    let textSpace = ctx.measureText(text).width;
+    ctx.fillText(text, cords.x+ ((sizes.sizeX-textSpace)/2), y);
+    ctx.restore();
   } else {
     ctx.save();
     ctx.font = size + "px 'sans-serif'";
     ctx.fillStyle = color;
-    ctx.fillText(text, x+size, y);
+    ctx.fillText(text, x, y);
     ctx.restore();
   }
 }

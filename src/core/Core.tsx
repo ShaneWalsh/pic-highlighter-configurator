@@ -103,37 +103,47 @@ import { elementNames } from './Lookups';
     Right click to start a new element of the same type? For improved usability.
     After dragging and creating the element, the selected element should then have draggable sections in the corners to increase size or x,y
 
-    Copy Notification in some form. popup, or floating, disolving update.
-
-    Add theme buttons to defaults to set some nice default themes for you?
+    Add theme buttons to defaults to set some nice default themes for you? Just changes the defaults?
         Also go down to shapes and lines?
-
-    Text
-        ~Better positioning and formula
-        alignment support
-            various fonts?
-
-    To the front, to the back options on selected element. For ordering?
 
     Node Server
         Selecting BG pic from pc, loaded through nodejs server, then base64 encoded on UI added to export.
         Save Config to file, load config from file.
 
     Usage Feedback
-        ~Add Text to text by default so you can see it.
-        Line Selection… PLEASE!
-        Add Pic Export, DL
-        A little Awkward at the moment to move around, having to click the select element a lot. I would rather it changed intiutively.
-            Also being able to drag elements while still editing the selected element would be cool. 
-            Resizing required to resolve alot of the above I think.
-                Maybe Try and copy how Draw.io does it, likely its well designed.
-        Line to Shape connection points? 
-        Shape to EP conversion Button?
-        UNDO
+        Editing
+            To the front, to the back options on selected element. For ordering?
+            Copy paste, whole EP.
+            Change Owner EP, select box of all available?
+            Control for keyboard usage, copy, paste onto the current EP. Or copy EP, again add to the same level as the current EP? C+D delete?
+            Resizing, Last few Hovered Item, display Extension/resize points?
+                Display Resize over the corners or actual points, then if on click, check if hovered, and if on a Resize point then we are in resize state and not move state.
+                    Different codes, TL, TR, BL, BR, P(point)
+                    Call a different method on the elements for this resizing.
+        QOL
+            Little icon for links? Blue arrow > in the bottom so people can see it more clearly.
+            Control Right click to Open Hyperlink in new tab.
+            How to make it clearer to the user what can be selected/hovered?
+            UNDO, better support. Requires redux to track changes?
+            
+        Util
+            Add Pic Export, DL\
+            Copy Notification in some form. popup, or floating, disolving update.
+            Selectbox for cached diagrams
+        Text
+            ~Better text centering.
+            various fonts?
         Shapes
             DB Shape is a must have
+            Class Shape, add TextSized line for Class shape. Two text boxes? No alignment?
+            Package Shape, Small box left
         Arrows
             To many (To-Many Arrow is an inverted Arrow….)
+            To one |
+
+    Dreams
+        Line to Shape connection points? 
+        Shape to EP conversion Button?
         Middle Mouse Press and Drag, to move EVERYTHING
         Selection Drag to Move All Selected Elements
 
@@ -174,7 +184,7 @@ class Core extends React.Component<any,any> {
 
                 fillColor : "#fff",
                 hoverBorderColor :"#77DD66",
-                selectedFillColor :"#eee",
+                selectedFillColor :"#c1e1c5",
                 selectedBorderColor :"#265828",
                 backgroundColor :"#F8F8F8"
             },
