@@ -17,6 +17,8 @@ const ShapeOption = (props:any) => {
                         <option value="OVAL">Oval</option>
                         <option value="CIRCLE">Circle</option>
                         <option value="DIAMOND">Diamond</option>
+                        <option value="DATABASE">Database</option>
+                        <option value="CLASS">Class</option>
                         <option value="NONE">None</option>
                     </select>
                 </div>

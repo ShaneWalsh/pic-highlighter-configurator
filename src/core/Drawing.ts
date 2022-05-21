@@ -191,8 +191,32 @@ export const drawOval = (x:number, y:number, sizeX:number,sizeY:number, width:nu
   ctx.restore();
 }
 
+export const drawDatabase = (x:number, y:number, sizeX:number,sizeY:number, width:number, color:string, fill:any, style:any, ctx:any) => {
+  ctx.save();  
+  ctx.beginPath();
+  if( style === "DOTTED" ) {
+    ctx.setLineDash([5, 5]);
+  }
+  ctx.lineWidth = width;
+  ctx.strokeStyle = color;
+  ctx.fillStyle = fill;
 
-
+  ctx.ellipse(x, y+(sizeY/2), sizeX, sizeY/2, 0, 0, Math.PI*2);
+  if (fill) {ctx.fill();}
+  ctx.stroke();
+  // this rect is drawn over the first ellipse to add the sides
+  ctx.beginPath();
+  ctx.strokeRect(x-sizeX,y-(sizeY/2),sizeX*2,sizeY);
+  // finally the top ellipse
+  ctx.beginPath();
+  ctx.ellipse(x, y-(sizeY/2), sizeX, sizeY/2, 0, 0, Math.PI*2);
+  if (fill) {
+    ctx.fill();
+    ctx.fillRect(x-sizeX,y-(sizeY/2),sizeX*2,sizeY);
+  }
+  ctx.stroke();
+  ctx.restore();
+}
 
 export const writeInPixels = (x:number, y:number, size:number, text:string, color:string, align:string, cords:any, sizes:any, ctx:any) => {
 	//ctx.font = size + "px 'Century Gothic'";

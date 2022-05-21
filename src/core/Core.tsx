@@ -101,7 +101,7 @@ import { elementNames } from './Lookups';
 
     Usage Feedback
         Editing
-            To the front, to the back options on selected element. For ordering?
+            ~To the front, to the back options on selected element. For ordering?
             Copy paste, whole EP.
             Change Owner EP, select box of all available?
             Control for keyboard usage, copy, paste onto the current EP. Or copy EP, again add to the same level as the current EP? C+D delete?

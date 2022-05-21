@@ -1,4 +1,4 @@
-import { calculateChunks, drawArrowHeads, drawBorder, drawCircle, drawLine, drawOval, drawRoundRect, drawShape, writeInPixels } from "./Drawing";
+import { calculateChunks, drawArrowHeads, drawBorder, drawCircle, drawDatabase, drawLine, drawOval, drawRoundRect, drawShape, writeInPixels } from "./Drawing";
 import { MoveDirection } from "./Lib2d";
 import { elementNames } from "./Lookups";
 
@@ -78,6 +78,8 @@ export enum Shapes {
     OVAL="OVAL",
     CIRCLE="CIRCLE",
     DIAMOND="DIAMOND",
+    DATABASE="DATABASE",
+    CLASS="CLASS",
     NONE="NONE"
 }
 
@@ -173,6 +175,8 @@ export class Shape extends DiagramElement {
             drawRoundRect( this.cords.x, this.cords.y, this.size.sizeX, this.size.sizeY, this.strokeWidth, 5, this.getColor(), this.getFill(), this.lineStyle, ctx )
         } else if(this.shape === Shapes.OVAL){
             drawOval( this.cords.x + this.size.sizeX/2 , this.cords.y + this.size.sizeY/2, this.size.sizeX/2, this.size.sizeY/2, this.strokeWidth, this.getColor(), this.getFill(), this.lineStyle, ctx )
+        } else if(this.shape === Shapes.DATABASE){
+            drawDatabase( this.cords.x + this.size.sizeX/2 , this.cords.y + this.size.sizeY/2, this.size.sizeX/2, this.size.sizeY/2, this.strokeWidth, this.getColor(), this.getFill(), this.lineStyle, ctx )
         } else if(this.shape === Shapes.DIAMOND){
             const left = {x:this.cords.x, y :this.cords.y+ (this.size.sizeY/2) };
             const top = {x:this.cords.x + (this.size.sizeX/2), y :this.cords.y };
