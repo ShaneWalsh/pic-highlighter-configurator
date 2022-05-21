@@ -75,24 +75,13 @@ import { elementNames } from './Lookups';
     ~How to hide Sub entrypoints.
     How to make it clearer to the user what can be selected/hovered?
             Rounded rect by default for EP, rect for shapes? Subtle difference?
-    Little icon for links? Blue arrow > in the bottom so people can see it more clearly.
 
     UI rethink perhaps?
         Add few modes to the diagrammer. Change the Border color based on the mode so its easy to tell.
             New Element mode, clicking will draw an element?
             Selection mode?
-            
 
-    subentryPoint?
-        - on deselect parent, all his children should be deselected. Does not go back up the chain though.
-        - SEP do not know they are SEP.
-
-    undo and redo support?
-        - Could be implmented with export and import logic, already existing mostly.
-    copy paste support?
-    subEntrypoints? 
-
-    github website exposure? React-Pages.
+    ~github website exposure? React-Pages.
 
     V1.1
     Add Color picker to tool
@@ -199,6 +188,8 @@ class Core extends React.Component<any,any> {
         this.startCodeBlock = this.startCodeBlock.bind(this);
 
         this.startSelection = this.startSelection.bind(this);
+        this.toFront = this.toFront.bind(this);
+        this.toBack = this.toBack.bind(this);
         this.selectElement = this.selectElement.bind(this);
         this.placedElement = this.placedElement.bind(this);
 
@@ -345,11 +336,36 @@ class Core extends React.Component<any,any> {
     }
 
     toFront(){
-        // TODO move current element to the back of whatever array its in
+        if(this.state.currentEl instanceof EntryPoint) {
+            if(this.state.entryPoints.includes(this.state.currentEl)) {
+                let arr = this.state.entryPoints.filter((el:any) => el !== this.state.currentEl);
+                arr.push(this.state.currentEl);
+                this.setState({ entryPoints:arr });
+            } else {
+                this.state.currentEntryPoint.moveElementToFront(this.state.currentEl);
+            }    
+        } else {
+            this.state.currentEntryPoint.moveElementToFront(this.state.currentEl);
+        }
+        this.triggerCache();
+        
     }   
     
-    toBack(){
-        // TODO move current element to the front of whatever array its in
+    toBack() {
+        if(this.state.currentEl instanceof EntryPoint) {
+            if(this.state.entryPoints.includes(this.state.currentEl)) {
+                let front = [this.state.currentEl];
+                let arr = this.state.entryPoints.filter((el:any) => el !== this.state.currentEl);
+                arr = front.concat(arr)
+                this.setState({ entryPoints:arr });
+            } else {
+                this.state.currentEntryPoint.moveElementToBack(this.state.currentEl);
+            }
+        } else {
+            this.state.currentEntryPoint.moveElementToBack(this.state.currentEl);
+        }
+        this.triggerCache();
+        
     }
 
     // TODO loop through EP and any EP with no cords 0,0 or size 0,0 and no elements, remove it from the list
@@ -395,7 +411,7 @@ class Core extends React.Component<any,any> {
     }
     
     performExport(){
-        console.log(JSON.stringify(this.state));
+        // console.log(JSON.stringify(this.state));
         let exportValue = {...this.state};
         delete exportValue.export;
         delete exportValue.currentEntryPoint;
@@ -552,6 +568,8 @@ class Core extends React.Component<any,any> {
                         toggleDisplay={this.toggleDisplay}
                         elementOptionUpdated={this.elementOptionUpdated}
                         startSelection={this.startSelection}
+                        toFront={this.toFront}
+                        toBack={this.toBack}
                         performDeleteElement={this.performDeleteElement}
                     />
                     <Defaults 

@@ -146,7 +146,7 @@ class Diagram extends React.Component<any,any> {
 
     mouseClick(e:MouseEvent) {
         console.log(this.state.mouseX + " - " + this.state.mouseY)
-        if(e.button == 0) {
+        if(e.button === 0) {
             const cords = this.getCords(e);
             this.setState({leftClickHeld:true,heldCords:cords});
             if(this.props.placing || this.isShiftPressed()){
@@ -162,14 +162,14 @@ class Diagram extends React.Component<any,any> {
                 }
             }
         }
-        else if(e.button == 2) {
+        else if(e.button === 2) {
             console.log("Button 2")
         }
         this.draw(this.state.ctx);
     }
 
     mouseClickRelease(e:MouseEvent) {
-        if(e.button == 0) {
+        if(e.button === 0) {
             const cords = this.getCords(e);
             const sizes = this.getSizes(e, cords);
             if(this.props.placing || this.isShiftPressed()) {

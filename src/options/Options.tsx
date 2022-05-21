@@ -50,6 +50,8 @@ class Options extends React.Component<any,any> {
       <div>
           <button type='button' onClick={this.props.performDeleteElement} className="danger-zone"> Delete Element</button>
           <button type='button' onClick={this.props.startSelection}>Select Element</button>
+          <button type='button' onClick={this.props.toFront} disabled={this.props.currentEl === null}>To Front</button>
+          <button type='button' onClick={this.props.toBack} disabled={this.props.currentEl === null}>To Back</button>
           <div className='row'>
             <span className='display-span'>Entrypoints Display: </span>
             {entryPoints}

@@ -14,6 +14,9 @@ To move elements around, click selectElements. Then left click and drag to move.
 Doubleclick to select element for editing.
 Hold Shift to Redraw current element, or add another point to a Line.
 
+toFront/toBack on an EP, changes the drawing order of the screen drastically, because all elments under that EP will also move to front.
+toFront/toBack on an element, changes the draw order of the elements on the EP.
+
 ## OOS
 Editing
 Deleting

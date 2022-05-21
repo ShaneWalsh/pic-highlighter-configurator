@@ -8,5 +8,5 @@ export const elementNames = ['Werewolf','Dragon','Chimera','Loch Ness Monster','
 'Ekek','Hellhound','Monocerus','Leper','Ophiotaurus','Unktehila','Capacun','Mapinguari','Yali','Shark','Asakku','Sleipnir',
 'Ushi-oni','Longma','Nguruvilu','Lou Carcolh','Yacuruna','Bashee','Teju Jagua','Indrik','Onocentaur','Simargl','Erchitu','Huay Chay','Laestrygonians','Mboi Tui'];
 
-export const BlockColors = ['#B80000', '#DB3E00', '#FCCB00', '#008B02', '#006B76', '#1273DE', '#004DCF', '#5300EB', '#000','#696969','#C0C0C0','#eeeeee',
-'#EB9694', '#FAD0C3', '#FEF3BD', '#C1E1C5', '#BEDADC', '#C4DEF6', '#BED3F3', '#D4C4FB', '#fff','#808080','#eeeeee','#eeeeee'];
+export const BlockColors = ['#B80000', '#DB3E00', '#FCCB00', '#008B02', '#006B76', '#1273DE', '#004DCF', '#5300EB', '#BFBDB0','#C0C0C0','#696969','#000',
+                            '#EB9694', '#FAD0C3', '#FEF3BD', '#C1E1C5', '#BEDADC', '#C4DEF6', '#BED3F3', '#D4C4FB', '#FEFBEA','#eeeeee','#888B8D','#fff',];

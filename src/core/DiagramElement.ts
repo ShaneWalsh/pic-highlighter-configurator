@@ -293,6 +293,17 @@ export class EntryPoint extends Shape {
         return false;
     }
 
+    moveElementToFront(element:DiagramElement) {
+        this.elements = this.elements.filter(el => el !== element);
+        this.elements.push(element);
+    }
+
+    moveElementToBack(element:DiagramElement) {
+        let arr = [element];
+        this.elements = this.elements.filter(el => el !== element);
+        this.elements = arr.concat(this.elements);
+    }
+
     // TODO should be a variable thats updated when new elements are added/deleted, but then it has to be stripped from the export. Size concerns, uncessary excess data.
     getSubEntrypoints():EntryPoint[]{
         let arr:EntryPoint[] = [];
