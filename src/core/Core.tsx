@@ -116,7 +116,7 @@ import { elementNames } from './Lookups';
             UNDO, better support. Requires redux to track changes?
             
         Util
-            Add Pic Export, DL\
+            ~ Add Pic Export, DL\
             Copy Notification in some form. popup, or floating, disolving update.
             Selectbox for cached diagrams
         Text
@@ -490,10 +490,16 @@ class Core extends React.Component<any,any> {
             let entryPoints = state.entryPoints;
             let ep = state.currentEntryPoint;
             let el = state.currentEl;
-            if(state.currentEntryPoint === state.currentEl){ // we are deleting the ep, so nothing should be selected.
-                entryPoints = entryPoints.filter((e:any) => e !== ep);
-                ep = null;
-                el = null;
+            if(state.currentEntryPoint === el) { // we are deleting the ep, so nothing should be selected.
+                if(entryPoints.includes(el)){
+                    entryPoints = entryPoints.filter((e:any) => e !== ep);
+                    ep = null;
+                    el = null;
+                } else { // its a sub element, so we have to find it.
+                    removeSubEntrypoint(el, entryPoints);
+                    ep = null;
+                    el = null;
+                }
                 // remove from entrypoints.
             } else { // we are deleting an element on the EP, so set it as the active element after deletion.
                 state.currentEntryPoint.elements = state.currentEntryPoint.elements.filter( (v:any) => v !== state.currentEl)
@@ -506,6 +512,7 @@ class Core extends React.Component<any,any> {
             };
         });
     }
+
     performReset(){
         this.setState({
             currentEntryPoint: null,
@@ -628,3 +635,25 @@ class Core extends React.Component<any,any> {
 }
 
 export default Core;
+
+function removeSubEntrypoint(subEP: any, entryPoints:any) {
+    for(let i = 0; i < entryPoints.length; i++) {
+        let entrypoint = entryPoints[i];
+        let elements = entrypoint.elements
+        entrypoint.elements = removeSubEntrypointLoop(subEP, elements);
+    }
+}
+
+function removeSubEntrypointLoop(subEP: any, elements:any) {
+    if(elements.includes(subEP)){
+        return elements.filter((el:any) => el !== subEP);
+    } else {
+        for(let i = 0; i < elements.length; i++) {
+            let element = elements[i];
+            if(element instanceof EntryPoint){
+                element.elements = removeSubEntrypointLoop(subEP, element.elements);
+            }
+        }
+        return elements;
+    }
+}
