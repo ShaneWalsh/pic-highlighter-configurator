@@ -218,6 +218,41 @@ export const drawDatabase = (x:number, y:number, sizeX:number,sizeY:number, widt
   ctx.restore();
 }
 
+export const drawPackage = (x:number, y:number, sizeX:number,sizeY:number, width:number, color:string, fill:any, style:any, ctx:any) => {
+  ctx.save();  
+  ctx.beginPath();
+  if( style === "DOTTED" ) {
+    ctx.setLineDash([5, 5]);
+  }
+  ctx.lineWidth = width;
+  ctx.strokeStyle = color;
+  ctx.fillStyle = fill;
+  let sizeYTop = (sizeY/4)
+  ctx.strokeRect(x,y, (sizeX/4), sizeYTop);
+  if (fill) { ctx.fillRect(x,y, (sizeX/4), sizeYTop); }
+  ctx.beginPath();
+  ctx.strokeRect(x,y+sizeYTop, sizeX, sizeY-sizeYTop);
+  ctx.restore();
+}
+
+export const drawClass = (x:number, y:number, sizeX:number,sizeY:number, width:number, color:string, fill:any, style:any, ctx:any) => {
+  ctx.save();  
+  ctx.beginPath();
+  if( style === "DOTTED" ) {
+    ctx.setLineDash([5, 5]);
+  }
+  ctx.lineWidth = width;
+  ctx.strokeStyle = color;
+  ctx.fillStyle = fill;
+  let sizeYTop = (sizeY/3)
+  ctx.strokeRect(x,y, sizeX, sizeYTop);
+  if (fill) {ctx.fillRect(x,y, sizeX, sizeYTop);}
+  ctx.beginPath();
+  ctx.strokeRect(x,y+sizeYTop, sizeX, sizeY-sizeYTop);
+  if (fill) {ctx.fillRect(x,y+sizeYTop, sizeX, sizeY-sizeYTop);}
+  ctx.restore();
+}
+
 export const writeInPixels = (x:number, y:number, size:number, text:string, color:string, align:string, cords:any, sizes:any, ctx:any) => {
 	//ctx.font = size + "px 'Century Gothic'";
   if(align === "SIDEBARLEFT"){

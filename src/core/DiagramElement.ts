@@ -1,4 +1,4 @@
-import { calculateChunks, drawArrowHeads, drawBorder, drawCircle, drawDatabase, drawLine, drawOval, drawRoundRect, drawShape, writeInPixels } from "./Drawing";
+import { calculateChunks, drawArrowHeads, drawBorder, drawCircle, drawClass, drawDatabase, drawLine, drawOval, drawPackage, drawRoundRect, drawShape, writeInPixels } from "./Drawing";
 import { MoveDirection } from "./Lib2d";
 import { elementNames } from "./Lookups";
 
@@ -80,6 +80,7 @@ export enum Shapes {
     DIAMOND="DIAMOND",
     DATABASE="DATABASE",
     CLASS="CLASS",
+    PACKAGE="PACKAGE",
     NONE="NONE"
 }
 
@@ -159,25 +160,19 @@ export class Shape extends DiagramElement {
     }
 
     draw(ctx:CanvasRenderingContext2D) {
-        if(this.shape === Shapes.RECT){
-            drawBorder(
-                this.cords.x,
-                this.cords.y,
-                this.size.sizeX,
-                this.size.sizeY,
-                this.strokeWidth,
-                this.getColor(),
-                this.getFill(),
-                this.lineStyle,
-                ctx,
-            )
-        } else if(this.shape === Shapes.ROUNDEDRECT){
+        if(this.shape === Shapes.RECT) {
+            drawBorder( this.cords.x, this.cords.y, this.size.sizeX, this.size.sizeY, this.strokeWidth, this.getColor(), this.getFill(), this.lineStyle, ctx )
+        } else if(this.shape === Shapes.ROUNDEDRECT) {
             drawRoundRect( this.cords.x, this.cords.y, this.size.sizeX, this.size.sizeY, this.strokeWidth, 5, this.getColor(), this.getFill(), this.lineStyle, ctx )
-        } else if(this.shape === Shapes.OVAL){
+        } else if(this.shape === Shapes.PACKAGE) {
+            drawPackage( this.cords.x, this.cords.y, this.size.sizeX, this.size.sizeY, this.strokeWidth, this.getColor(), this.getFill(), this.lineStyle, ctx )
+        } else if(this.shape === Shapes.CLASS) {
+            drawClass( this.cords.x, this.cords.y, this.size.sizeX, this.size.sizeY, this.strokeWidth, this.getColor(), this.getFill(), this.lineStyle, ctx )
+        } else if(this.shape === Shapes.OVAL) {
             drawOval( this.cords.x + this.size.sizeX/2 , this.cords.y + this.size.sizeY/2, this.size.sizeX/2, this.size.sizeY/2, this.strokeWidth, this.getColor(), this.getFill(), this.lineStyle, ctx )
-        } else if(this.shape === Shapes.DATABASE){
+        } else if(this.shape === Shapes.DATABASE) {
             drawDatabase( this.cords.x + this.size.sizeX/2 , this.cords.y + this.size.sizeY/2, this.size.sizeX/2, this.size.sizeY/2, this.strokeWidth, this.getColor(), this.getFill(), this.lineStyle, ctx )
-        } else if(this.shape === Shapes.DIAMOND){
+        } else if(this.shape === Shapes.DIAMOND) {
             const left = {x:this.cords.x, y :this.cords.y+ (this.size.sizeY/2) };
             const top = {x:this.cords.x + (this.size.sizeX/2), y :this.cords.y };
             const right = {x:this.cords.x + this.size.sizeX, y :this.cords.y+ (this.size.sizeY/2) };
@@ -185,7 +180,7 @@ export class Shape extends DiagramElement {
 
             drawShape([{x:left.x,y:left.y},{x:top.x,y:top.y},{x:right.x,y:right.y},{x:bottom.x,y:bottom.y},{x:left.x,y:left.y}], this.strokeWidth, this.getColor(), this.getFill(),this.lineStyle, ctx)
             // TODO replace with a drawshape method, takes cords, connects the dots with lines, fills with provided fill value
-        } else if(this.shape === Shapes.CIRCLE){
+        } else if(this.shape === Shapes.CIRCLE) {
             drawCircle(
                 this.cords.x + (this.size.sizeX/2),
                 this.cords.y + (this.size.sizeY/2),
