@@ -101,7 +101,7 @@ import { elementNames } from './Lookups';
 
     Usage Feedback
         Editing
-            ~To the front, to the back options on selected element. For ordering?
+            ~ To the front, to the back options on selected element. For ordering?
             Copy paste, whole EP.
             Change Owner EP, select box of all available?
             Control for keyboard usage, copy, paste onto the current EP. Or copy EP, again add to the same level as the current EP? C+D delete?
@@ -120,12 +120,12 @@ import { elementNames } from './Lookups';
             Copy Notification in some form. popup, or floating, disolving update.
             Selectbox for cached diagrams
         Text
-            ~Better text centering.
+            ~ Better text centering.
             various fonts?
         Shapes
-            DB Shape is a must have
-            Class Shape, add TextSized line for Class shape. Two text boxes? No alignment?
-            Package Shape, Small box left
+            ~ DB Shape is a must have
+            ~ Class Shape, add TextSized line for Class shape. Two text boxes? No alignment?
+            ~ Package Shape, Small box left
         Arrows
             To many (To-Many Arrow is an inverted Arrow….)
             To one |
@@ -194,6 +194,7 @@ class Core extends React.Component<any,any> {
         this.placedElement = this.placedElement.bind(this);
 
         this.performExport = this.performExport.bind(this);
+        this.performPicture = this.performPicture.bind(this);
         this.performImport = this.performImport.bind(this);
         this.performReset = this.performReset.bind(this);
         this.performUndo = this.performUndo.bind(this);
@@ -410,7 +411,7 @@ class Core extends React.Component<any,any> {
         this.setState({_defaultValues:defaults});
     }
     
-    performExport(){
+    performExport() {
         // console.log(JSON.stringify(this.state));
         let exportValue = {...this.state};
         delete exportValue.export;
@@ -436,6 +437,14 @@ class Core extends React.Component<any,any> {
                 export:JSON.stringify(exportValue)
             });
         }
+    }
+
+    performPicture() {
+        var link = document.createElement('a');
+        link.download = this.state._defaultValues.highlighterName+'.png';
+        let can:any = document.getElementById('canvas-highlighter');
+        link.href = can.toDataURL();
+        link.click();
     }
     
     imgToBase64(img:any) {
@@ -502,6 +511,21 @@ class Core extends React.Component<any,any> {
             currentEntryPoint: null,
             entryPoints:[],
             currentEl: null,
+            _defaultValues:{
+                highlighterName: elementNames[Math.floor(Math.random()*elementNames.length)]+'-'+Date.now(),
+                width : 1024,
+                height : 800,
+                scale : 4,
+                color : "#000",
+                strokeWidth : .6, 
+                textColor : "#000",
+                textSize: 15,
+                fillColor : "#fff",
+                hoverBorderColor :"#77DD66",
+                selectedFillColor :"#c1e1c5",
+                selectedBorderColor :"#265828",
+                backgroundColor :"#F8F8F8"
+            },
         });
         this.clearStack();
     }
@@ -578,6 +602,7 @@ class Core extends React.Component<any,any> {
                     />
                     <Util                         
                         performExport={this.performExport}
+                        performPicture={this.performPicture}
                         export={this.state.export}
                         performImport={this.performImport}
                         performReset={this.performReset}

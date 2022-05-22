@@ -7,6 +7,7 @@ class Util extends React.Component<any,any> {
       import:""
     }
     this.performExport = this.performExport.bind(this);
+    this.performPicture = this.performPicture.bind(this);
     this.handleImport = this.handleImport.bind(this);
     this.performImport = this.performImport.bind(this);
     this.performReset = this.performReset.bind(this);
@@ -14,6 +15,10 @@ class Util extends React.Component<any,any> {
 
   performExport(event:any){
     this.props.performExport();
+  }
+
+  performPicture(event:any){
+    this.props.performPicture();
   }
 
   performImport(event:any){
@@ -38,6 +43,7 @@ class Util extends React.Component<any,any> {
             {/* // TODO implement this, remove from Local Storage */}
             <button type='button' onClick={this.performReset} className="danger-zone"> Clear From Cache </button>
             <button type='button' onClick={this.performExport}> Export </button>
+            <button type='button' onClick={this.performPicture}> Picture </button>
             <input type="text" value={this.props.export} className="u-full-width"/>
             <button type='button' onClick={this.performImport}> Import </button>
             <input type="text" value={this.state.import} onChange={this.handleImport} className="u-full-width"/>
