@@ -47,6 +47,14 @@ export class DiagramElement {
         // childImplToDecide
     }
 
+    updateCords(cords:{x:number,y:number} ){
+        this.cords = cords;
+    }
+
+    updateAllCords(cordsNew:{xOffset:number,yOffset:number} ){
+        this.updateCords({x:this.cords.x+cordsNew.xOffset, y:this.cords.y+cordsNew.yOffset});
+    }
+
     draw(ctx:CanvasRenderingContext2D) {}  
 
     // When the editor hovers over them in selecting mode
@@ -301,6 +309,12 @@ export class EntryPoint extends Shape {
         let arr = [element];
         this.elements = this.elements.filter(el => el !== element);
         this.elements = arr.concat(this.elements);
+    }
+
+    // Overidden so i can move all elements under this ep at the same time.
+    updateAllCords(cordsNew:{xOffset:number,yOffset:number} ){
+        this.updateCords({x:this.cords.x+cordsNew.xOffset, y:this.cords.y+cordsNew.yOffset});
+        this.elements.forEach(el => el.updateAllCords(cordsNew));
     }
 
     // TODO should be a variable thats updated when new elements are added/deleted, but then it has to be stripped from the export. Size concerns, uncessary excess data.

@@ -290,6 +290,7 @@ class Core extends React.Component<any,any> {
         let shape = new Shape(this.state._elementsNum);
         shape.setDefaults({...this.state.currentEntryPoint, text:""});
         shape.shape = Shapes.NONE;
+        shape.textAlign = TextAlign.CODE;
         shape.text = "Text";
         this.state.currentEntryPoint.elements.push(shape);
         this.setState(function(state:any, props:any) {

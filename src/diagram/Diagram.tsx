@@ -17,8 +17,10 @@ class Diagram extends React.Component<any,any> {
         beingHovered:null,
 
         dragging:null,
-        draggingXOffset:null,
-        draggingYOffset:null,
+        draggingCords:null,
+        draggingAll:false,
+        draggingXOffset:null, // TODO deprecate
+        draggingYOffset:null, // TODO deprecate
 
         keyPressed:[]
       };
@@ -99,7 +101,16 @@ class Diagram extends React.Component<any,any> {
             }
         } else if(this.props.selecting) { // then highlight it, and on click, emit it.
             if ( this.state.dragging ) { // we have clicked on something.
-                this.state.dragging.el.updateCords({x:cords.x+this.state.draggingXOffset, y:cords.y+this.state.draggingYOffset});
+                if(this.state.draggingAll){
+                    let dragCords = {
+                        xOffset:(this.state.draggingCords.x - cords.x) * -1, 
+                        yOffset:(this.state.draggingCords.y - cords.y) * -1 };
+                    // console.log("cords x:"+cords.x +" y:"+ cords.y);
+                    console.log("dragCords x:"+dragCords.xOffset +" y:"+dragCords.yOffset);
+                    this.state.dragging.el.updateAllCords(dragCords);
+                } else { // just an individual update then
+                    this.state.dragging.el.updateCords({x:cords.x+this.state.draggingXOffset, y:cords.y+this.state.draggingYOffset});
+                }
             } else { // else highlight whatever I am hovering over
                 for( let ep of reversed(this.props.entryPoints)) {
                     hovered = this.tryFindHover(cords, ep);
@@ -111,7 +122,8 @@ class Diagram extends React.Component<any,any> {
         }
         this.setState({
             beingHovered:hovered,
-            mouseX:cords.x,mouseY:cords.y
+            mouseX:cords.x,mouseY:cords.y,
+            draggingCords:cords
         })
         this.draw(this.state.ctx);
     }
@@ -156,14 +168,29 @@ class Diagram extends React.Component<any,any> {
                     // if its a resize block, then we are resizing and not moving
                     this.setState({
                         dragging:this.state.beingHovered,
+                        draggingCords: cords,
                         draggingXOffset:this.state.beingHovered.el.cords.x - cords.x,
                         draggingYOffset:this.state.beingHovered.el.cords.y - cords.y
                     })
                 }
             }
         }
-        else if(e.button === 2) {
-            console.log("Button 2")
+        else if(e.button === 1) {
+            console.log("1");
+            e.preventDefault();
+            const cords = this.getCords(e);
+            if(this.props.selecting) {
+                if(this.state.beingHovered){
+                    // if its a resize block, then we are resizing and not moving
+                    this.setState({
+                        dragging:this.state.beingHovered,
+                        draggingCords: cords,
+                        draggingAll:true,
+                        draggingXOffset:this.state.beingHovered.el.cords.x - cords.x,
+                        draggingYOffset:this.state.beingHovered.el.cords.y - cords.y
+                    })
+                }
+            }
         }
         this.draw(this.state.ctx);
     }
@@ -179,12 +206,26 @@ class Diagram extends React.Component<any,any> {
                 if(this.state.dragging !== null) {
                     this.setState({
                         dragging:null,
+                        draggingCords:null,
+                        draggingAll:false,
                         draggingXOffset:null,
                         draggingYOffset:null
                     })
                 }
             }
             this.setState({leftClickHeld:false})
+        } else if(e.button === 1) {
+            if(this.props.selecting) {
+                if(this.state.dragging !== null) {
+                    this.setState({
+                        dragging:null,
+                        draggingCords:null,
+                        draggingAll:false,
+                        draggingXOffset:null,
+                        draggingYOffset:null
+                    })
+                }
+            }
         }
         this.draw(this.state.ctx);
     }
@@ -201,6 +242,8 @@ class Diagram extends React.Component<any,any> {
                 this.props.selectElement(this.state.beingHovered)
                 this.setState({
                     dragging:null,
+                    draggingCords:null,
+                    draggingAll:false,
                     beingHovered:null,
                     draggingXOffset:null,
                     draggingYOffset:null
