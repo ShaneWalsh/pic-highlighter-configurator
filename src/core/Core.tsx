@@ -17,62 +17,7 @@ import { elementNames } from './Lookups';
 //   }
 
 /*
-    TODO MVP
-    ¬Background pic from base64 or URL
-    ~Import + Export full support via fields
-        - export pic along with the config
-        - be able to import the same details?
-            - update the pic highligher tool to work the same.
-    ~color inherit
-    ~Options, dynamic, bound to the elements
 
-    ~Text... With and without boxes. 
-    
-    ~fill
-        - need to rewrite the drawing functions.
-
-    white out?
-        - default value + option to change.
-        ~ I mean its just a white rect with the same fill, maybe just a button then like text?
-
-    ~ delete option
-
-    ~Selection, edit existing elements. Hitboxes for checking and editing.
-        - tabbed header around creation, so its creation and editing modes.
-            - edit V0.1 could just be selecting an elements so it can be resized and edited
-                - longer term, specific point manipulation via dragging etc
-
-    ~Arrows fix selection
-    ~Arrows fix drawing arrows end of a line.
-
-    ~text Align in center
-
-    ~Line ArrowHead shape,
-        End [] , Shape DDSelect
-        Start [] , Shape DDSelect
-
-    ~copy pasta link? (Highlighter task)
-        ~Add a button in one of the corners, looks like a copy symbol and copy data to the users board.
-            - implemented with a right click on the element.
-        ~add link option to shapes.
-
-    ¬ Adding Background Toggle to Creation, so you can add elements freely that will always be displayed. Not highlight elements bound to entrypoints
-        // Can just use default selected EP with no option to hover or select, then its a background and not an EP.
-    
-    OOS
-    ~ Code Block
-        ~ Code Text Alignment.
-    ~ Color picker
-    Front to back, would be very handy when editing.
-    ~ Name Diagrams
-        ~ Auto cache exports in browser, load them up on load? Allow the user to select them from a dropdown?
-           Save all configs you have done on the machine, allow loading them?
-        Undo would be very handy.
-            ~ Keep Track of all exports/changes in local, so can roll back.
-            Needs more hooks for the Engine, like clicks, attribute changes.
-    
-    ~Add settings option, so allow resizing in 5px. Or whatever number they want? Default is 1? so as it is now. Might help with uniform shapes though to jump in sizes.
-    ~How to hide Sub entrypoints.
     How to make it clearer to the user what can be selected/hovered?
             Rounded rect by default for EP, rect for shapes? Subtle difference?
 
@@ -99,9 +44,15 @@ import { elementNames } from './Lookups';
         Selecting BG pic from pc, loaded through nodejs server, then base64 encoded on UI added to export.
         Save Config to file, load config from file.
 
-    Usage Feedback
+    Usage Feedback V 1.0
+        Display all Sub EP, in the current selection chain, not just current level. Maybe work backwards up.
+        ToMany Arrow To one Arrow
+        Display Sub EP of one level down from Selected Element?
+        Move element up to Parent EP, or simply selection dropdown to pick the EP? Handy for refactoring WIP diagrams.
+        Convert Element to EP, as SubEP of current EP.
+        Toggleable Drawing/Aligning Grid
+
         Editing
-            ~ To the front, to the back options on selected element. For ordering?
             Copy paste, whole EP.
             Change Owner EP, select box of all available?
             Control for keyboard usage, copy, paste onto the current EP. Or copy EP, again add to the same level as the current EP? C+D delete?
@@ -116,19 +67,20 @@ import { elementNames } from './Lookups';
             UNDO, better support. Requires redux to track changes?
             
         Util
-            ~ Add Pic Export, DL\
             Copy Notification in some form. popup, or floating, disolving update.
             Selectbox for cached diagrams
+
         Text
-            ~ Better text centering.
             various fonts?
+
         Shapes
-            ~ DB Shape is a must have
-            ~ Class Shape, add TextSized line for Class shape. Two text boxes? No alignment?
-            ~ Package Shape, Small box left
+            badge
+            fully rounded sides, like a button of old.
+
         Arrows
             To many (To-Many Arrow is an inverted Arrow….)
             To one |
+            To Zero 0
 
     Dreams
         Line to Shape connection points? 

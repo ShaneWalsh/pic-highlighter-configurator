@@ -1,12 +1,9 @@
-export const elementNames = ['Werewolf','Dragon','Chimera','Loch Ness Monster','Mermaid','Yeti','Basilisk','Sphinx','Medusa','Griffin','Centaur','Hippogriff',
+export const elementNames = ['Werewolf','Dragon','Chimera','Mermaid','Yeti','Basilisk','Sphinx','Medusa','Griffin','Centaur',
 'Fairy','Kappa','Pegasus',
-'Ghoul','Pixie','Cyclops','Redcap','Manticore','Typhon','Serpent','Leprechaun','Fenrir','Hippocampus','Cipactli','Imp','Minotaur','Hydra','Fomorians',
-'Charybdis','Behemoth','Cerberus','Echidna','Adlet','Cacus','Blade','Geryon','Scorpion','Fachan','Ogre','Humbaba','Scylla','Hadhayosh',
-'Eagle',
-'Kee-wakw','Abaia','Calygreyhound','Phoenix','Tarasque','Cockatrice','Harpy','Makara','Ammit','Garuda','Winged Lion','Leviathan','Wyvern','Namazu',
-'Centicore','Elf','Mares of Diomedes','Serpopard','Antero','Indus','Ahuizotl','Psoglav','Aspidochelone','Sirin','Cynocephaly','Myrmecoleon','Argus Panoptes',
-'Ekek','Hellhound','Monocerus','Leper','Ophiotaurus','Unktehila','Capacun','Mapinguari','Yali','Shark','Asakku','Sleipnir',
-'Ushi-oni','Longma','Nguruvilu','Lou Carcolh','Yacuruna','Bashee','Teju Jagua','Indrik','Onocentaur','Simargl','Erchitu','Huay Chay','Laestrygonians','Mboi Tui'];
+'Ghoul','Pixie','Cyclops','Redcap','Manticore','Typhon','Serpent','Fenrir','Imp','Minotaur','Hydra',
+'Behemoth','Cerberus','Echidna','Adlet','Cacus','Blade','Geryon','Scorpion','Fachan','Ogre','Humbaba','Scylla','Eagle',
+'Abaia','Phoenix','Harpy','Garuda','Giant','Wyvern','Goblin',
+'Centicore','Elf','Ekek','Hellhound','Shark','Bashee'];
 
 export const BlockColors = ['#B80000', '#DB3E00', '#FCCB00', '#008B02', '#006B76', '#1273DE', '#004DCF', '#5300EB', '#BFBDB0','#C0C0C0','#696969','#000',
                             '#EB9694', '#FAD0C3', '#FEF3BD', '#C1E1C5', '#BEDADC', '#C4DEF6', '#BED3F3', '#D4C4FB', '#FEFBEA','#eeeeee','#888B8D','#fff',];

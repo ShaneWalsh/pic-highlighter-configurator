@@ -40,7 +40,27 @@ const ShapeOption = (props:any) => {
                         props.elementOptionUpdated();
                     }}  className="u-full-width"/>
                 </div>
-                
+            </div>
+            <div className="row">
+                <div className="three columns">
+                    <label>Fill Color</label>
+                    <input type="text" value={props.currentEl.fillColor} onChange={(e) => {
+                        props.currentEl.fillColor = e.target.value;
+                        props.elementOptionUpdated();
+                    }}  className="u-full-width"/>
+                </div>
+                <div className="nine columns">
+                    <GithubPicker 
+                        width='300px'
+                        color={props.currentEl.fillColor}
+                        colors={BlockColors}
+                        triangle='hide'
+                        onChangeComplete={(color) => {
+                            props.currentEl.fillColor = color.hex;
+                            props.elementOptionUpdated();
+                        }}
+                    />
+                </div>
             </div>
 
             <div className="row">
@@ -102,27 +122,7 @@ const ShapeOption = (props:any) => {
                     />
                 </div>
             </div>
-            <div className="row">
-                <div className="three columns">
-                    <label>Fill Color</label>
-                    <input type="text" value={props.currentEl.fillColor} onChange={(e) => {
-                        props.currentEl.fillColor = e.target.value;
-                        props.elementOptionUpdated();
-                    }}  className="u-full-width"/>
-                </div>
-                <div className="nine columns">
-                    <GithubPicker 
-                        width='300px'
-                        color={props.currentEl.fillColor}
-                        colors={BlockColors}
-                        triangle='hide'
-                        onChangeComplete={(color) => {
-                            props.currentEl.fillColor = color.hex;
-                            props.elementOptionUpdated();
-                        }}
-                    />
-                </div>
-            </div>
+           
             <div className="row">
                 <div className="six columns">
                     <label>Line Style</label>

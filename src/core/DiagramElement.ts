@@ -63,6 +63,7 @@ export class DiagramElement {
     isDisplay(){return true}
     setHovered(bool:boolean){this._isHovered= bool; if(!this._isHovered){this._hoverOverride = false}}
     setSelected(bool:boolean){this._isSelected= bool; this._hoverOverride = true;}
+    isSelected():boolean{return this._isSelected}
     toggleSelected(){this._isSelected = !this._isSelected; this._hoverOverride = true;}
 
     // Some elements can have multiple hit boxes. e.g Line
@@ -257,13 +258,18 @@ export class EntryPoint extends Shape {
     setSelected(bool:boolean){this._isSelected= bool; this._hoverOverride = true; if(bool){this._display = true;}}
     
     draw(ctx:CanvasRenderingContext2D) {
-        if(this._display) { 
+        if(this.isDisplay()) { 
             this.elements.forEach( (el:DiagramElement) => {
                 if(el.isDisplay()){
                     el.draw(ctx);
+                } else if(el instanceof EntryPoint){
+                    el.drawOnlyEP(ctx);
                 }
             });
         }
+        super.draw(ctx);
+    }
+    drawOnlyEP(ctx:CanvasRenderingContext2D) {
         super.draw(ctx);
     }
 
@@ -292,7 +298,7 @@ export class EntryPoint extends Shape {
     }
 
     isThisOrChildSelected(): boolean {
-        if(this._isSelected) return true;
+        if(this.isSelected()) return true;
         let arr = this.getSubEntrypoints();
         for(let  i = 0; i < arr.length; i++){
             if(arr[i].isThisOrChildSelected()) return true;

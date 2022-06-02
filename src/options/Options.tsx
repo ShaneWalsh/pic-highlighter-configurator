@@ -18,7 +18,7 @@ class Options extends React.Component<any,any> {
   render() {
     const entryPoints = this.props.entryPoints?.map((ep:any) => 
       <span key={ep.id}>
-          <span className={this.props.currentEntryPoint === ep?'label-checkbox active-ep':'label-checkbox'}>{ep.name}</span>
+          <span className={ep.isThisOrChildSelected()?'label-checkbox active-ep':'label-checkbox'}>{ep.name}</span>
           <input type="checkbox"
               checked={ep._display}
               onChange={() => this.toggleDisplay(ep)}
@@ -36,15 +36,32 @@ class Options extends React.Component<any,any> {
 
     // Sub EntryPoints
     // TODO seems like a bad pattern to call a method and not a property. Problem is I dont want these exported though.
-    const subEntryPoints = this.props.currentEntryPoint?.getSubEntrypoints().map((ep:any) => 
-      <span key={ep.id}>
-          <span className={this.props.currentEntryPoint === ep?'label-checkbox active-ep':'label-checkbox'}>{ep.name}</span>
-          <input type="checkbox"
-              checked={ep._display}
-              onChange={() => this.toggleDisplay(ep)}
-          />
-      </span>
-    );
+    let subEntryPointsToDraw:any[] = [];
+    let selectedEP:EntryPoint = this.props.entryPoints.find((ep:EntryPoint) => ep.isThisOrChildSelected());
+    if(selectedEP){
+      let subEPCollection:EntryPoint[] = selectedEP.getSubEntrypoints();
+      while(subEPCollection.length > 0) {
+        subEntryPointsToDraw.push (
+          <div className='row'>
+            <span className='display-span'>Sub Entrypoints: </span>
+            {subEPCollection.map(subEp => 
+                      <span key={subEp.id}>
+                      <span className={subEp.isThisOrChildSelected()?'label-checkbox active-ep':'label-checkbox'}>{subEp.name}</span>
+                      <input type="checkbox"
+                          checked={subEp._display}
+                          onChange={() => this.toggleDisplay(subEp)}
+                      />
+                  </span>
+              )}
+          </div>
+        )
+        let arr:EntryPoint[] = [];
+        subEPCollection.filter(subEp=>subEp.isDisplay()).forEach(ep => {
+          arr = arr.concat(ep.getSubEntrypoints());
+        });
+        subEPCollection = arr//.filter((ep:EntryPoint) => ep.isThisOrChildSelected());
+      }
+    }
 
     return (
       <div>
@@ -56,10 +73,7 @@ class Options extends React.Component<any,any> {
             <span className='display-span'>Entrypoints Display: </span>
             {entryPoints}
           </div>
-          <div className='row'>
-            <span className='display-span'>Sub Entrypoints: </span>
-            {subEntryPoints}
-          </div>
+          {subEntryPointsToDraw}
           <div>
             <h5>Element Options</h5>
             {opt}
