@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { EntryPoint } from '../core/DiagramElement';
-import { drawBorder } from '../core/Drawing';
+import { EntryPoint, LineStyle } from '../core/DiagramElement';
+import { drawBorder, drawLine } from '../core/Drawing';
 import { reversed } from '../core/Lib2d';
 
 class Diagram extends React.Component<any,any> {
@@ -297,8 +297,17 @@ class Diagram extends React.Component<any,any> {
         canvasCtx.fillStyle = this.props.backgroundColor;
         canvasCtx.fillRect(0,0,this.props.width,this.props.height);
         // draw the background image whatever it is
-        if(this.props.background){
+        if(this.props.background) {
             canvasCtx.drawImage(this.props.background, 0, 0, this.props.width, this.props.height);
+        }
+        if(this.props.displayGrid) {
+            let grid = this.props.grid;
+            for(let startX = grid; startX < this.props.width; startX += grid) {
+                for(let startY = grid; startY < this.props.height; startY += grid) {
+                    drawLine(0,startY,this.props.width,startY,1,"#e0e0e0",LineStyle.FULL,canvasCtx );
+                }
+                drawLine(startX,0,startX,this.props.height,1,"#e0e0e0",LineStyle.FULL,canvasCtx );
+            }
         }
         // border on the canvas
         drawBorder(0,0,this.props.width,this.props.height,.1,'#000000',null, "", canvasCtx)

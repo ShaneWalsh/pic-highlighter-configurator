@@ -73,7 +73,10 @@ class Options extends React.Component<any,any> {
             <span className='display-span'>Entrypoints Display: </span>
             {entryPoints}
           </div>
-          {subEntryPointsToDraw}
+            {subEntryPointsToDraw}
+          <div className='row'>
+            <button type='button' onClick={this.props.toggleGrid}>Toggle Grid</button>
+          </div>
           <div>
             <h5>Element Options</h5>
             {opt}

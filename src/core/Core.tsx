@@ -116,6 +116,8 @@ class Core extends React.Component<any,any> {
                 width : 1024,
                 height : 800,
                 scale : 4, // how many pixels each is resizing is by.
+                grid : 8,
+                displayGrid:false,
 
                 color : "#000",
                 strokeWidth : .6, 
@@ -152,6 +154,7 @@ class Core extends React.Component<any,any> {
         this.performUndo = this.performUndo.bind(this);
 
         this.toggleDisplay = this.toggleDisplay.bind(this);
+        this.toggleGrid = this.toggleGrid.bind(this);
         this.performDeleteElement = this.performDeleteElement.bind(this);
         this.elementOptionUpdated = this.elementOptionUpdated.bind(this);
         this.defaultsUpdated = this.defaultsUpdated.bind(this);
@@ -499,6 +502,14 @@ class Core extends React.Component<any,any> {
         this.cacheUndoStack();
     }
 
+    toggleGrid() {
+        let d = this.state._defaultValues;
+        d.displayGrid = !d.displayGrid;
+        this.setState({
+            _defaultValues:d
+        });
+    }
+
     cacheUndoStack() {
         this.undoStack.push(this.state.export);
     }
@@ -555,6 +566,7 @@ class Core extends React.Component<any,any> {
                         toFront={this.toFront}
                         toBack={this.toBack}
                         performDeleteElement={this.performDeleteElement}
+                        toggleGrid={this.toggleGrid}
                     />
                     <Defaults 
                         defaultsUpdated={this.defaultsUpdated}
@@ -578,6 +590,8 @@ class Core extends React.Component<any,any> {
                         width={this.state._defaultValues.width}
                         height={this.state._defaultValues.height}
                         scale={this.state._defaultValues.scale}
+                        grid={this.state._defaultValues.grid}
+                        displayGrid={this.state._defaultValues.displayGrid}
                         currentEl={this.state.currentEl}
                         entryPoints={this.state.entryPoints}
                     />
