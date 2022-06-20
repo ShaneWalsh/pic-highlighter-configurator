@@ -254,6 +254,10 @@ export class EntryPoint extends Shape {
     
     _display=true;
     toggleDisplay(){this._display = !this._display}
+    hideDisplay() {
+        this.getSubEntrypoints().forEach(ep => ep.hideDisplay());
+        this._display = false;
+    }
     isDisplay(){return this._display};
     setSelected(bool:boolean){this._isSelected= bool; this._hoverOverride = true; if(bool){this._display = true;}}
     

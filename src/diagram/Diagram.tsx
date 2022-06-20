@@ -301,7 +301,7 @@ class Diagram extends React.Component<any,any> {
             canvasCtx.drawImage(this.props.background, 0, 0, this.props.width, this.props.height);
         }
         if(this.props.displayGrid) {
-            let grid = this.props.grid;
+            let grid = this.props.scale;
             for(let startX = grid; startX < this.props.width; startX += grid) {
                 for(let startY = grid; startY < this.props.height; startY += grid) {
                     drawLine(0,startY,this.props.width,startY,1,"#e0e0e0",LineStyle.FULL,canvasCtx );

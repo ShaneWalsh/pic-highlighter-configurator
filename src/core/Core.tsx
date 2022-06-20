@@ -116,7 +116,6 @@ class Core extends React.Component<any,any> {
                 width : 1024,
                 height : 800,
                 scale : 4, // how many pixels each is resizing is by.
-                grid : 8,
                 displayGrid:false,
 
                 color : "#000",
@@ -142,6 +141,7 @@ class Core extends React.Component<any,any> {
         this.startCodeBlock = this.startCodeBlock.bind(this);
 
         this.startSelection = this.startSelection.bind(this);
+        this.hideDisplay = this.hideDisplay.bind(this);
         this.toFront = this.toFront.bind(this);
         this.toBack = this.toBack.bind(this);
         this.selectElement = this.selectElement.bind(this);
@@ -292,6 +292,18 @@ class Core extends React.Component<any,any> {
         this.triggerCache();
     }
 
+    hideDisplay() {
+        if(this.state.currentEl instanceof EntryPoint) {
+            this.state.currentEl.hideDisplay();
+        } else { // hide everything
+            let ep:EntryPoint[] =this.state.entryPoints;;
+            ep.forEach(epi => {
+                epi.hideDisplay();
+            }); 
+        }
+        this.triggerCache();
+    }
+
     toFront(){
         if(this.state.currentEl instanceof EntryPoint) {
             if(this.state.entryPoints.includes(this.state.currentEl)) {
@@ -305,7 +317,6 @@ class Core extends React.Component<any,any> {
             this.state.currentEntryPoint.moveElementToFront(this.state.currentEl);
         }
         this.triggerCache();
-        
     }   
     
     toBack() {
@@ -429,7 +440,10 @@ class Core extends React.Component<any,any> {
             src:jsonObj.src,
             _background : this.loadImage(jsonObj.src),
             entryPoints:newState,
-            _defaultValues:jsonObj._defaultValues
+            _defaultValues:{
+                displayGrid:false, 
+                ...jsonObj._defaultValues
+            }
         })
     }  
     loadImage(src:any) {
@@ -563,6 +577,7 @@ class Core extends React.Component<any,any> {
                         toggleDisplay={this.toggleDisplay}
                         elementOptionUpdated={this.elementOptionUpdated}
                         startSelection={this.startSelection}
+                        hideDisplay={this.hideDisplay}
                         toFront={this.toFront}
                         toBack={this.toBack}
                         performDeleteElement={this.performDeleteElement}
@@ -590,7 +605,6 @@ class Core extends React.Component<any,any> {
                         width={this.state._defaultValues.width}
                         height={this.state._defaultValues.height}
                         scale={this.state._defaultValues.scale}
-                        grid={this.state._defaultValues.grid}
                         displayGrid={this.state._defaultValues.displayGrid}
                         currentEl={this.state.currentEl}
                         entryPoints={this.state.entryPoints}
