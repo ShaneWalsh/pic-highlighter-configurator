@@ -304,9 +304,11 @@ class Diagram extends React.Component<any,any> {
             let grid = this.props.scale;
             for(let startX = grid; startX < this.props.width; startX += grid) {
                 for(let startY = grid; startY < this.props.height; startY += grid) {
-                    drawLine(0,startY,this.props.width,startY,1,"#e0e0e0",LineStyle.FULL,canvasCtx );
+                    let color = (startY % 5 == 0)?"#e0e0e0":"#ededed";
+                    drawLine(0,startY,this.props.width,startY,1,color,LineStyle.FULL,canvasCtx );
                 }
-                drawLine(startX,0,startX,this.props.height,1,"#e0e0e0",LineStyle.FULL,canvasCtx );
+                let color = (startX % 5 == 0)?"#e0e0e0":"#ededed";
+                drawLine(startX,0,startX,this.props.height,1,color,LineStyle.FULL,canvasCtx );
             }
         }
         // border on the canvas

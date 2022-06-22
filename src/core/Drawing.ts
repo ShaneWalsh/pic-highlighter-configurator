@@ -56,26 +56,48 @@ export const drawArrowHeads = (x:number,y:number,xx:number,yy:number, width:numb
 
 export const drawArrowHead = (x:number,y:number,radians:any, width:number,color:string,ctx:CanvasRenderingContext2D, style:any, size:any) => {
   ctx.save();
-  ctx.beginPath();
-  ctx.lineWidth = width;
-  ctx.strokeStyle = color;
-  ctx.fillStyle = color;
-  ctx.translate(x,y);
-  ctx.rotate(radians);
-  ctx.moveTo(0,0);
   let sizes = getSize(size);
-  if(style === "ARROW"){
-    ctx.lineTo(sizes.nose,sizes.wing);
-    ctx.lineTo(0,0);
-    ctx.lineTo(sizes.nose*-1,sizes.wing);
-  } else { // Full or Empty so draw the entire arrow
-    ctx.lineTo(sizes.nose,sizes.wing);
-    ctx.lineTo(sizes.nose*-1,sizes.wing);
+  if(style === "TONONE") {
+    ctx.beginPath();
+    ctx.translate(x,y);
+    ctx.rotate(radians)
+    ctx.ellipse(0, sizes.wing, sizes.nose/2,sizes.wing/6, 0, 0, Math.PI*2);
+    ctx.closePath();
+    ctx.stroke();
+  } else {
+    ctx.beginPath();
+    ctx.lineWidth = width;
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.translate(x,y);
+    ctx.rotate(radians);
+    ctx.moveTo(0,0);
+    
+    if(style === "ARROW"){
+      ctx.lineTo(sizes.nose,sizes.wing);
+      ctx.lineTo(0,0);
+      ctx.lineTo(sizes.nose*-1,sizes.wing);
+    } else if(style === "TOMANY"){
+      ctx.lineTo(0,0);
+      ctx.lineTo(sizes.nose,sizes.wing*-1);
+      ctx.lineTo(0,0);
+      ctx.lineTo(sizes.nose*-1,sizes.wing*-1);
+      ctx.lineTo(0,0);
+      ctx.lineTo(0,sizes.wing*-1);
+    } else if(style === "TOONE"){
+      ctx.lineTo(0,sizes.wing);
+      ctx.lineTo(sizes.nose,sizes.wing);
+      ctx.lineTo(sizes.nose*-1,sizes.wing);
+      ctx.lineTo(0,sizes.wing);
+    } else { // Full or Empty so draw the entire arrow
+      ctx.lineTo(sizes.nose,sizes.wing);
+      ctx.lineTo(sizes.nose*-1,sizes.wing);
+    }
+    ctx.closePath();
+    ctx.stroke();
+    if(style === "FILLED"){ ctx.fill(); }
+    if(style === "UNFILLED"){ ctx.fillStyle = "#FFF";ctx.fill(); }
   }
-  ctx.closePath();
-  ctx.stroke();
-  if(style === "FILLED"){ ctx.fill(); }
-  if(style === "UNFILLED"){ ctx.fillStyle = "#FFF";ctx.fill(); }
   ctx.restore();
 }
 

@@ -370,6 +370,9 @@ export enum ArrowHeadStyle {
     FILLED="FILLED",
     UNFILLED="UNFILLED",
     ARROW="ARROW",
+    TOMANY="TOMANY",
+    TOONE="TOONE",
+    TONONE="TONONE",
     NONE="NONE"
 }
 

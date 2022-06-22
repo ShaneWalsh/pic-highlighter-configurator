@@ -41,6 +41,9 @@ const LineOption = (props:any) => {
                         <option value="FILLED">Filled</option>
                         <option value="UNFILLED">Unfilled</option>
                         <option value="ARROW">Arrow</option>
+                        <option value="TOMANY">ToMany</option>
+                        <option value="TOONE">ToOne</option>
+                        <option value="TONONE">ToNone</option>
                         <option value="NONE">None</option>
                     </select>
                 </div>
@@ -68,6 +71,9 @@ const LineOption = (props:any) => {
                          <option value="FILLED">Filled</option>
                         <option value="UNFILLED">Unfilled</option>
                         <option value="ARROW">Arrow</option>
+                        <option value="TOMANY">ToMany</option>
+                        <option value="TOONE">ToOne</option>
+                        <option value="TONONE">ToNone</option>
                         <option value="NONE">None</option>
                     </select>
                 </div>
