@@ -152,6 +152,7 @@ class Core extends React.Component<any,any> {
         this.performImport = this.performImport.bind(this);
         this.performReset = this.performReset.bind(this);
         this.performUndo = this.performUndo.bind(this);
+        this.loadImageBase = this.loadImageBase.bind(this);
 
         this.toggleDisplay = this.toggleDisplay.bind(this);
         this.toggleGrid = this.toggleGrid.bind(this);
@@ -446,6 +447,13 @@ class Core extends React.Component<any,any> {
             }
         })
     }  
+
+    loadImageBase(imageBase:any) {
+        this.setState({
+            _background:this.loadImage(imageBase)
+        })
+    }
+
     loadImage(src:any) {
         if(src !== null){
             let background = new Image();
@@ -488,6 +496,7 @@ class Core extends React.Component<any,any> {
             currentEntryPoint: null,
             entryPoints:[],
             currentEl: null,
+            _background:null,
             _defaultValues:{
                 highlighterName: elementNames[Math.floor(Math.random()*elementNames.length)]+'-'+Date.now(),
                 width : 1024,
@@ -593,6 +602,7 @@ class Core extends React.Component<any,any> {
                         export={this.state.export}
                         performImport={this.performImport}
                         performReset={this.performReset}
+                        loadImageBase={this.loadImageBase}
                     />
                     <Diagram
                         selecting={this.state._selecting}

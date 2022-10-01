@@ -4,13 +4,15 @@ class Util extends React.Component<any,any> {
   constructor(props:any) {
     super(props);
     this.state = {
-      import:""
+      import:"",
+      imageBase:""
     }
     this.performExport = this.performExport.bind(this);
     this.performPicture = this.performPicture.bind(this);
     this.handleImport = this.handleImport.bind(this);
     this.performImport = this.performImport.bind(this);
     this.performReset = this.performReset.bind(this);
+    this.loadImageBase = this.loadImageBase.bind(this);
   }
 
   performExport(event:any){
@@ -24,6 +26,11 @@ class Util extends React.Component<any,any> {
   performImport(event:any){
     this.props.performImport(this.state.import);
   }
+
+  loadImageBase(event:any){
+    this.props.loadImageBase(this.state.imageBase);
+  }
+
   handleImport(event:any) {
     this.setState({
       import: event.target.value
@@ -52,6 +59,8 @@ class Util extends React.Component<any,any> {
               Object.entries(localStorage) 
             */}
             <input type="text" value={this.state.import} onChange={this.handleImport} className="u-full-width"/>
+            <button type='button' onClick={this.loadImageBase}> Load Image Base64 </button>
+            <input type="text" value={this.state.imageBase} onChange={(e) => this.setState({imageBase:e.target.value})} className="u-full-width"/>
           </div>
       </div>
     );
