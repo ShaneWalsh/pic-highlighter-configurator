@@ -557,13 +557,32 @@ class Core extends React.Component<any,any> {
     }
     // TODO work out a better way to do this checkbox change handling.
     // Currently I have to pass the click evnet all the way up here so I can trigger a state change, to trigger a rerender.
-    toggleDisplay(ep:any){
+    toggleDisplay(ep:EntryPoint){
         ep.toggleDisplay();
-        this.setState(function(state:any, props:any) {
-            return {
-                entryPoints:state.entryPoints
-            };
-        });
+        if(ep === this.state.currentEntryPoint){
+            this.startSelection();
+        } else {
+            this.setState(function(state:any, props:any) {
+                return {
+                    entryPoints:state.entryPoints
+                };
+            });
+        }
+    }
+
+    /**
+     * Test method to try generating glossary displays
+     * TODO finish this
+     * @returns 
+     */
+    generateGlossary() {
+        let gloss = {
+            "BID":[
+                "content and stuff",
+                "conent part w"
+            ]
+        }
+        let ep = new EntryPoint(0,);
     }
 
     render(): React.ReactNode {
