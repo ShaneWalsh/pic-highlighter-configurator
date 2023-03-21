@@ -1,5 +1,5 @@
 import { calculateChunks, drawArrowHeads, drawBorder, drawCircle, drawClass, drawDatabase, drawLine, drawOval, drawPackage, drawRoundRect, drawShape, writeInPixels } from "./Drawing";
-import { MoveDirection } from "./Lib2d";
+import { loadImage, MoveDirection } from "./Lib2d";
 import { elementNames } from "./Lookups";
 
 export enum LineStyle {
@@ -536,6 +536,58 @@ export class Line extends DiagramElement {
         this.secondaryCords = jsonObj["secondaryCords"];
         // Dont forget to set backwards compatibility if new variables are added.
     }
+}
+
+export class Picture extends DiagramElement {
+    constructor(num:number,code="PC"){
+        super(num,code);
+    }
+
+    size:{sizeX:number, sizeY:number} = {sizeX:0,sizeY:0};
+    pictureBase:string;
+    // Transient
+    pictureBaseImage:CanvasImageSource;
+
+    setCords(cords:{x:number,y:number} ){
+        this.cords = cords;
+        this.size = {sizeX:0,sizeY:0};
+    }
+
+    updateCords(cords:{x:number,y:number} ){
+        this.cords = cords;
+    }
+    
+    handleMove(size:{sizeX:number, sizeY:number}, secondaryCords:{x:number,y:number}){
+        this.size = size;
+    }
+
+    updatePictureBase(pictureBase:string) {
+        this.pictureBase = pictureBase;
+        if(this.pictureBase)
+            this.pictureBaseImage = loadImage(this.pictureBase);
+    }
+
+    draw(ctx:CanvasRenderingContext2D) {
+        if(this.pictureBaseImage){
+            ctx.drawImage(this.pictureBaseImage, this.cords.x, this.cords.y, this.size.sizeX, this.size.sizeY);
+        } else {
+            writeInPixels(this.cords.x, this.cords.y, 20, "PICTURE","#000000",TextAlign.CENTER, this.cords, this.size, ctx);
+        }
+    }
+
+    drawHover(ctx:CanvasRenderingContext2D){
+        drawBorder(this.cords.x,this.cords.y,this.size.sizeX,this.size.sizeY,8,highlightColor,null, "", ctx,)
+    }
+
+    hitboxes(){return [{...this.cords,...this.size}]}
+
+    mapJson(jsonObj:any) {
+        super.mapJson(jsonObj);
+        this.size = jsonObj["size"];
+        this.updatePictureBase(jsonObj["pictureBase"]);
+    }
+
+    //loadImage
 }
 
 const highlightColor = "#77DD66";

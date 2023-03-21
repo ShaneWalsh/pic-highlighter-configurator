@@ -4,7 +4,7 @@ import Diagram, { Hovered } from '../diagram/Diagram';
 import Options from '../options/Options';
 import Defaults from '../util/Defaults';
 import Util from '../util/Util';
-import { ArrowHeadStyle, EntryPoint, Line, Shape, Shapes, TextAlign } from './DiagramElement';
+import { ArrowHeadStyle, EntryPoint, Line, Picture, Shape, Shapes, TextAlign } from './DiagramElement';
 import { elementNames } from './Lookups';
 
 // TODO interfaces for types!
@@ -139,6 +139,7 @@ class Core extends React.Component<any,any> {
         this.startShape = this.startShape.bind(this);
         this.startText = this.startText.bind(this);
         this.startCodeBlock = this.startCodeBlock.bind(this);
+        this.startPicture = this.startPicture.bind(this);
 
         this.startSelection = this.startSelection.bind(this);
         this.hideDisplay = this.hideDisplay.bind(this);
@@ -269,6 +270,20 @@ class Core extends React.Component<any,any> {
         shape.fillColor = '#fff';
         shape.textSize = 18;
         shape.isFilled = true;
+        this.state.currentEntryPoint.elements.push(shape);
+        this.setState(function(state:any, props:any) {
+            return {
+                _selecting:false,
+                _placing:true,
+                currentEl:shape,
+                _elementsNum:state._elementsNum+1
+            };
+        });
+        this.triggerCache();
+    }
+
+    startPicture() {
+        let shape = new Picture(this.state._elementsNum);
         this.state.currentEntryPoint.elements.push(shape);
         this.setState(function(state:any, props:any) {
             return {
@@ -597,6 +612,7 @@ class Core extends React.Component<any,any> {
                         startShape={this.startShape}
                         startText={this.startText}
                         startCodeBlock={this.startCodeBlock}
+                        startPicture={this.startPicture}
                     />
                     <Options 
                         currentEl={this.state.currentEl}

@@ -9,6 +9,7 @@ class Creation extends React.Component<any,any> {
     this.startShape = this.startShape.bind(this);
     this.startText = this.startText.bind(this);
     this.startCodeBlock = this.startCodeBlock.bind(this);
+    this.startPicture = this.startPicture.bind(this);
   }
 
   startEntrypoint(event:any){
@@ -35,6 +36,10 @@ class Creation extends React.Component<any,any> {
     this.props.startCodeBlock();
   }
 
+  startPicture(event:any){
+    this.props.startPicture();
+  }
+
   render() {
     return (
       <div className='container'>
@@ -48,6 +53,7 @@ class Creation extends React.Component<any,any> {
             <button type='button' className='four columns' onClick={this.startShape} disabled={this.props.currentEntryPoint === null}> Shape </button>
             <button type='button' className='four columns' onClick={this.startText} disabled={this.props.currentEntryPoint === null}> Text </button>
             <button type='button' className='four columns' onClick={this.startCodeBlock} disabled={this.props.currentEntryPoint === null}> Code </button>
+            <button type='button' className='four columns' onClick={this.startPicture} disabled={this.props.currentEntryPoint === null}> Picture </button>
           </div>
       </div>
     );

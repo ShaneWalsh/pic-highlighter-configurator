@@ -1,8 +1,9 @@
 
 import * as React from 'react'
-import { EntryPoint, Line, Shape } from '../core/DiagramElement';
+import { EntryPoint, Line, Picture, Shape } from '../core/DiagramElement';
 import EntryPointOption from './EntryPointOption';
 import LineOption from './LineOption';
+import PictureOption from './PictureOption';
 import ShapeOption from './ShapeOption';
 
 class Options extends React.Component<any,any> {
@@ -30,6 +31,8 @@ class Options extends React.Component<any,any> {
       opt = <EntryPointOption currentEl={this.props.currentEl} elementOptionUpdated={this.props.elementOptionUpdated}/>
     } else if(this.props.currentEl instanceof Line) {
       opt = <LineOption currentEl={this.props.currentEl} elementOptionUpdated={this.props.elementOptionUpdated}/>
+    } else if(this.props.currentEl instanceof Picture) {
+      opt = <PictureOption currentEl={this.props.currentEl} elementOptionUpdated={this.props.elementOptionUpdated}/>
     } else if(this.props.currentEl instanceof Shape) {
       opt = <ShapeOption currentEl={this.props.currentEl} elementOptionUpdated={this.props.elementOptionUpdated}/>
     }
