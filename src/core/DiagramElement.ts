@@ -360,6 +360,10 @@ export class EntryPoint extends Shape {
                 const entrypoint = new EntryPoint(0);
                 entrypoint.mapJson(obj);
                 this.elements.push(entrypoint);
+            } else if(obj["id"].indexOf("PC") > -1){
+                const pic = new Picture(0);
+                pic.mapJson(obj);
+                this.elements.push(pic);
             }
         }
         // Dont forget to set backwards compatibility if new variables are added.
