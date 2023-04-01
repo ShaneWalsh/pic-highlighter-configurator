@@ -111,6 +111,16 @@ const EntryPointOption = (props:any) => {
                         }} />
                 </div>
             </div>
+            <div className="row">
+                <div className="twelve columns">
+                    <label>Exclusion Group</label>
+                    <input type="text" value={props.currentEl.exclusionGroup} placeholder='exclude' onChange={(e) =>  {
+                        props.currentEl.exclusionGroup = e.target.value
+                        props.elementOptionUpdated();
+                        }}
+                     className="u-full-width"/>
+                </div>
+            </div>
             
         </div>
     )

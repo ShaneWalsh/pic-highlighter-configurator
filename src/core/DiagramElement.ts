@@ -251,7 +251,10 @@ export class EntryPoint extends Shape {
 
     selectedFillColor = "#FFFFFF"; // when this is true, and not selected, a light colored outline with display where is.
     selectedBorderColor = "#FFFFFF"; // when this is true, and not selected, a light colored outline with display where is.
-    
+   
+    // when set, all other entrypoints with the same exclusionGroup cannot be toggles on at the same time.
+    exclusionGroup = ""; 
+
     _display=true;
     toggleDisplay(){this._display = !this._display}
     hideDisplay() {
@@ -347,6 +350,7 @@ export class EntryPoint extends Shape {
         this.isSelectedByDefault = jsonObj["isSelectedByDefault"];
         this.selectedFillColor = jsonObj["selectedFillColor"];
         this.selectedBorderColor = jsonObj["selectedBorderColor"];
+        this.exclusionGroup = jsonObj["exclusionGroup"] || "";
         for(let obj of jsonObj.elements) {
             if(obj["id"].indexOf("LN") > -1) {
                 const line = new Line(0);
