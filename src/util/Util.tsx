@@ -8,6 +8,7 @@ class Util extends React.Component<any,any> {
       imageBase:""
     }
     this.performExport = this.performExport.bind(this);
+    this.performJsonExport = this.performJsonExport.bind(this);
     this.performPicture = this.performPicture.bind(this);
     this.handleImport = this.handleImport.bind(this);
     this.performImport = this.performImport.bind(this);
@@ -17,6 +18,10 @@ class Util extends React.Component<any,any> {
 
   performExport(event:any){
     this.props.performExport();
+  }
+
+  performJsonExport(event:any){
+    this.props.performJsonExport();
   }
 
   performPicture(event:any){
@@ -51,6 +56,7 @@ class Util extends React.Component<any,any> {
             <button type='button' onClick={this.performReset} className="danger-zone"> Clear From Cache </button>
             <button type='button' onClick={this.performExport}> Export </button>
             <button type='button' onClick={this.performPicture}> Picture </button>
+            <button type='button' onClick={this.performJsonExport}> JSON </button>
             <input type="text" value={this.props.export} className="u-full-width"/>
             <button type='button' onClick={this.performImport}> Import </button>
             <input type="text" value={this.state.import} onChange={this.handleImport} className="u-full-width"/>

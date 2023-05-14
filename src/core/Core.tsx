@@ -149,6 +149,7 @@ class Core extends React.Component<any,any> {
         this.placedElement = this.placedElement.bind(this);
 
         this.performExport = this.performExport.bind(this);
+        this.performJsonExport = this.performJsonExport.bind(this);
         this.performPicture = this.performPicture.bind(this);
         this.performImport = this.performImport.bind(this);
         this.performReset = this.performReset.bind(this);
@@ -422,6 +423,31 @@ class Core extends React.Component<any,any> {
         }
     }
 
+    performJsonExport() {
+        let yourDate = new Date();
+        let highlighterName = [
+                this.state._defaultValues.highlighterName,
+                yourDate.toISOString().split('T')[0]
+            ].join('-');
+        highlighterName += '_'+(yourDate.toISOString().split('T')[1].split('.')[0]);
+
+        const blob = new Blob([this.state.export.split(',').join(',\r\n')], { type: "text/json" });
+        const link = document.createElement("a");
+
+        link.download = highlighterName + ".json";
+        link.href = window.URL.createObjectURL(blob);
+        link.dataset.downloadurl = ["text/json", link.download, link.href].join(":");
+
+        const evt = new MouseEvent("click", {
+            view: window,
+            bubbles: true,
+            cancelable: true,
+        });
+
+        link.dispatchEvent(evt);
+        link.remove()
+    }
+
     performPicture() {
         var link = document.createElement('a');
         link.download = this.state._defaultValues.highlighterName+'.png';
@@ -633,6 +659,7 @@ class Core extends React.Component<any,any> {
                     />
                     <Util                         
                         performExport={this.performExport}
+                        performJsonExport={this.performJsonExport}
                         performPicture={this.performPicture}
                         export={this.state.export}
                         performImport={this.performImport}
